@@ -164,6 +164,27 @@ app.post('/resend-verification', async (req, res) => {
   res.json({ message: 'Verification email resent' });
 });
 
+app.post('/verify-code', async (req, res) => {
+  const { email, code } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (parseInt(code) === user.verificationCode) {
+      user.verified = true;
+      user.verificationCode = null;
+      await user.save();
+      res.json({ message: 'Email verified successfully!' });
+    } else {
+      res.status(400).json({ message: 'Incorrect verification code' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Verification failed' });
+  }
+});
+
+
 // ✅ Get User Data
 app.get('/user', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
