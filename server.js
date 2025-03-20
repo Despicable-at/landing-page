@@ -5,17 +5,20 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const session = require('express-session');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected ✅"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// Models
+// ✅ Models
 const User = mongoose.model('User', {
   name: String,
   email: { type: String, unique: true },
@@ -23,78 +26,57 @@ const User = mongoose.model('User', {
   verified: { type: Boolean, default: false },
   verificationCode: String
 });
-
 const Campaign = mongoose.model('Campaign', { title: String, description: String, goal: Number, raised: Number, userId: String });
 const Donation = mongoose.model('Donation', { email: String, transactionId: String, amount: Number, campaignId: String });
 const PreRegister = mongoose.model('PreRegister', { email: String });
 const Investment = mongoose.model('Investment', { userId: String, amount: Number });
 
-// Nodemailer
+// ✅ Nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const session = require('express-session');
-
-// ✅ SESSION SETUP
+// ✅ Session Setup for OAuth
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your_secret_key',
   resave: false,
   saveUninitialized: true
 }));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ USER SERIALIZE
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+// ✅ Passport - Google OAuth2 Strategy
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
-// ✅ GOOGLE STRATEGY SETUP
 passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,   // 🔥 Add this to your .env
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET, // 🔥 Add this to your .env
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "https://landing-page-gere.onrender.com/auth/google/callback"
-},
-async (accessToken, refreshToken, profile, done) => {
-  // ✅ You can check if user exists or create new in MongoDB
+}, async (accessToken, refreshToken, profile, done) => {
   let user = await User.findOne({ email: profile.emails[0].value });
   if (!user) {
-    user = await User.create({
-      email: profile.emails[0].value,
-      password: '', // Optional for Google users
-      verified: true
-    });
+    user = await User.create({ email: profile.emails[0].value, password: '', verified: true });
   }
   done(null, user);
-}
-));
+}));
 
-// ✅ GOOGLE AUTH ROUTES
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+// ✅ Google OAuth Routes
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    // ✅ Generate JWT token for the user
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.redirect(`${process.env.FRONTEND_URL}/#/?token=${token}`);
   }
 );
 
-
 // ✅ Root Route
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
+// ✅ Signup with Email Verification
 app.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
   try {
@@ -120,13 +102,11 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-
-// ✅ Verify Email Route
+// ✅ Email Verification
 app.post('/verify-email', async (req, res) => {
   const { email, code } = req.body;
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ message: 'User not found' });
-
   if (user.verified) return res.json({ message: "Email already verified" });
   if (user.verificationCode != code) return res.status(400).json({ message: 'Invalid verification code' });
 
@@ -136,7 +116,7 @@ app.post('/verify-email', async (req, res) => {
   res.json({ message: 'Email verified successfully. You can now log in.' });
 });
 
-// ✅ Login Route (Check verification)
+// ✅ Login Route
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -147,33 +127,7 @@ app.post('/login', async (req, res) => {
   res.json({ token, user: { name: user.name, email: user.email } });
 });
 
-app.post('/signup', async (req, res) => {
-  const { email, password, name } = req.body;
-  try {
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'Email already exists' });
-
-    const hashed = await bcrypt.hash(password, 10);
-    const verificationCode = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-    const user = new User({ email, password: hashed, name, verificationCode, verified: false });
-    await user.save();
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Your PFCA CapiGrid Verification Code',
-      text: `Your verification code is: ${verificationCode}`
-    });
-
-    res.json({ message: 'Signup successful. Check your email for the verification code.' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Signup failed' });
-  }
-});
-
-
-// ✅ Resend Verification Email
+// ✅ Resend Verification Code
 app.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -190,29 +144,7 @@ app.post('/resend-verification', async (req, res) => {
   res.json({ message: 'Verification email resent' });
 });
 
-app.post('/verify-code', async (req, res) => {
-  const { email, code } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    if (parseInt(code) === user.verificationCode) {
-      user.verified = true;
-      user.verificationCode = null;
-      await user.save();
-      res.json({ message: 'Email verified successfully!' });
-    } else {
-      res.status(400).json({ message: 'Incorrect verification code' });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Verification failed' });
-  }
-});
-
-
-
-// ✅ Get User Data
+// ✅ Get Authenticated User
 app.get('/user', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   try {
@@ -224,13 +156,12 @@ app.get('/user', async (req, res) => {
   }
 });
 
-// ✅ Campaign Routes
+// ✅ Campaigns
 app.get('/campaigns', async (req, res) => {
   const campaigns = await Campaign.find();
   res.json(campaigns);
 });
 
-// ✅ Get My Campaigns
 app.get('/my-campaigns', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   try {
@@ -242,18 +173,16 @@ app.get('/my-campaigns', async (req, res) => {
   }
 });
 
-// ✅ Handle Donations
+// ✅ Donations
 app.post('/donate', async (req, res) => {
   const { email, amount, campaignId } = req.body;
   const transactionId = `TXN-${Date.now()}`;
-  const donation = new Donation({ email, transactionId, amount, campaignId });
-  await donation.save();
-
+  await Donation.create({ email, transactionId, amount, campaignId });
   await Campaign.findByIdAndUpdate(campaignId, { $inc: { raised: amount } });
   res.json({ message: 'Donation recorded', transactionId });
 });
 
-// ✅ Send Payment Email
+// ✅ Payment Email
 app.post('/send-payment-email', async (req, res) => {
   const { email, transactionId, amount, campaignId } = req.body;
   await transporter.sendMail({
@@ -272,13 +201,13 @@ app.post('/invest', async (req, res) => {
   res.json({ message: 'Investment recorded. We will contact you.' });
 });
 
-// ✅ Pre-Register Endpoint
+// ✅ Pre-Registration Endpoint
 app.post('/pre-register', async (req, res) => {
   const { email } = req.body;
   await PreRegister.create({ email });
   res.json({ message: 'Pre-Registration successful!' });
 });
 
-// ✅ Start the Server
+// ✅ Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`PFCA CapiGrid Backend running on port ${PORT}`));
