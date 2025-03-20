@@ -1,71 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import api from './api';
+import React, { useState } from 'react';
+import axios from 'axios';
+import './style.css';
 
 function App() {
-  const [campaigns, setCampaigns] = useState([]);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
   const [loginEmail, setLoginEmail] = useState('');
-  const [loginPass, setLoginPass] = useState('');
-  const [token, setToken] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [campaigns, setCampaigns] = useState([]);
 
-  // Fetch Campaigns
-  const fetchCampaigns = async () => {
-    const res = await api.get('/campaigns');
-    setCampaigns(res.data);
-  };
-
-  useEffect(() => {
-    fetchCampaigns();
-  }, []);
-
-  // Signup
   const handleSignup = async (e) => {
     e.preventDefault();
-    const res = await api.post('/signup', { email, password });
-    alert(res.data.message);
+    try {
+      const res = await axios.post('https://capigrid-backend.onrender.com/signup', {
+        email: signupEmail,
+        password: signupPassword
+      });
+      alert(res.data.message);
+    } catch (err) {
+      console.error(err);
+      alert('Signup failed');
+    }
   };
 
-  // Login
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await api.post('/login', { email: loginEmail, password: loginPass });
-    alert(res.data.message);
-    setToken(res.data.token);
+    try {
+      const res = await axios.post('https://capigrid-backend.onrender.com/login', {
+        email: loginEmail,
+        password: loginPassword
+      });
+      alert(res.data.message);
+    } catch (err) {
+      console.error(err);
+      alert('Login failed');
+    }
+  };
+
+  const fetchCampaigns = async () => {
+    try {
+      const res = await axios.get('https://capigrid-backend.onrender.com/campaigns');
+      setCampaigns(res.data);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to load campaigns');
+    }
   };
 
   return (
-    <div style={{ padding: '30px' }}>
-      <h1>PFCA CapiGrid Frontend</h1>
+    <div className="container">
+      <h1>PFCA CapiGrid</h1>
 
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" /><br />
-        <input value={password} type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" /><br />
+      <form onSubmit={handleSignup} className="card">
+        <h2>Signup</h2>
+        <input type="email" placeholder="Email" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} required />
+        <input type="password" placeholder="Password" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required />
         <button type="submit">Sign Up</button>
       </form>
 
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="Email" /><br />
-        <input value={loginPass} type="password" onChange={(e) => setLoginPass(e.target.value)} placeholder="Password" /><br />
+      <form onSubmit={handleLogin} className="card">
+        <h2>Login</h2>
+        <input type="email" placeholder="Email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required />
+        <input type="password" placeholder="Password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
         <button type="submit">Login</button>
       </form>
 
-      <h2>Campaigns</h2>
-      <button onClick={fetchCampaigns}>Reload Campaigns</button>
-      <div>
-        {campaigns.length > 0 ? campaigns.map((c, i) => (
-          <div key={i} style={{ padding: '10px', border: '1px solid #ccc', margin: '10px 0' }}>
-            <h3>{c.title}</h3>
-            <p>{c.description}</p>
-            <p>Goal: GHS {c.goal} | Raised: GHS {c.raised}</p>
-          </div>
-        )) : 'No campaigns found'}
+      <div className="card campaigns">
+        <h2>Campaigns</h2>
+        <button onClick={fetchCampaigns}>Reload Campaigns</button>
+        {campaigns.length ? (
+          campaigns.map((campaign) => <p key={campaign._id}>{campaign.title}</p>)
+        ) : (
+          <p>No campaigns found</p>
+        )}
       </div>
+
+      <footer>© 2024 PFCA CapiGrid. All rights reserved.</footer>
     </div>
   );
 }
 
 export default App;
-
