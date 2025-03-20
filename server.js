@@ -121,6 +121,46 @@ app.post('/donate', async (req, res) => {
   res.json({ message: 'Donation recorded', transactionId });
 });
 
+//Get User Data Route
+app.get('/user', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
+//GEt User Campaigns
+app.get('/my-campaigns', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const campaigns = await Campaign.find({ userId: decoded.id });
+    res.json(campaigns);
+  } catch (err) {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
+//Handle investment endpoint
+app.post('/invest', async (req, res) => {
+  const { userId, amount } = req.body;
+  // You can save this in a DB collection called Investments
+  console.log(`User ${userId} wants to invest GHS ${amount}`);
+  res.json({ message: 'Investment recorded. We will contact you.' });
+});
+
+//Pre-registration endpoint
+app.post('/pre-register', async (req, res) => {
+  const { email } = req.body;
+  // Optional: Save to MongoDB PreRegister collection
+  console.log(`Pre-Registration received: ${email}`);
+  res.json({ message: 'Pre-Registration successful!' });
+});
+
 // Send payment receipt email
 app.post('/send-payment-email', async (req, res) => {
   const { email, transactionId, amount, campaignId } = req.body;
