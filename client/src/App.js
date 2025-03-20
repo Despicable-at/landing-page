@@ -1,48 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import SignupPage from './SignupPage';
+import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
 import './style.css';
 
-// ✅ Login Page Component
-const LoginPage = ({ setToken, fetchUserData }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post('https://capigrid-backend.onrender.com/login', { email, password });
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token);
-        setToken(res.data.token);
-        fetchUserData(res.data.token);
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      alert('Login failed. Please check your credentials.');
-    }
-  };
-
-  return (
-    <div className="auth-container">
-      <h2>Welcome to PFCA CapiGrid</h2>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login / Signup</button>
-    </div>
-  );
-};
-
-// ✅ Main App Component
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
 
-  const fetchUserData = async (userToken) => {
+  useEffect(() => {
+    if (token) {
+      fetchUserData(token);
+    }
+  }, [token]);
+
+  const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://capigrid-backend.onrender.com/user', {
-        headers: { Authorization: `Bearer ${userToken}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
     } catch (err) {
@@ -50,37 +27,57 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    if (token) fetchUserData(token);
-  }, [token]);
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUser(null);
-  };
-
   return (
     <Router>
       <Routes>
-        <Route 
-          path="/" 
-          element={
-            token 
-              ? <Navigate to="/dashboard" /> 
-              : <LoginPage setToken={setToken} fetchUserData={fetchUserData} />
-          } 
-        />
-        <Route 
-          path="/dashboard" 
-          element={
-            token 
-              ? <Dashboard user={user} logout={logout} /> 
-              : <Navigate to="/" />
-          } 
-        />
+        <Route path="/" element={
+          token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
+        } />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/dashboard" element={token ? <Dashboard user={user} /> : <Navigate to="/" />} />
       </Routes>
     </Router>
+  );
+};
+
+const LoginForm = ({ setToken, setUser }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post('https://capigrid-backend.onrender.com/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      setToken(res.data.token);
+      setUser(res.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Login failed');
+    }
+  };
+
+  // Google OAuth flow trigger (you will replace backend endpoint with your actual OAuth logic)
+  const handleGoogleLogin = () => {
+    window.location.href = 'https://capigrid-backend.onrender.com/auth/google';
+  };
+
+  return (
+    <div className="auth-container">
+      <h2>Welcome to PFCA CapiGrid</h2>
+      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <button onClick={handleLogin}>Login</button>
+
+      {/* 🔥 Google Sign In */}
+      <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
+        Sign in with Google
+      </button>
+
+      <p>Don’t have an account? <span style={{color:'blue', cursor:'pointer'}} onClick={() => navigate('/signup')}>Create one</span></p>
+      <p>Need to verify? <span style={{color:'blue', cursor:'pointer'}} onClick={() => navigate('/verify')}>Verify Email</span></p>
+    </div>
   );
 };
 
