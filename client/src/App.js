@@ -4,6 +4,7 @@ import axios from 'axios';
 import SignupPage from './SignupPage';
 import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
+import OAuthCallback from './OAuthCallback';
 import './style.css';
 
 const App = () => {
