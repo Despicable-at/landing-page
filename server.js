@@ -95,26 +95,31 @@ app.get('/auth/google/callback',
 // ✅ Root Route
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
-// ✅ Signup with Email Verification
 app.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
-  const exists = await User.findOne({ email });
-  if (exists) return res.status(400).json({ message: "Email already registered" });
+  const { email, password, name } = req.body;
+  try {
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: 'Email already exists' });
 
-  const hashed = await bcrypt.hash(password, 10);
-  const verificationCode = Math.floor(100000 + Math.random() * 900000); // 6-digit code
-  const user = new User({ name, email, password: hashed, verificationCode });
-  await user.save();
+    const hashed = await bcrypt.hash(password, 10);
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+    const user = new User({ email, password: hashed, name, verificationCode, verified: false });
+    await user.save();
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'PFCA CapiGrid Email Verification',
-    text: `Your verification code is: ${verificationCode}`
-  });
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your PFCA CapiGrid Verification Code',
+      text: `Your verification code is: ${verificationCode}`
+    });
 
-  res.json({ message: 'Signup successful! Please check your email for verification.' });
+    res.json({ message: 'Signup successful. Check your email for the verification code.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Signup failed' });
+  }
 });
+
 
 // ✅ Verify Email Route
 app.post('/verify-email', async (req, res) => {
