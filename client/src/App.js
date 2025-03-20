@@ -18,7 +18,7 @@ const App = () => {
 
   const fetchUserData = async (token) => {
     try {
-      const res = await axios.get('https://capigrid-backend.onrender.com/user', {
+      const res = await axios.get('https://https://landing-page-gere.onrender.com/user', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
@@ -48,7 +48,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://capigrid-backend.onrender.com/login', { email, password });
+      const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
@@ -60,7 +60,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   // Google OAuth flow trigger (you will replace backend endpoint with your actual OAuth logic)
   const handleGoogleLogin = () => {
-    window.location.href = 'https://capigrid-backend.onrender.com/auth/google';
+    window.location.href = 'https://landing-page-gere.onrender.com/auth/google/callback';
   };
 
   return (
