@@ -4,10 +4,6 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0",
-        "react-scripts": "5.0.1",
-        "react-router-dom": "^6.14.1"
   },
   "dependencies": {
     "cors": "^2.8.5",
