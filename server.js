@@ -35,6 +35,63 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const session = require('express-session');
+
+// ✅ SESSION SETUP
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your_secret_key',
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ✅ USER SERIALIZE
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// ✅ GOOGLE STRATEGY SETUP
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,   // 🔥 Add this to your .env
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET, // 🔥 Add this to your .env
+  callbackURL: "https://capigrid-backend.onrender.com/auth/google/callback"
+},
+async (accessToken, refreshToken, profile, done) => {
+  // ✅ You can check if user exists or create new in MongoDB
+  let user = await User.findOne({ email: profile.emails[0].value });
+  if (!user) {
+    user = await User.create({
+      email: profile.emails[0].value,
+      password: '', // Optional for Google users
+      verified: true
+    });
+  }
+  done(null, user);
+}
+));
+
+// ✅ GOOGLE AUTH ROUTES
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    // ✅ Generate JWT token for the user
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.redirect(`${process.env.FRONTEND_URL}/#/?token=${token}`);
+  }
+);
+
+
 // ✅ Root Route
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
