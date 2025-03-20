@@ -8,14 +8,12 @@ const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => onLogin(email, password);
-
   return (
     <div className="auth-container">
       <h2>Welcome to PFCA CapiGrid</h2>
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
       <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login / Signup</button>
+      <button onClick={() => onLogin(email, password)}>Login / Signup</button>
     </div>
   );
 };
@@ -23,6 +21,7 @@ const LoginPage = ({ onLogin }) => {
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   const fetchUserData = async (token) => {
     try {
@@ -31,7 +30,7 @@ const App = () => {
       });
       setUser(res.data);
     } catch (err) {
-      console.error('Fetch user error', err);
+      console.error('Fetch user error:', err);
     }
   };
 
@@ -42,29 +41,29 @@ const App = () => {
   const handleLogin = async (email, password) => {
     try {
       const res = await axios.post('https://capigrid-backend.onrender.com/login', { email, password });
-      if (res.data.success) {
+      if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         fetchUserData(res.data.token);
-      } else {
-        alert('Login failed');
+        navigate('/dashboard');
       }
     } catch (err) {
-      alert('Error connecting to server');
+      alert('Login failed. Please check your credentials.');
     }
   };
 
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    navigate('/');
   };
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={!token ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={token ? <Dashboard user={user} logout={handleLogout} /> : <Navigate to="/" />} />
+        <Route path="/dashboard" element={token ? <Dashboard user={user} logout={logout} /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );
