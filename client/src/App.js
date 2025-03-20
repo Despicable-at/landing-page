@@ -4,7 +4,7 @@ import axios from 'axios';
 import Dashboard from './Dashboard';
 import './style.css';
 
-// LoginPage separated correctly to handle navigation
+// ✅ Login Page Component
 const LoginPage = ({ setToken, fetchUserData }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,6 +34,7 @@ const LoginPage = ({ setToken, fetchUserData }) => {
   );
 };
 
+// ✅ Main App Component
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
@@ -62,16 +63,22 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={
-          token
-            ? <Navigate to="/dashboard" />
-            : <LoginPage setToken={setToken} fetchUserData={fetchUserData} />
-        } />
-        <Route path="/dashboard" element={
-          token
-            ? <Dashboard user={user} logout={logout} />
-            : <Navigate to="/" />
-        } />
+        <Route 
+          path="/" 
+          element={
+            token 
+              ? <Navigate to="/dashboard" /> 
+              : <LoginPage setToken={setToken} fetchUserData={fetchUserData} />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            token 
+              ? <Dashboard user={user} logout={logout} /> 
+              : <Navigate to="/" />
+          } 
+        />
       </Routes>
     </Router>
   );
