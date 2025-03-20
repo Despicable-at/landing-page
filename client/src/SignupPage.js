@@ -10,7 +10,7 @@ const SignupPage = () => {
 
   const handleSignup = async () => {
     try {
-      const res = await axios.post('https://capigrid-backend.onrender.com/signup', { name, email, password });
+      const res = await axios.post('https://landing-page-gere.onrender.com/signup', { name, email, password });
       alert(res.data.message);
       navigate('/login');
     } catch (err) {
