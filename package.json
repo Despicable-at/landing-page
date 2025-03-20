@@ -13,6 +13,6 @@
     "nodemailer": "^6.9.1",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2"
-    "react-google-login": "^5.2.2"  // ✅ Add this for Google OAuth
+    "google-auth-library": "^9.0.0"  // ✅ For Google OAuth backend verification
   }
 }
