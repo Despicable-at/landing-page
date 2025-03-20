@@ -18,6 +18,31 @@ const Dashboard = ({ user, logout }) => {
     fetchCampaigns();
   }, []);
 
+  // 🔥 Handle Investment
+  const handleInvest = async () => {
+    try {
+      await axios.post('https://capigrid-backend.onrender.com/invest', {
+        userId: user?._id,
+        amount: 5000  // You can make this dynamic
+      });
+      alert('Thank you for investing! We will contact you.');
+    } catch (err) {
+      alert('Investment failed. Try again.');
+    }
+  };
+
+  // 🔥 Handle Pre-Registration
+  const handlePreRegister = async () => {
+    try {
+      await axios.post('https://capigrid-backend.onrender.com/pre-register', {
+        email: user?.email
+      });
+      alert('Pre-Registration successful! You will be notified.');
+    } catch (err) {
+      alert('Pre-Registration failed.');
+    }
+  };
+  
   return (
     <div className="dashboard-container">
       <h1>Welcome, {user?.name || 'CapiGrid User'}</h1>
@@ -30,16 +55,18 @@ const Dashboard = ({ user, logout }) => {
         )) : <p>No campaigns available yet</p>}
       </section>
 
+      {/* 🔥 Investment Section */}
       <section className="invest-section">
         <h2>Invest in PFCA CapiGrid</h2>
         <p>Be part of our journey. Invest now!</p>
-        <button>Invest Now</button>
+        <button onClick={handleInvest}>Invest Now</button>
       </section>
 
+      {/* 🔥 Pre-Register Section */}
       <section className="pre-register">
         <h2>Pre-Register for the Main Platform</h2>
         <p>Get notified when we launch.</p>
-        <button>Pre-Register</button>
+        <button onClick={handlePreRegister}>Pre-Register</button>
       </section>
     </div>
   );
