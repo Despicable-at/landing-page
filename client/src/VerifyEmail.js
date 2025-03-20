@@ -11,7 +11,7 @@ const VerifyEmail = () => {
     const verify = async () => {
       try {
         const token = searchParams.get('token');
-        const res = await axios.get(`https://capigrid-backend.onrender.com/verify-email?token=${token}`);
+        const res = await axios.get(`https://landing-page-gere.onrender.com/verify-email?token=${token}`);
         setMessage('Email verified successfully! You can now log in.');
         setTimeout(() => navigate('/'), 3000); // Redirect after 3 secs
       } catch (err) {
