@@ -61,7 +61,7 @@ passport.deserializeUser((user, done) => {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,   // 🔥 Add this to your .env
   clientSecret: process.env.GOOGLE_CLIENT_SECRET, // 🔥 Add this to your .env
-  callbackURL: "https://capigrid-backend.onrender.com/auth/google/callback"
+  callbackURL: "https://landing-page-gere.onrender.com/auth/google/callback"
 },
 async (accessToken, refreshToken, profile, done) => {
   // ✅ You can check if user exists or create new in MongoDB
@@ -147,6 +147,32 @@ app.post('/login', async (req, res) => {
   res.json({ token, user: { name: user.name, email: user.email } });
 });
 
+app.post('/signup', async (req, res) => {
+  const { email, password, name } = req.body;
+  try {
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: 'Email already exists' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+    const user = new User({ email, password: hashed, name, verificationCode, verified: false });
+    await user.save();
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your PFCA CapiGrid Verification Code',
+      text: `Your verification code is: ${verificationCode}`
+    });
+
+    res.json({ message: 'Signup successful. Check your email for the verification code.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Signup failed' });
+  }
+});
+
+
 // ✅ Resend Verification Email
 app.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
@@ -183,6 +209,7 @@ app.post('/verify-code', async (req, res) => {
     res.status(500).json({ message: 'Verification failed' });
   }
 });
+
 
 
 // ✅ Get User Data
