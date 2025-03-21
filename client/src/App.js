@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import SignupPage from './SignupPage';
 import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
 import OAuthCallback from './OAuthCallback';
-import InvestPage from './InvestPage';   // ✅ Add this if missing
+import InvestPage from './InvestPage';
+import InvestPayment from './InvestPayment';  // ✅ Add InvestPayment route
 import './style.css';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      fetchUserData(token);
-    }
+    console.log("App Loaded ✅");
+    if (token) fetchUserData(token);
   }, [token]);
 
   const fetchUserData = async (token) => {
@@ -31,32 +30,29 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={
-          token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
-        } />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/verify" element={<VerifyEmail />} />
-
-        <Route 
-          path="/dashboard" 
-          element={
-            localStorage.getItem('token') 
-              ? <Dashboard user={user} logout={() => {
-                  localStorage.removeItem('token');
-                  setToken(null);
-                  setUser(null);
-                  navigate('/');
-                }} /> 
-              : <Navigate to="/" />
-          } 
-        />
-
-        <Route path="/oauth-callback" element={<OAuthCallback />} />  {/* ✅ Fixed */}
-        <Route path="/invest" element={<InvestPage user={user} />} />  {/* ✅ Fixed */}
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={
+        token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
+      } />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/verify" element={<VerifyEmail />} />
+      <Route 
+        path="/dashboard" 
+        element={
+          localStorage.getItem('token') 
+            ? <Dashboard user={user} logout={() => {
+                localStorage.removeItem('token');
+                setToken(null);
+                setUser(null);
+                window.location.href = '/';
+              }} /> 
+            : <Navigate to="/" />
+        } 
+      />
+      <Route path="/oauth-callback" element={<OAuthCallback />} />
+      <Route path="/invest" element={<InvestPage user={user} />} />
+      <Route path="/invest-payment" element={<InvestPayment user={user} />} />
+    </Routes>
   );
 };
 
@@ -67,7 +63,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/OAuthCallback', { email, password });
+      const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });  // ✅ FIXED ENDPOINT
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
