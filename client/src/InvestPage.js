@@ -17,7 +17,7 @@ const InvestPage = ({ user }) => {
 const handleProceed = async () => {
   if (agreed) {
     try {
-      await axios.post('https://capigrid-backend.onrender.com/save-terms-acceptance', {
+      await axios.post('https://landing-page-gere.onrender.com/save-terms-acceptance', {
         userId: user?._id,
         email: user?.email,
         amount,
