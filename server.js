@@ -245,10 +245,17 @@ app.post('/save-terms-acceptance', async (req, res) => {
   res.json({ message: 'Terms and investment saved.' });
 });
 
-// ✅ Record Paystack Investment
 app.post('/record-investment', async (req, res) => {
-  const { userId, email, amount, equityPercent, paystackRef } = req.body;
-  await InvestmentRecord.create({ userId, email, amount, equityPercent, paystackRef });
+  const { userId, email, amount, equityPercent, paystackRef, status } = req.body;
+  await InvestmentRecord.create({ 
+    userId, 
+    email, 
+    amount, 
+    equityPercent, 
+    paystackRef,
+    status,
+    timestamp: new Date()
+  });
   res.json({ message: 'Investment recorded.' });
 });
 
