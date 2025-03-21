@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SignupPage from './SignupPage';
 import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
 import OAuthCallback from './OAuthCallback';
 import InvestPage from './InvestPage';
-import InvestPayment from './InvestPayment';  // ✅ Add InvestPayment route
+import InvestPayment from './InvestPayment';
 import './style.css';
 
 const App = () => {
@@ -59,7 +59,7 @@ const App = () => {
 const LoginForm = ({ setToken, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // ✅ FIXED - ADDED useNavigate import
 
   const handleLogin = async () => {
     try {
