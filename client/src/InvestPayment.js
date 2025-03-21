@@ -12,15 +12,15 @@ const InvestPayment = ({ user }) => {
   const handlePaystack = () => {
     setLoading(true);
     const handler = window.PaystackPop.setup({
-      key: 'YOUR_PAYSTACK_PUBLIC_KEY',
+      key: 'YOUR_PAYSTACK_PUBLIC_KEY', // ✅ Replace with your live key
       email: user?.email,
-      amount: amount * 100,
+      amount: amount * 100, // Paystack reads in kobo/pesewas
       currency: 'GHS',
       callback: function (response) {
         setLoading(false);
-        alert(`Investment Successful! Ref: ${response.reference}`);
+        alert(`✅ Investment Successful! Ref: ${response.reference}`);
 
-        // ✅ Record Investment in DB
+        // ✅ 1. Save to Database
         axios.post('https://landing-page-gere.onrender.com/record-investment', {
           userId: user._id,
           email: user.email,
@@ -29,7 +29,7 @@ const InvestPayment = ({ user }) => {
           paystackRef: response.reference
         });
 
-        // ✅ Auto-send receipt email with PDF
+        // ✅ 2. Auto-send Receipt Email with PDF
         axios.post('https://landing-page-gere.onrender.com/send-investment-receipt', {
           email: user.email,
           amount,
@@ -50,9 +50,11 @@ const InvestPayment = ({ user }) => {
       <h2>Confirm Your Investment</h2>
       <p>Investing <strong>GHS {amount}</strong> for <strong>{equity}% equity</strong></p>
 
-      {loading ? <p>Processing Payment...</p> :
+      {loading ? (
+        <p>Processing Payment... ⏳</p>
+      ) : (
         <button onClick={handlePaystack}>Pay with Paystack</button>
-      }
+      )}
     </div>
   );
 };
