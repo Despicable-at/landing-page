@@ -58,12 +58,23 @@ passport.use(new GoogleStrategy({
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "https://landing-page-gere.onrender.com/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
-  let user = await User.findOne({ email: profile.emails[0].value });
-  if (!user) {
-    user = await User.create({ email: profile.emails[0].value, password: '', verified: true });
+  try {
+    let user = await User.findOne({ email: profile.emails[0].value });
+    if (!user) {
+      user = await User.create({ 
+        email: profile.emails[0].value, 
+        name: profile.displayName,
+        password: '', 
+        verified: true 
+      });
+    }
+    done(null, user);
+  } catch (err) {
+    console.error('Google OAuth Error:', err);
+    done(err, null);
   }
-  done(null, user);
 }));
+
 
 // ✅ Google OAuth Routes
 app.get('/auth/google', 
