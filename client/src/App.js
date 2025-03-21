@@ -49,7 +49,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });
+      const res = await axios.post('https://landing-page-gere.onrender.com/OAuthCallback', { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
@@ -71,13 +71,12 @@ const LoginForm = ({ setToken, setUser }) => {
       <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>
 
-      {/* 🔥 Google Sign In */}
+      {/* Google Sign In */}
       <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
         Sign in with Google
       </button>
 
       <p>Don’t have an account? <span style={{color:'blue', cursor:'pointer'}} onClick={() => navigate('/signup')}>Create one</span></p>
-      <p>Need to verify? <span style={{color:'blue', cursor:'pointer'}} onClick={() => navigate('/verify')}>Verify Email</span></p>
     </div>
   );
 };
