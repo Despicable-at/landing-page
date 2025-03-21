@@ -36,7 +36,19 @@ const App = () => {
         } />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyEmail />} />
-        <Route path="/dashboard" element={token ? <Dashboard user={user} /> : <Navigate to="/" />} />
+        <Route 
+  path="/dashboard" 
+  element={
+    localStorage.getItem('token') 
+      ? <Dashboard user={user} logout={() => {
+          localStorage.removeItem('token');
+          setToken(null);
+          setUser(null);
+          navigate('/');
+        }} /> 
+      : <Navigate to="/" />
+  } 
+/>
         <Route path="/oauth-callback" element={<OAuthCallback />} />
 
       </Routes>
