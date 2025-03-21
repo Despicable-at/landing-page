@@ -49,7 +49,9 @@ const App = () => {
       : <Navigate to="/" />
   } 
 />
-        <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} 
+      <Route path="/invest" element={<InvestPage user={user} />} />
+
 
       </Routes>
     </Router>
