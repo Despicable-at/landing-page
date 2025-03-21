@@ -8,6 +8,7 @@ import OAuthCallback from './OAuthCallback';
 import InvestPage from './InvestPage';
 import InvestPayment from './InvestPayment';
 import './style.css';
+import ThankYou from './ThankYou';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -52,6 +53,7 @@ const App = () => {
       <Route path="/oauth-callback" element={<OAuthCallback />} />
       <Route path="/invest" element={<InvestPage user={user} />} />
       <Route path="/invest-payment" element={<InvestPayment user={user} />} />
+      <Route path="/thank-you" element={<ThankYou />} />
     </Routes>
   );
 };
