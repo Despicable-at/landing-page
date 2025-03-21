@@ -61,7 +61,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   // Google OAuth flow trigger (you will replace backend endpoint with your actual OAuth logic)
   const handleGoogleLogin = () => {
-    window.location.href = 'https://landing-page-gere.onrender.com/auth/google/callback';
+    window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
   return (
