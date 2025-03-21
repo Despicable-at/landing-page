@@ -14,20 +14,24 @@ const InvestPage = ({ user }) => {
     return base.toFixed(2);
   };
 
-  const handleProceed = async () => {
-    if (agreed) {
-      await axios.post('https://your-backend-url/save-terms-acceptance', {
+const handleProceed = async () => {
+  if (agreed) {
+    try {
+      await axios.post('https://capigrid-backend.onrender.com/save-terms-acceptance', {
         userId: user?._id,
         email: user?.email,
         amount,
         estimatedEquity: calculateEquity(amount)
       });
       navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
-    } else {
-      alert("You must agree to the terms before proceeding.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save your acceptance. Try again.");
     }
-  };
-
+  } else {
+    alert("You must agree to the terms before proceeding.");
+  }
+};
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text(`PFCA CapiGrid Investment Terms and Conditions\n\n1. Investment Overview...\n`, 10, 10);
