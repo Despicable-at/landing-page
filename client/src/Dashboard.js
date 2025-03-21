@@ -4,6 +4,12 @@ import axios from 'axios';
 const Dashboard = ({ user, logout }) => {
   const [campaigns, setCampaigns] = useState([]);
 
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  logout();  // Calls the prop logout to clear App.js state
+};
+
+
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
@@ -46,7 +52,8 @@ const Dashboard = ({ user, logout }) => {
   return (
     <div className="dashboard-container">
       <h1>Welcome, {user?.name || 'CapiGrid User'}</h1>
-      <button className="logout-btn" onClick={logout}>Logout</button>
+      <button className="logout-btn" onClick={handleLogout}>Logout</button>
+
 
       <section>
         <h2>Available Campaigns</h2>
