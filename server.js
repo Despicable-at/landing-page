@@ -274,6 +274,18 @@ app.post('/send-investment-receipt', async (req, res) => {
   res.json({ message: 'Receipt sent successfully' });
 });
 
+app.post('/paystack-webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const secret = process.env.PAYSTACK_SECRET_KEY;
+  const hash = crypto.createHmac('sha512', secret).update(req.body).digest('hex');
+  
+  if (hash === req.headers['x-paystack-signature']) {
+    const event = JSON.parse(req.body);
+    // ✅ You can log, save, or handle the event here
+    console.log('Paystack Event:', event);
+  }
+  res.sendStatus(200);
+});
+
 
 // ✅ Pre-Registration Endpoint
 app.post('/pre-register', async (req, res) => {
