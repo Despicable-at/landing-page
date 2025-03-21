@@ -5,13 +5,13 @@ const OAuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Extract token from URL hash
+    // Get the token from the URL
     const urlParams = new URLSearchParams(window.location.hash.replace('#', ''));
     const token = urlParams.get('token');
 
     if (token) {
       localStorage.setItem('token', token);
-      navigate('/dashboard');
+      navigate('/dashboard');  // ✅ Automatically redirect to dashboard
     } else {
       alert("Google login failed or token missing.");
       navigate('/');
