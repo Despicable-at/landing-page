@@ -275,7 +275,6 @@ app.post('/send-investment-receipt', async (req, res) => {
 });
 
 
-
 // ✅ Pre-Registration Endpoint
 app.post('/pre-register', async (req, res) => {
   const { email } = req.body;
