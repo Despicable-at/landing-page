@@ -37,6 +37,8 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={token ? <Dashboard user={user} /> : <Navigate to="/" />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
+
       </Routes>
     </Router>
   );
