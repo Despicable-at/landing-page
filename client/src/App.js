@@ -5,11 +5,13 @@ import SignupPage from './SignupPage';
 import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
 import OAuthCallback from './OAuthCallback';
+import InvestPage from './InvestPage';   // ✅ Add this if missing
 import './style.css';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -19,7 +21,7 @@ const App = () => {
 
   const fetchUserData = async (token) => {
     try {
-      const res = await axios.get('https://https://landing-page-gere.onrender.com/user', {
+      const res = await axios.get('https://landing-page-gere.onrender.com/user', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
@@ -36,23 +38,23 @@ const App = () => {
         } />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyEmail />} />
+
         <Route 
-  path="/dashboard" 
-  element={
-    localStorage.getItem('token') 
-      ? <Dashboard user={user} logout={() => {
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
-          navigate('/');
-        }} /> 
-      : <Navigate to="/" />
-  } 
-/>
-        <Route path="/oauth-callback" element={<OAuthCallback />} 
-      <Route path="/invest" element={<InvestPage user={user} />} />
+          path="/dashboard" 
+          element={
+            localStorage.getItem('token') 
+              ? <Dashboard user={user} logout={() => {
+                  localStorage.removeItem('token');
+                  setToken(null);
+                  setUser(null);
+                  navigate('/');
+                }} /> 
+              : <Navigate to="/" />
+          } 
+        />
 
-
+        <Route path="/oauth-callback" element={<OAuthCallback />} />  {/* ✅ Fixed */}
+        <Route path="/invest" element={<InvestPage user={user} />} />  {/* ✅ Fixed */}
       </Routes>
     </Router>
   );
@@ -75,7 +77,6 @@ const LoginForm = ({ setToken, setUser }) => {
     }
   };
 
-  // Google OAuth flow trigger (you will replace backend endpoint with your actual OAuth logic)
   const handleGoogleLogin = () => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
@@ -87,7 +88,6 @@ const LoginForm = ({ setToken, setUser }) => {
       <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>
 
-      {/* Google Sign In */}
       <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
         Sign in with Google
       </button>
