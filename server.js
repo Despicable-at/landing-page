@@ -37,6 +37,9 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
+console.log("Sending email from:", process.env.EMAIL_USER);
+
+
 // ✅ Session Setup for OAuth
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your_secret_key',
