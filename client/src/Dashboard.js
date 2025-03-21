@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Dashboard = ({ user }) => {
-  const navigate = useNavigate();
-
 const Dashboard = ({ user, logout }) => {
+  const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
 
-const handleLogout = () => {
-  localStorage.removeItem('token');
-  logout();  // Calls the prop logout to clear App.js state
-};
-
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    logout();  // Calls the prop logout to clear App.js state
+  };
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -28,12 +25,12 @@ const handleLogout = () => {
     fetchCampaigns();
   }, []);
 
-  // 🔥 Handle Investment
+  // 🔥 Handle Investment (Optional direct DB test)
   const handleInvest = async () => {
     try {
       await axios.post('https://capigrid-backend.onrender.com/invest', {
         userId: user?._id,
-        amount: 5000  // You can make this dynamic
+        amount: 5000  // You can make this dynamic or remove this if using the InvestPage
       });
       alert('Thank you for investing! We will contact you.');
     } catch (err) {
@@ -41,7 +38,7 @@ const handleLogout = () => {
     }
   };
 
-  // 🔥 Handle Pre-Registration
+  // 🔥 Pre-Register Function
   const handlePreRegister = async () => {
     try {
       await axios.post('https://capigrid-backend.onrender.com/pre-register', {
@@ -58,7 +55,7 @@ const handleLogout = () => {
       <h1>Welcome, {user?.name || 'CapiGrid User'}</h1>
       <button className="logout-btn" onClick={handleLogout}>Logout</button>
 
-
+      {/* 🔥 Campaigns */}
       <section>
         <h2>Available Campaigns</h2>
         {campaigns.length > 0 ? campaigns.map((c, i) => (
@@ -72,7 +69,6 @@ const handleLogout = () => {
         <p>Become part of our journey. Invest now and own equity shares.</p>
         <button onClick={() => navigate('/invest')}>Invest Now</button>
       </section>
-
 
       {/* 🔥 Pre-Register Section */}
       <section className="pre-register">
