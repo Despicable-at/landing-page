@@ -29,6 +29,14 @@ const InvestPayment = ({ user }) => {
           paystackRef: response.reference
         });
 
+              // ✅ Auto-send Email Receipt
+      await axios.post('https://landing-page-gere.onrender.com/send-investment-receipt', {
+        email: user.email,
+        amount,
+        equityPercent: equity,
+        paystackRef: response.reference
+      });
+        
         // ✅ 2. Auto-send Receipt Email with PDF
         axios.post('https://landing-page-gere.onrender.com/send-investment-receipt', {
           email: user.email,
@@ -42,6 +50,17 @@ const InvestPayment = ({ user }) => {
         alert('Transaction closed');
       }
     });
+
+    
+      // ✅ Redirect to Confirmation Page
+      navigate(`/thank-you?amount=${amount}&equity=${equity}&ref=${response.reference}`);
+    },
+    onClose: function () {
+      setLoading(false);
+      alert('Transaction closed');
+    }
+  });
+    
     handler.openIframe();
   };
 
