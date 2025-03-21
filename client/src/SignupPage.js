@@ -25,7 +25,7 @@ const SignupPage = () => {
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
       <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
       <button onClick={handleSignup}>Sign Up</button>
-      <p>Already have an account? <span onClick={() => navigate('/login')} style={{ color: 'blue', cursor: 'pointer' }}>Login</span></p>
+      <p>Already have an account? <span onClick={() => navigate('/OAuthCallback')} style={{ color: 'blue', cursor: 'pointer' }}>Login</span></p>
     </div>
   );
 };
