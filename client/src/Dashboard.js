@@ -65,9 +65,10 @@ const handleLogout = () => {
       {/* 🔥 Investment Section */}
       <section className="invest-section">
         <h2>Invest in PFCA CapiGrid</h2>
-        <p>Be part of our journey. Invest now!</p>
-        <button onClick={handleInvest}>Invest Now</button>
+        <p>Become part of our journey. Invest now and own equity shares.</p>
+        <button onClick={() => navigate('/invest')}>Invest Now</button>
       </section>
+
 
       {/* 🔥 Pre-Register Section */}
       <section className="pre-register">
