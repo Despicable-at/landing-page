@@ -12,7 +12,7 @@ const InvestPayment = ({ user }) => {
   const handlePaystack = () => {
     setLoading(true);
     const handler = window.PaystackPop.setup({
-      key: 'YOUR_PAYSTACK_PUBLIC_KEY', // ✅ Replace with your live key
+      key: 'pk_test_bcc2176c6a383d2832ff3be512ddf3357913ca0a', // ✅ Replace with your live key
       email: user?.email,
       amount: amount * 100, // Paystack reads in kobo/pesewas
       currency: 'GHS',
