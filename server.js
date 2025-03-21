@@ -221,6 +221,61 @@ app.post('/invest', async (req, res) => {
   res.json({ message: 'Investment recorded. We will contact you.' });
 });
 
+const InvestmentRecord = mongoose.model('InvestmentRecord', {
+  userId: String,
+  email: String,
+  amount: Number,
+  equityPercent: String,
+  paystackRef: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const TermsAcceptance = mongoose.model('TermsAcceptance', {
+  userId: String,
+  email: String,
+  acceptedAt: { type: Date, default: Date.now },
+  amount: Number,
+  estimatedEquity: String
+});
+
+// ✅ Save Acceptance and Investment
+app.post('/save-terms-acceptance', async (req, res) => {
+  const { userId, email, amount, estimatedEquity } = req.body;
+  await TermsAcceptance.create({ userId, email, amount, estimatedEquity });
+  res.json({ message: 'Terms and investment saved.' });
+});
+
+// ✅ Record Paystack Investment
+app.post('/record-investment', async (req, res) => {
+  const { userId, email, amount, equityPercent, paystackRef } = req.body;
+  await InvestmentRecord.create({ userId, email, amount, equityPercent, paystackRef });
+  res.json({ message: 'Investment recorded.' });
+});
+
+// ✅ Send Email Receipt with PDF
+const fs = require('fs');
+const path = require('path');
+
+app.post('/send-investment-receipt', async (req, res) => {
+  const { email, amount, equityPercent, paystackRef } = req.body;
+  const pdfBuffer = fs.readFileSync(path.join(__dirname, 'PFCA_CapiGrid_Investment_Terms.pdf'));
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'PFCA CapiGrid Investment Receipt',
+    text: `Thank you for investing GHS ${amount} for ${equityPercent}% equity. Payment Ref: ${paystackRef}`,
+    attachments: [{
+      filename: 'Investment_Terms.pdf',
+      content: pdfBuffer
+    }]
+  });
+
+  res.json({ message: 'Receipt sent successfully' });
+});
+
+
+
 // ✅ Pre-Registration Endpoint
 app.post('/pre-register', async (req, res) => {
   const { email } = req.body;
