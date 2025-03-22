@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import './style.css';
 
 const ThankYou = () => {
   const location = useLocation();
@@ -9,12 +10,19 @@ const ThankYou = () => {
   const reference = params.get('ref');
 
   return (
-    <div className="auth-container">
-      <h2>🎉 Payment Successful</h2>
-      <p>Thank you for investing GHS {amount}.</p>
-      <p>Your equity: <strong>{equity}%</strong></p>
-      <p>Transaction Ref: <strong>{reference}</strong></p>
-      <p>A receipt has been sent to your email.</p>
+    <div className="thank-you-container">
+      <h1>🎉 Payment Successful</h1>
+      <p>Thank you for investing in <strong>PFCA CapiGrid</strong>.</p>
+
+      <div className="summary-box">
+        <p><strong>Amount Invested:</strong> GHS {amount}</p>
+        <p><strong>Equity Earned:</strong> {equity}%</p>
+        <p><strong>Transaction Ref:</strong> {reference}</p>
+      </div>
+
+      <p>A receipt has been sent to your email. You are officially part of the PFCA CapiGrid Family!</p>
+
+      <button onClick={() => window.location.href = '/#/dashboard'}>Go to Dashboard</button>
     </div>
   );
 };
