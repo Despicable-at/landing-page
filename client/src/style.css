@@ -1,49 +1,89 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+:root {
+  --primary-yellow: #FFC107; /* Your brand yellow */
+  --black: #000000;
+  --white: #ffffff;
+  --gray-light: #f4f7fa;
+  --gray-dark: #333333;
+}
+
+/* Global Styles */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
+  background-color: var(--gray-light);
+  color: var(--gray-dark);
   margin: 0;
   padding: 20px;
 }
 
-.auth-container, .dashboard-container {
-  width: 90%;
-  max-width: 600px;
-  margin: 50px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
-
-.card {
-  background-color: #fff;
-  padding: 25px 20px;
-  margin-bottom: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  color: #007bff;
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--black);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 8px;
   margin-bottom: 20px;
 }
 
-input {
+.navbar .nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.navbar .nav-links a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.navbar .nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* Containers */
+.auth-container,
+.dashboard-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+  background: var(--white);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2 {
+  color: var(--black);
+}
+
+/* Buttons */
+button {
+  background-color: var(--primary-yellow);
+  color: var(--black);
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  margin: 10px 0;
+}
+
+button:hover {
+  background-color: #e6ac06;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
   width: 90%;
   padding: 12px;
   margin: 12px 0;
@@ -52,94 +92,52 @@ input {
   font-size: 1rem;
 }
 
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-}
+/* Range input removed from InvestPage, now using numeric input with buttons */
 
-button:hover {
-  background-color: #0056b3;
-}
-
-.campaigns p {
-  color: #555;
-  font-weight: 500;
-  margin-top: 15px;
-}
-
-footer {
-  margin-top: 40px;
-  font-size: 0.9rem;
-  color: #777;
-}
-
-.logout-btn {
-  background-color: #e74c3c;
-  margin-bottom: 20px;
-}
-
-section {
-  margin-top: 30px;
-}
-
-.campaign-box {
-  background: #f0f0f0;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-}
-
-.invest-section, .pre-register {
-  background: #fff9e6;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.google-btn {
-  background-color: #4285F4;
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
+/* Investment Section in InvestPage */
+.invest-amount-container {
   display: flex;
   align-items: center;
+  gap: 10px;
   justify-content: center;
-  margin-top: 15px;
+  margin: 15px 0;
 }
 
-.google-btn img {
-  width: 20px;
-  margin-right: 10px;
+.invest-amount-container button {
+  padding: 10px;
+  font-size: 1.2rem;
 }
 
+/* Legal Terms Scroll */
+.terms-box {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: var(--gray-light);
+  margin-bottom: 15px;
+}
+
+/* Thank You Page */
 .thank-you-container {
   width: 90%;
   max-width: 700px;
   margin: 60px auto;
   padding: 40px;
-  background: #ffffff;
+  background: var(--white);
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .thank-you-container h1 {
-  color: #28a745;
+  color: var(--primary-yellow);
   font-size: 2.5rem;
   margin-bottom: 20px;
 }
 
 .summary-box {
-  background-color: #f0f8ff;
+  background-color: #fffbe6;
   padding: 20px;
   border-radius: 8px;
   margin: 20px 0;
@@ -151,16 +149,14 @@ section {
   margin-bottom: 10px;
 }
 
-.thank-you-container button {
-  background-color: #007bff;
-  color: white;
-  padding: 14px 30px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-}
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
 
-.thank-you-container button:hover {
-  background-color: #0056b3;
+  button, input {
+    width: 100%;
+  }
 }
