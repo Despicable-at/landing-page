@@ -265,20 +265,35 @@ const path = require('path');
 
 app.post('/send-investment-receipt', async (req, res) => {
   const { email, amount, equityPercent, paystackRef } = req.body;
-  const pdfBuffer = fs.readFileSync(path.join(__dirname, 'PFCA_CapiGrid_Investment_Terms.pdf'));
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'PFCA CapiGrid Investment Receipt',
-    text: `Thank you for investing GHS ${amount} for ${equityPercent}% equity. Payment Ref: ${paystackRef}`,
-    attachments: [{
-      filename: 'Investment_Terms.pdf',
-      content: pdfBuffer
-    }]
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: '🎉 PFCA CapiGrid Investment Receipt',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7fa; color: #333;">
+          <h2 style="color: #28a745;">Thank you for investing in PFCA CapiGrid!</h2>
+          <p>Dear Investor,</p>
+          <p>We are excited to confirm your investment with the following details:</p>
+          <ul style="line-height: 1.6;">
+            <li><strong>Amount:</strong> GHS ${amount}</li>
+            <li><strong>Equity Earned:</strong> ${equityPercent}%</li>
+            <li><strong>Transaction Reference:</strong> ${paystackRef}</li>
+          </ul>
+          <p>This investment grants you ownership equity in PFCA CapiGrid, subject to our <a href="#">Terms and Conditions</a>.</p>
+          <p>You will be eligible for dividends when declared and remain a valued stakeholder in our journey.</p>
 
-  res.json({ message: 'Receipt sent successfully' });
+          <p style="margin-top: 30px;">Regards,<br/><strong>PFCA CapiGrid Team</strong></p>
+        </div>
+      `
+    });
+
+    res.json({ message: 'Receipt sent successfully' });
+  } catch (error) {
+    console.error('Error sending receipt email:', error);
+    res.status(500).json({ message: 'Failed to send receipt email' });
+  }
 });
 
 app.post('/paystack-webhook', express.raw({ type: 'application/json' }), (req, res) => {
