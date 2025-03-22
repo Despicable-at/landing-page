@@ -34,10 +34,43 @@ const handleProceed = async () => {
 };
   const downloadPDF = () => {
     const doc = new jsPDF();
-    doc.text(`PFCA CapiGrid Investment Terms and Conditions\n\n1. Investment Overview...\n`, 10, 10);
+    doc.text(`PFCA CapiGrid Investment Terms and Conditions\n\n1. Investment Overview...\n`, 10, 10);doc.text(`
+1. Investment Overview
+- GHS 500 = 0.05% equity ownership in PFCA CapiGrid.
+- Ownership proportional to company valuation.
+
+2. Share Allocation
+- Ownership rights include dividends & profit-sharing.
+- Shares non-transferable without consent.
+
+3. Lock-in Period
+- 12-month lock-in period applies.
+- Early withdrawal not allowed.
+
+4. Dividends
+- Paid annually based on net profits & board approval.
+
+5. Risks
+- No guarantee of profit or return.
+- Investor may lose capital.
+
+6. Refund Policy
+- Non-refundable after confirmation.
+
+7. Compliance
+- Governed by Ghanaian laws.
+
+8. Termination
+- PFCA CapiGrid may modify or terminate plan with notice.
+
+9. Dispute Resolution
+- Governed by Ghanaian laws & settled by arbitration.
+
+10. Acknowledgment
+- By signing, you agree to these terms & accept all risks.
+    `, 10, 20);
     doc.save("PFCA_CapiGrid_Investment_Terms.pdf");
   };
-
   return (
     <div className="auth-container">
       <h2>PFCA CapiGrid Investment Plan</h2>
