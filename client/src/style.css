@@ -196,6 +196,28 @@ input[type="file"] {
   margin-bottom: 12px;
 }
 
+/* Dashboard grid layout */
+.dashboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.dashboard-box {
+  flex: 0 0 48%;
+  background: var(--white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .dashboard-box {
+    flex: 0 0 100%;
+  }
+}
+
 /* Responsive Improvements */
 @media screen and (max-width: 768px) {
   .navbar {
