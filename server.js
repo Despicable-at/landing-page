@@ -12,7 +12,7 @@ const cloudinary = require('cloudinary').v2;
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // ✅ Must be before your routes
+app.use(express.json());
 
 // ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -44,12 +44,12 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-// ✅ Session and Passport Setup
+// ✅ Session & Passport
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Google OAuth Strategy
+// ✅ Google OAuth
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -84,10 +84,9 @@ app.get('/auth/google/callback',
 // ✅ Root Route
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
-// ✅ Signup Route - with proper error logging
+// ✅ Signup Route
 app.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
-  console.log('Signup Request:', req.body); // ✅ Debug incoming data
   try {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already exists' });
@@ -106,7 +105,7 @@ app.post('/signup', async (req, res) => {
 
     res.json({ message: 'Signup successful. Check your email for the code.' });
   } catch (err) {
-    console.error('Signup Error:', err); // ✅ See the real error in console
+    console.error('Signup Error:', err);
     res.status(500).json({ message: 'Signup failed' });
   }
 });
@@ -124,7 +123,7 @@ app.post('/verify-email', async (req, res) => {
     await user.save();
     res.json({ message: 'Email verified successfully.' });
   } catch (err) {
-    console.error('Verify Error:', err);
+    console.error('Verification Error:', err);
     res.status(500).json({ message: 'Verification failed' });
   }
 });
@@ -156,14 +155,18 @@ app.post('/resend-verification', async (req, res) => {
   }
 });
 
-// ✅ Login Route
+// ✅ Login with redirect to /verify if unverified
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user || !await bcrypt.compare(password, user.password)) 
       return res.status(401).json({ message: 'Invalid credentials' });
-    if (!user.verified) return res.status(403).json({ message: 'Verify your email first' });
+
+    if (!user.verified) {
+      // ✅ Tell frontend to redirect to verify page
+      return res.status(403).json({ message: 'Email not verified', status: 'unverified' });
+    }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { name: user.name, email: user.email, profilePic: user.profilePic } });
@@ -214,7 +217,7 @@ app.put('/update-profile', async (req, res) => {
   }
 });
 
-// ✅ Campaigns Route
+// ✅ Campaigns
 app.get('/campaigns', async (req, res) => {
   const campaigns = await Campaign.find();
   res.json(campaigns);
@@ -227,7 +230,7 @@ app.post('/pre-register', async (req, res) => {
   res.json({ message: 'Pre-Registration successful!' });
 });
 
-// ✅ Optional Cloudinary Upload Route
+// ✅ Optional Cloudinary Direct Upload
 app.post('/upload-image', async (req, res) => {
   try {
     const fileStr = req.body.data;
