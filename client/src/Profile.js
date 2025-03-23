@@ -8,7 +8,6 @@ const Profile = ({ user, setUser }) => {
   const [profilePic, setProfilePic] = useState(user?.profilePic || '');
   const [imageFile, setImageFile] = useState(null);
 
-  // Password fields
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,8 +21,8 @@ const Profile = ({ user, setUser }) => {
   const handleImageUpload = async () => {
     const formData = new FormData();
     formData.append('file', imageFile);
-    formData.append('upload_preset', 'your_cloudinary_preset'); // Replace this
-    const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
+    formData.append('upload_preset', 'your_preset'); // ✅ Replace with your Cloudinary preset
+    const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData); // ✅ Replace cloud name
     return res.data.secure_url;
   };
 
@@ -48,7 +47,7 @@ const Profile = ({ user, setUser }) => {
       });
 
       alert('Profile updated successfully');
-      setUser(res.data);
+      setUser(res.data);  // ✅ Update the parent state with latest user data
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || 'Failed to update profile');
