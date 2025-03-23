@@ -12,7 +12,7 @@ const cloudinary = require('cloudinary').v2;
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); // ✅ Must be before your routes
 
 // ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -38,7 +38,7 @@ const User = mongoose.model('User', {
 const Campaign = mongoose.model('Campaign', { title: String, description: String, goal: Number, raised: Number, userId: String });
 const PreRegister = mongoose.model('PreRegister', { email: String });
 
-// ✅ Nodemailer
+// ✅ Nodemailer Setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
@@ -48,9 +48,6 @@ const transporter = nodemailer.createTransport({
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
 
 // ✅ Google OAuth Strategy
 passport.use(new GoogleStrategy({
@@ -74,7 +71,7 @@ passport.use(new GoogleStrategy({
   }
 }));
 
-// ✅ OAuth Routes
+// ✅ Google OAuth Routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
@@ -84,12 +81,13 @@ app.get('/auth/google/callback',
   }
 );
 
-// ✅ Root
+// ✅ Root Route
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
-// ✅ Signup
+// ✅ Signup Route - with proper error logging
 app.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
+  console.log('Signup Request:', req.body); // ✅ Debug incoming data
   try {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already exists' });
@@ -108,6 +106,7 @@ app.post('/signup', async (req, res) => {
 
     res.json({ message: 'Signup successful. Check your email for the code.' });
   } catch (err) {
+    console.error('Signup Error:', err); // ✅ See the real error in console
     res.status(500).json({ message: 'Signup failed' });
   }
 });
@@ -115,14 +114,19 @@ app.post('/signup', async (req, res) => {
 // ✅ Email Verification
 app.post('/verify-email', async (req, res) => {
   const { email, code } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ message: 'User not found' });
-  if (user.verificationCode != code) return res.status(400).json({ message: 'Invalid code' });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.verificationCode != code) return res.status(400).json({ message: 'Invalid code' });
 
-  user.verified = true;
-  user.verificationCode = null;
-  await user.save();
-  res.json({ message: 'Email verified successfully.' });
+    user.verified = true;
+    user.verificationCode = null;
+    await user.save();
+    res.json({ message: 'Email verified successfully.' });
+  } catch (err) {
+    console.error('Verify Error:', err);
+    res.status(500).json({ message: 'Verification failed' });
+  }
 });
 
 // ✅ Resend Verification Code
@@ -147,20 +151,26 @@ app.post('/resend-verification', async (req, res) => {
 
     res.json({ message: 'Verification code resent successfully.' });
   } catch (err) {
-    console.error(err);
+    console.error('Resend Error:', err);
     res.status(500).json({ message: 'Failed to resend verification code.' });
   }
 });
 
-// ✅ Login
+// ✅ Login Route
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user || !await bcrypt.compare(password, user.password)) return res.status(401).json({ message: 'Invalid credentials' });
-  if (!user.verified) return res.status(403).json({ message: 'Verify your email first' });
+  try {
+    const user = await User.findOne({ email });
+    if (!user || !await bcrypt.compare(password, user.password)) 
+      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user.verified) return res.status(403).json({ message: 'Verify your email first' });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-  res.json({ token, user: { name: user.name, email: user.email, profilePic: user.profilePic } });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { name: user.name, email: user.email, profilePic: user.profilePic } });
+  } catch (err) {
+    console.error('Login Error:', err);
+    res.status(500).json({ message: 'Login failed' });
+  }
 });
 
 // ✅ Get Authenticated User
@@ -170,7 +180,8 @@ app.get('/user', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
     res.json(user);
-  } catch {
+  } catch (err) {
+    console.error('Get User Error:', err);
     res.status(401).json({ error: "Unauthorized" });
   }
 });
@@ -187,7 +198,6 @@ app.put('/update-profile', async (req, res) => {
     if (name) user.name = name;
     if (email) user.email = email;
 
-    // ✅ Password change
     if (newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) return res.status(401).json({ message: 'Incorrect current password' });
@@ -199,12 +209,12 @@ app.put('/update-profile', async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    console.error(err);
+    console.error('Profile Update Error:', err);
     res.status(500).json({ message: 'Failed to update profile' });
   }
 });
 
-// ✅ Campaigns
+// ✅ Campaigns Route
 app.get('/campaigns', async (req, res) => {
   const campaigns = await Campaign.find();
   res.json(campaigns);
@@ -220,10 +230,11 @@ app.post('/pre-register', async (req, res) => {
 // ✅ Optional Cloudinary Upload Route
 app.post('/upload-image', async (req, res) => {
   try {
-    const fileStr = req.body.data; // Base64 string
+    const fileStr = req.body.data;
     const uploaded = await cloudinary.uploader.upload(fileStr, { folder: 'pfca' });
     res.json({ url: uploaded.secure_url });
   } catch (err) {
+    console.error('Cloudinary Upload Error:', err);
     res.status(500).json({ error: 'Cloudinary upload failed' });
   }
 });
