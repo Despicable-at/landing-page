@@ -74,6 +74,8 @@ const App = () => {
         <Route path="/invest" element={<InvestPage user={user} />} />
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
         <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
+
       </Routes>
     </>
   );
