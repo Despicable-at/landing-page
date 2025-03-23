@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
 import './style.css';
 
 const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
@@ -24,6 +23,28 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   }, []);
 
   return (
+
+    <div className="navbar">
+  <div className="nav-left">
+    <h2>PFCA CapiGrid</h2>
+  </div>
+  <div className="nav-links">
+    <button onClick={() => navigate('/dashboard')}>Dashboard</button>
+    <button onClick={() => navigate('/invest')}>Invest</button>
+    <button onClick={() => navigate('/profile')}>Profile</button>
+    <button onClick={() => window.open('https://pfcafrica.online', '_blank')}>Our Website</button>
+  </div>
+  <div className="nav-right">
+    <img 
+      src={user?.profilePic || 'https://via.placeholder.com/40'} 
+      alt="Profile" 
+      className="navbar-profile-pic" 
+      onClick={() => navigate('/profile')} 
+    />
+    <button onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</button>
+    <button onClick={logout}>Logout</button>
+  </div>
+</div>
     <div>
       {/* Render Navbar at top */}
       <Navbar user={user} logout={logout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
