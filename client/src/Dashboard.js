@@ -1,4 +1,3 @@
-// Dashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -23,37 +22,33 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   }, []);
 
   return (
-
-    <div className="navbar">
-  <div className="nav-left">
-    <h2>PFCA CapiGrid</h2>
-  </div>
-  <div className="nav-links">
-    <button onClick={() => navigate('/dashboard')}>Dashboard</button>
-    <button onClick={() => navigate('/invest')}>Invest</button>
-    <button onClick={() => navigate('/profile')}>Profile</button>
-    <button onClick={() => window.open('https://pfcafrica.online', '_blank')}>Our Website</button>
-  </div>
-  <div className="nav-right">
-    <img 
-      src={user?.profilePic || 'https://via.placeholder.com/40'} 
-      alt="Profile" 
-      className="navbar-profile-pic" 
-      onClick={() => navigate('/profile')} 
-    />
-    <button onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</button>
-    <button onClick={logout}>Logout</button>
-  </div>
-</div>
-    <div>
-      {/* Render Navbar at top */}
-      <Navbar user={user} logout={logout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <> {/* ✅ Wrapping everything */}
+      <div className="navbar">
+        <div className="nav-left">
+          <h2>PFCA CapiGrid</h2>
+        </div>
+        <div className="nav-links">
+          <button onClick={() => navigate('/dashboard')}>Dashboard</button>
+          <button onClick={() => navigate('/invest')}>Invest</button>
+          <button onClick={() => navigate('/profile')}>Profile</button>
+          <button onClick={() => window.open('https://pfcafrica.online', '_blank')}>Our Website</button>
+        </div>
+        <div className="nav-right">
+          <img 
+            src={user?.profilePic || 'https://via.placeholder.com/40'} 
+            alt="Profile" 
+            className="navbar-profile-pic" 
+            onClick={() => navigate('/profile')} 
+          />
+          <button onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</button>
+          <button onClick={logout}>Logout</button>
+        </div>
+      </div>
 
       <div className="dashboard-container">
-        {/* Optional: Display a profile welcome message */}
         <h1>Welcome, {user?.name || 'CapiGrid User'}</h1>
 
-        {/* Grid for Boxes: Two per row */}
+        {/* ✅ Dashboard Grid Layout */}
         <div className="dashboard-grid">
           {/* Box 1: Available Campaigns */}
           <div className="dashboard-box">
@@ -66,14 +61,14 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
             )) : <p>No campaigns available yet</p>}
           </div>
 
-          {/* Box 2: Invest in PFCA CapiGrid */}
+          {/* Box 2: Invest */}
           <div className="dashboard-box">
             <h3>Invest in PFCA CapiGrid</h3>
             <p>Become part of our journey. Click below to invest now!</p>
             <button onClick={() => navigate('/invest')}>Invest Now</button>
           </div>
 
-          {/* Box 3: Pre-Register & Need Help */}
+          {/* Box 3: Pre-Register */}
           <div className="dashboard-box">
             <h3>Pre-Register & Need Help?</h3>
             <button onClick={async () => {
@@ -88,7 +83,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
