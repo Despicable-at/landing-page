@@ -35,17 +35,16 @@ const User = mongoose.model('User', {
   verificationCode: String,
   profilePic: String
 });
-
 const Campaign = mongoose.model('Campaign', { title: String, description: String, goal: Number, raised: Number, userId: String });
 const PreRegister = mongoose.model('PreRegister', { email: String });
 
-// ✅ Nodemailer Setup
+// ✅ Nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-// ✅ Session & Passport
+// ✅ Session and Passport Setup
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,6 +52,7 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
+// ✅ Google OAuth Strategy
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -74,7 +74,7 @@ passport.use(new GoogleStrategy({
   }
 }));
 
-// ✅ Google OAuth Routes
+// ✅ OAuth Routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
@@ -83,6 +83,9 @@ app.get('/auth/google/callback',
     res.redirect(`${process.env.FRONTEND_URL}/#/oauth-callback?token=${token}`);
   }
 );
+
+// ✅ Root
+app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
 // ✅ Signup
 app.post('/signup', async (req, res) => {
@@ -109,7 +112,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// ✅ Verify Email
+// ✅ Email Verification
 app.post('/verify-email', async (req, res) => {
   const { email, code } = req.body;
   const user = await User.findOne({ email });
@@ -120,6 +123,33 @@ app.post('/verify-email', async (req, res) => {
   user.verificationCode = null;
   await user.save();
   res.json({ message: 'Email verified successfully.' });
+});
+
+// ✅ Resend Verification Code
+app.post('/resend-verification', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.verified) return res.json({ message: 'Email already verified' });
+
+    if (!user.verificationCode) {
+      user.verificationCode = Math.floor(100000 + Math.random() * 900000);
+      await user.save();
+    }
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'PFCA CapiGrid Resend Verification Code',
+      text: `Your verification code is: ${user.verificationCode}`
+    });
+
+    res.json({ message: 'Verification code resent successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to resend verification code.' });
+  }
 });
 
 // ✅ Login
@@ -133,7 +163,7 @@ app.post('/login', async (req, res) => {
   res.json({ token, user: { name: user.name, email: user.email, profilePic: user.profilePic } });
 });
 
-// ✅ Get User
+// ✅ Get Authenticated User
 app.get('/user', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   try {
@@ -154,21 +184,19 @@ app.put('/update-profile', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    // ✅ Optional Name and Email Update
     if (name) user.name = name;
     if (email) user.email = email;
 
-    // ✅ Optional Password Change
+    // ✅ Password change
     if (newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) return res.status(401).json({ message: 'Incorrect current password' });
       user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    // ✅ Optional Profile Picture (Cloudinary upload URL)
     if (profilePic) user.profilePic = profilePic;
-
     await user.save();
+
     res.json(user);
   } catch (err) {
     console.error(err);
@@ -182,17 +210,17 @@ app.get('/campaigns', async (req, res) => {
   res.json(campaigns);
 });
 
-// ✅ Pre-Register
+// ✅ Pre-Registration
 app.post('/pre-register', async (req, res) => {
   const { email } = req.body;
   await PreRegister.create({ email });
   res.json({ message: 'Pre-Registration successful!' });
 });
 
-// ✅ Cloudinary Direct Upload (Optional route)
+// ✅ Optional Cloudinary Upload Route
 app.post('/upload-image', async (req, res) => {
   try {
-    const fileStr = req.body.data; // base64 string
+    const fileStr = req.body.data; // Base64 string
     const uploaded = await cloudinary.uploader.upload(fileStr, { folder: 'pfca' });
     res.json({ url: uploaded.secure_url });
   } catch (err) {
@@ -202,4 +230,4 @@ app.post('/upload-image', async (req, res) => {
 
 // ✅ Server Start
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`PFCA CapiGrid Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ PFCA CapiGrid Backend running on port ${PORT}`));
