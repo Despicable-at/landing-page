@@ -40,7 +40,7 @@ body {
 
 .desktop-nav-links {
   display: flex;
-  gap: 25px; /* ✅ Fixed spacing */
+  gap: 25px;
 }
 
 .navbar a {
@@ -216,7 +216,7 @@ input[type="file"] {
   margin-bottom: 12px;
 }
 
-/* Dashboard grid layout - ✅ Adjusted width to match your reference */
+/* Dashboard grid layout - Box width adjusted */
 .dashboard-grid {
   display: flex;
   flex-wrap: wrap;
@@ -231,6 +231,34 @@ input[type="file"] {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  color: var(--black);
+}
+
+/* Background image layer */
+.dashboard-box .bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25; /* ✅ Controls image transparency */
+  transition: transform 0.5s ease;
+  z-index: 0;
+}
+
+/* Hover zoom effect */
+.dashboard-box:hover .bg-image {
+  transform: scale(1.1);
+}
+
+/* Ensure content stays above background image */
+.dashboard-box .content {
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
