@@ -8,14 +8,14 @@ import OAuthCallback from './OAuthCallback';
 import InvestPage from './InvestPage';
 import InvestPayment from './InvestPayment';
 import ThankYou from './ThankYou';
-import Profile from './Profile';  // ✅ Added Profile import
+import Profile from './Profile';
 import './style.css';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
-
+  const [menuOpen, setMenuOpen] = useState(false); // ✅ Hamburger state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,25 +41,44 @@ const App = () => {
     document.body.className = newMode ? 'dark' : '';
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    navigate('/');
+  };
+
   return (
     <>
-      {/* ✅ Navbar only shows when token exists */}
+      {/* ✅ Navbar - Visible when logged in */}
       {token && (
         <div className="navbar">
-          <div><strong>PFCA CapiGrid</strong></div>
-          <div className="nav-links">
+          <div className="brand"><strong>PFCA CapiGrid</strong></div>
+
+          {/* Desktop Links */}
+          <div className="desktop-nav-links">
             <a onClick={() => navigate('/dashboard')}>Dashboard</a>
             <a onClick={() => navigate('/invest')}>Invest</a>
             <a onClick={() => navigate('/profile')}>Profile</a>
             <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
-            <a href="https://pfcafrica.online" target="_blank">About PFCAfrica</a>
-            <a onClick={() => {
-              localStorage.removeItem('token');
-              setToken(null);
-              setUser(null);
-              navigate('/');
-            }}>Logout</a>
+            <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
+            <a onClick={handleLogout}>Logout</a>
           </div>
+
+          {/* Hamburger Icon for Mobile */}
+          <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
+
+          {/* Mobile Links */}
+          {menuOpen && (
+            <div className="mobile-nav-links">
+              <a onClick={() => navigate('/dashboard')}>Dashboard</a>
+              <a onClick={() => navigate('/invest')}>Invest</a>
+              <a onClick={() => navigate('/profile')}>Profile</a>
+              <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
+              <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
+              <a onClick={handleLogout}>Logout</a>
+            </div>
+          )}
         </div>
       )}
 
@@ -72,12 +91,7 @@ const App = () => {
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={
           token
-            ? <Dashboard user={user} logout={() => {
-              localStorage.removeItem('token');
-              setToken(null);
-              setUser(null);
-              navigate('/');
-            }} />
+            ? <Dashboard user={user} logout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
             : <Navigate to="/" />
         } />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
