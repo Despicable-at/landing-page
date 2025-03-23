@@ -7,17 +7,20 @@ import Dashboard from './Dashboard';
 import OAuthCallback from './OAuthCallback';
 import InvestPage from './InvestPage';
 import InvestPayment from './InvestPayment';
-import './style.css';
 import ThankYou from './ThankYou';
+import './style.css';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
+  const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("App Loaded ✅");
     if (token) fetchUserData(token);
-  }, [token]);
+    document.body.className = darkMode ? 'dark' : '';
+  }, [token, darkMode]);
 
   const fetchUserData = async (token) => {
     try {
@@ -30,42 +33,60 @@ const App = () => {
     }
   };
 
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', newMode);
+    document.body.className = newMode ? 'dark' : '';
+  };
+
   return (
-    <Routes>
-      <Route path="/" element={
-        token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
-      } />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/verify" element={<VerifyEmail />} />
-      <Route 
-        path="/dashboard" 
-        element={
-          localStorage.getItem('token') 
+    <>
+      {/* Navbar */}
+      <div className="navbar">
+        <div><strong>PFCA CapiGrid</strong></div>
+        <div className="nav-links">
+          {token && <a onClick={() => navigate('/dashboard')}>Dashboard</a>}
+          <a onClick={() => navigate('/invest')}>Invest</a>
+          <a onClick={toggleDarkMode}>Dark Mode</a>
+          <a href="https://pfcafrica.online" target="_blank">About PFCAfrica</a>
+        </div>
+      </div>
+
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={
+          token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
+        } />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/dashboard" element={
+          token
             ? <Dashboard user={user} logout={() => {
-                localStorage.removeItem('token');
-                setToken(null);
-                setUser(null);
-                window.location.href = '/';
-              }} /> 
+              localStorage.removeItem('token');
+              setToken(null);
+              setUser(null);
+              navigate('/');
+            }} />
             : <Navigate to="/" />
-        } 
-      />
-      <Route path="/oauth-callback" element={<OAuthCallback />} />
-      <Route path="/invest" element={<InvestPage user={user} />} />
-      <Route path="/invest-payment" element={<InvestPayment user={user} />} />
-      <Route path="/thank-you" element={<ThankYou />} />
-    </Routes>
+        } />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/invest" element={<InvestPage user={user} />} />
+        <Route path="/invest-payment" element={<InvestPayment user={user} />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+      </Routes>
+    </>
   );
 };
 
 const LoginForm = ({ setToken, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // ✅ FIXED - ADDED useNavigate import
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });  // ✅ FIXED ENDPOINT
+      const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
@@ -90,7 +111,7 @@ const LoginForm = ({ setToken, setUser }) => {
         Sign in with Google
       </button>
 
-      <p>Don’t have an account? <span style={{color:'blue', cursor:'pointer'}} onClick={() => navigate('/signup')}>Create one</span></p>
+      <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
     </div>
   );
 };
