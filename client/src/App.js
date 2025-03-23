@@ -15,7 +15,7 @@ const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // Hamburger state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,36 +48,40 @@ const App = () => {
     navigate('/');
   };
 
+  const handleNavigate = (path) => {
+    navigate(path);
+    setMenuOpen(false); // Close hamburger menu after navigation
+  };
+
   return (
     <>
+      {/* ✅ Navbar - Visible when logged in */}
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
 
           {/* Desktop Links */}
           <div className="desktop-nav-links">
-            <a onClick={() => navigate('/dashboard')}>Dashboard</a>
-            <a onClick={() => navigate('/invest')}>Invest</a>
-            <a onClick={() => navigate('/profile')}>Profile</a>
+            <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
+            <a onClick={() => handleNavigate('/invest')}>Invest</a>
+            <a onClick={() => handleNavigate('/profile')}>Profile</a>
             <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
             <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
             <a onClick={handleLogout}>Logout</a>
           </div>
 
-          {/* Hamburger for Mobile */}
+          {/* Hamburger Icon for Mobile */}
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
 
           {/* Mobile Links */}
-          {menuOpen && (
-            <div className="mobile-nav-links">
-              <a onClick={() => { navigate('/dashboard'); setMenuOpen(false); }}>Dashboard</a>
-              <a onClick={() => { navigate('/invest'); setMenuOpen(false); }}>Invest</a>
-              <a onClick={() => { navigate('/profile'); setMenuOpen(false); }}>Profile</a>
-              <a onClick={() => { toggleDarkMode(); setMenuOpen(false); }}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
-              <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
-              <a onClick={() => { handleLogout(); setMenuOpen(false); }}>Logout</a>
-            </div>
-          )}
+          <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
+            <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
+            <a onClick={() => handleNavigate('/invest')}>Invest</a>
+            <a onClick={() => handleNavigate('/profile')}>Profile</a>
+            <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
+            <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
+            <a onClick={handleLogout}>Logout</a>
+          </div>
         </div>
       )}
 
