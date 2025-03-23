@@ -1,49 +1,94 @@
-// Profile.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import './style.css';
 
 const Profile = ({ user, setUser }) => {
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [password, setPassword] = useState('');
   const [profilePic, setProfilePic] = useState(user?.profilePic || '');
-  const navigate = useNavigate();
+  const [imageFile, setImageFile] = useState(null);
 
-  const handleUpdate = async () => {
-    // Implement API call to update user info on the backend
+  // Password fields
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    if (user?.googleSignIn && !user?.hasPassword) {
+      alert('Since you signed in with Google, please create a password for future logins.');
+    }
+  }, [user]);
+
+  const handleImageUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('upload_preset', 'your_cloudinary_preset'); // Replace this
+    const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
+    return res.data.secure_url;
+  };
+
+  const handleSave = async () => {
+    if (newPassword && newPassword !== confirmPassword) {
+      alert('New password and confirm password do not match');
+      return;
+    }
+
+    let newProfilePic = profilePic;
+    if (imageFile) newProfilePic = await handleImageUpload();
+
     try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/update-profile', {
-        userId: user._id,
+      const res = await axios.put('https://landing-page-gere.onrender.com/update-profile', {
         name,
         email,
-        password, // if provided
-        profilePic
+        currentPassword,
+        newPassword,
+        profilePic: newProfilePic,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      setUser(res.data.user);
-      alert('Profile updated successfully.');
+
+      alert('Profile updated successfully');
+      setUser(res.data);
     } catch (err) {
-      alert('Update failed.');
+      console.error(err);
+      alert(err.response?.data?.message || 'Failed to update profile');
     }
   };
 
   return (
-    <div className="auth-container">
+    <div className="dashboard-container">
       <h2>Profile Settings</h2>
-      <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="New Password" value={password} onChange={e => setPassword(e.target.value)} />
-      
-      <div>
-        <label>Update Profile Picture:</label>
-        <input type="file" accept="image/*" onChange={(e) => {
-          // Implement upload logic (e.g., Cloudinary)
-        }} />
-        {profilePic && <img src={profilePic} alt="Profile" style={{ width: '100px', borderRadius: '50%' }} />}
+
+      <div className="profile-section">
+        <img src={profilePic || 'https://via.placeholder.com/150'} alt="Profile" />
+        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
       </div>
 
-      <button onClick={handleUpdate}>Save Changes</button>
-      <button onClick={() => navigate('/dashboard')} style={{ marginTop: '10px' }}>Back to Dashboard</button>
+      <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+
+      {/* ✅ Password Change Section */}
+      <h3>Change Password</h3>
+      <input
+        type="password"
+        placeholder="Current Password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="New Password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Confirm New Password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+
+      <button onClick={handleSave}>Save Changes</button>
     </div>
   );
 };
