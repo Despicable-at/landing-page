@@ -1,17 +1,18 @@
+// Dashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
+import './style.css';
 
-const Dashboard = ({ user, logout }) => {
+const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
-  const [profilePic, setProfilePic] = useState(user?.profilePic || '');
-  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const res = await axios.get('https://capigrid-backend.onrender.com/my-campaigns', {
+        const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setCampaigns(res.data);
@@ -22,88 +23,50 @@ const Dashboard = ({ user, logout }) => {
     fetchCampaigns();
   }, []);
 
-  const handleProfilePicUpload = async (e) => {
-    const file = e.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
-
-    // Example upload to Cloudinary (replace 'your-cloudinary-url' with your actual)
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'capigrid');
-
-    try {
-      const res = await axios.post('https://api.cloudinary.com/v1_1/your-cloud-name/image/upload', formData);
-      setProfilePic(res.data.secure_url);
-      // Optionally: save to DB
-    } catch (error) {
-      console.error("Upload failed", error);
-    }
-  };
-
   return (
-    <div className="dashboard-container">
+    <div>
+      {/* Render Navbar at top */}
+      <Navbar user={user} logout={logout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
-      {/* Navigation Arrows */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <button onClick={() => navigate(-1)}>← Back</button>
-        <button onClick={() => navigate(1)}>Next →</button>
-      </div>
-
-      {/* Profile Section */}
-      <section className="profile-section" style={{ textAlign: 'center' }}>
+      <div className="dashboard-container">
+        {/* Optional: Display a profile welcome message */}
         <h1>Welcome, {user?.name || 'CapiGrid User'}</h1>
-        <div>
-          <img 
-            src={selectedImage || profilePic || 'https://via.placeholder.com/150'} 
-            alt="Profile" 
-            style={{ width: '150px', borderRadius: '50%', marginBottom: '10px' }}
-          />
-          <input type="file" accept="image/*" onChange={handleProfilePicUpload} />
-        </div>
-        <button className="logout-btn" onClick={logout}>Logout</button>
-      </section>
 
-      {/* Campaigns Section with Placeholder */}
-      <section>
-        <h2>Available Campaigns</h2>
-        {campaigns.length > 0 ? campaigns.map((c, i) => (
-          <div key={i} className="campaign-box">
-            <strong>{c.title}</strong>
-            {/* Placeholder for Campaign Image */}
-            <div className="image-placeholder">Upload Campaign Image</div>
+        {/* Grid for Boxes: Two per row */}
+        <div className="dashboard-grid">
+          {/* Box 1: Available Campaigns */}
+          <div className="dashboard-box">
+            <h3>Available Campaigns</h3>
+            {campaigns.length > 0 ? campaigns.map((c, i) => (
+              <div key={i} className="campaign-box">
+                <strong>{c.title}</strong>
+                <div className="image-placeholder">[Campaign Image]</div>
+              </div>
+            )) : <p>No campaigns available yet</p>}
           </div>
-        )) : (
-          <p>No campaigns available yet</p>
-        )}
-      </section>
 
-      {/* Investment Section */}
-      <section className="invest-section">
-        <h2>Invest in PFCA CapiGrid</h2>
-        <p>Become part of our journey. Invest now and own equity shares.</p>
-        <button onClick={() => navigate('/invest')}>Invest Now</button>
-      </section>
+          {/* Box 2: Invest in PFCA CapiGrid */}
+          <div className="dashboard-box">
+            <h3>Invest in PFCA CapiGrid</h3>
+            <p>Become part of our journey. Click below to invest now!</p>
+            <button onClick={() => navigate('/invest')}>Invest Now</button>
+          </div>
 
-      {/* Pre-Register */}
-      <section className="pre-register">
-        <h2>Pre-Register for the Main Platform</h2>
-        <p>Get notified when we launch.</p>
-        <button onClick={async () => {
-          try {
-            await axios.post('https://capigrid-backend.onrender.com/pre-register', { email: user?.email });
-            alert('Pre-Registration successful! You will be notified.');
-          } catch {
-            alert('Pre-Registration failed.');
-          }
-        }}>Pre-Register</button>
-      </section>
-
-      {/* Support / Contact */}
-      <section className="support-section">
-        <h2>Need Help?</h2>
-        <button onClick={() => window.location.href = 'mailto:support@pfcafrica.online'}>Contact Support</button>
-      </section>
-
+          {/* Box 3: Pre-Register & Need Help */}
+          <div className="dashboard-box">
+            <h3>Pre-Register & Need Help?</h3>
+            <button onClick={async () => {
+              try {
+                await axios.post('https://landing-page-gere.onrender.com/pre-register', { email: user?.email });
+                alert('Pre-Registration successful! You will be notified.');
+              } catch (err) {
+                alert('Pre-Registration failed.');
+              }
+            }}>Pre-Register</button>
+            <button onClick={() => window.location.href = 'mailto:support@pfcafrica.online'}>Contact Support</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
