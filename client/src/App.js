@@ -8,6 +8,7 @@ import OAuthCallback from './OAuthCallback';
 import InvestPage from './InvestPage';
 import InvestPayment from './InvestPayment';
 import ThankYou from './ThankYou';
+import Profile from './Profile';  // ✅ Added Profile import
 import './style.css';
 
 const App = () => {
@@ -42,18 +43,27 @@ const App = () => {
 
   return (
     <>
-      {/* Navbar */}
-      <div className="navbar">
-        <div><strong>PFCA CapiGrid</strong></div>
-        <div className="nav-links">
-          {token && <a onClick={() => navigate('/dashboard')}>Dashboard</a>}
-          <a onClick={() => navigate('/invest')}>Invest</a>
-          <a onClick={toggleDarkMode}>Dark Mode</a>
-          <a href="https://pfcafrica.online" target="_blank">About PFCAfrica</a>
+      {/* ✅ Navbar only shows when token exists */}
+      {token && (
+        <div className="navbar">
+          <div><strong>PFCA CapiGrid</strong></div>
+          <div className="nav-links">
+            <a onClick={() => navigate('/dashboard')}>Dashboard</a>
+            <a onClick={() => navigate('/invest')}>Invest</a>
+            <a onClick={() => navigate('/profile')}>Profile</a>
+            <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
+            <a href="https://pfcafrica.online" target="_blank">About PFCAfrica</a>
+            <a onClick={() => {
+              localStorage.removeItem('token');
+              setToken(null);
+              setUser(null);
+              navigate('/');
+            }}>Logout</a>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Routes */}
+      {/* ✅ Routes */}
       <Routes>
         <Route path="/" element={
           token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
@@ -75,7 +85,6 @@ const App = () => {
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
-
       </Routes>
     </>
   );
@@ -110,6 +119,7 @@ const LoginForm = ({ setToken, setUser }) => {
       <button onClick={handleLogin}>Login</button>
 
       <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
+        <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" style={{ marginRight: '8px' }} />
         Sign in with Google
       </button>
 
