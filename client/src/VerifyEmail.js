@@ -3,45 +3,37 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const VerifyEmail = () => {
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
+  const [email] = useState(localStorage.getItem('pendingEmail') || '');
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
 
   const handleVerify = async () => {
     try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/verify-email', {
-        email,
-        code,
-      });
-      setMessage('✅ Email verified successfully! Redirecting...');
-      setTimeout(() => navigate('/'), 3000); // Redirect to login
+      const res = await axios.post('https://landing-page-gere.onrender.com/verify-email', { email, code });
+      setMessage(res.data.message);
+      localStorage.removeItem('pendingEmail'); // ✅ Clean up after verification
+      setTimeout(() => navigate('/'), 3000);   // ✅ Redirect to login
     } catch (err) {
-      setMessage(err.response?.data?.message || '❌ Invalid code or verification failed.');
+      setMessage(err.response?.data?.message || 'Verification failed');
     }
   };
 
   return (
     <div className="auth-container">
       <h2>Email Verification</h2>
-      <p>Please enter the verification code sent to your email.</p>
+      <p>We have sent a verification code to: <strong>{email}</strong></p>
 
       <input
-        type="email"
-        placeholder="Your Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
         type="text"
-        placeholder="Verification Code"
+        placeholder="Enter Verification Code"
         value={code}
         onChange={(e) => setCode(e.target.value)}
       />
 
-      <button onClick={handleVerify}>Verify Email</button>
+      <button onClick={handleVerify}>Verify</button>
 
-      {message && <p>{message}</p>}
+      {message && <p style={{ marginTop: '15px', color: 'green' }}>{message}</p>}
     </div>
   );
 };
