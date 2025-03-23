@@ -12,7 +12,12 @@ const SignupPage = () => {
     try {
       const res = await axios.post('https://landing-page-gere.onrender.com/signup', { name, email, password });
       alert(res.data.message);
-      navigate('/login');
+
+      // ✅ Store email for verification or pass it to /verify if needed
+      localStorage.setItem('pendingEmail', email);
+
+      // ✅ Redirect to /verify page after successful signup
+      navigate('/verify');
     } catch (err) {
       alert(err.response?.data?.message || 'Signup failed');
     }
@@ -25,7 +30,11 @@ const SignupPage = () => {
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
       <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
       <button onClick={handleSignup}>Sign Up</button>
-      <p>Already have an account? <span onClick={() => navigate('/OAuthCallback')} style={{ color: 'blue', cursor: 'pointer' }}>Login</span></p>
+
+      <p>
+        Already have an account? 
+        <span onClick={() => navigate('/')} style={{ color: 'blue', cursor: 'pointer' }}> Login</span>
+      </p>
     </div>
   );
 };
