@@ -11,12 +11,14 @@
   --box-bg: var(--white);
 }
 
+/* DARK MODE */
 body.dark {
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --box-bg: #1e1e1e;
 }
 
+/* Global */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-color);
@@ -38,9 +40,9 @@ body {
   position: relative;
 }
 
-.desktop-nav-links {
+.navbar .desktop-nav-links {
   display: flex;
-  gap: 25px; /* ✅ Fixed spacing */
+  gap: 25px;
 }
 
 .navbar a {
@@ -48,17 +50,15 @@ body {
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
-  cursor: pointer;
 }
 
 .navbar a:hover {
   text-decoration: underline;
 }
 
-/* Hamburger Icon */
 .hamburger {
   display: none;
-  font-size: 30px;
+  font-size: 28px;
   cursor: pointer;
 }
 
@@ -75,10 +75,6 @@ body {
   z-index: 10;
 }
 
-.mobile-nav-active {
-  display: flex;
-}
-
 .mobile-nav-links a {
   color: white;
   padding: 10px 0;
@@ -88,6 +84,10 @@ body {
 
 .mobile-nav-links a:hover {
   background-color: #333;
+}
+
+.mobile-nav-active {
+  display: flex;
 }
 
 /* Containers */
@@ -101,10 +101,12 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* Headings */
 h1, h2, h3 {
   color: var(--black);
 }
 
+/* Buttons */
 button {
   background-color: var(--primary-yellow);
   color: var(--black);
@@ -121,6 +123,7 @@ button:hover {
   background-color: #e6ac06;
 }
 
+/* Inputs */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -136,6 +139,7 @@ input[type="file"] {
   color: var(--text-color);
 }
 
+/* Profile Image */
 .profile-section img {
   width: 150px;
   height: 150px;
@@ -145,8 +149,8 @@ input[type="file"] {
   margin-bottom: 15px;
 }
 
-/* Campaign Boxes */
-.campaign-box {
+/* Campaign and Dashboard Boxes */
+.campaign-box, .dashboard-box {
   background: var(--gray-light);
   padding: 20px;
   border-radius: 10px;
@@ -165,6 +169,7 @@ input[type="file"] {
   margin-top: 10px;
 }
 
+/* Investment Amount */
 .invest-amount-container {
   display: flex;
   align-items: center;
@@ -177,6 +182,7 @@ input[type="file"] {
   font-size: 1.5rem;
 }
 
+/* Terms Box */
 .terms-box {
   max-height: 300px;
   overflow-y: auto;
@@ -186,6 +192,7 @@ input[type="file"] {
   margin-bottom: 20px;
 }
 
+/* Thank You */
 .thank-you-container {
   width: 95%;
   max-width: 700px;
@@ -216,31 +223,33 @@ input[type="file"] {
   margin-bottom: 12px;
 }
 
-/* Dashboard grid layout - ✅ Adjusted width to match your reference */
+/* Dashboard Grid */
 .dashboard-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  gap: 25px;
+  justify-content: space-between;
 }
 
 .dashboard-box {
-  width: 350px;
+  flex: 0 0 45%; /* Tighter size like the reference image */
   background: var(--white);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
 }
 
+/* Mobile */
 @media (max-width: 768px) {
   .dashboard-box {
-    width: 100%;
+    flex: 0 0 100%;
   }
-}
+  
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+  }
 
-/* Mobile Responsive */
-@media screen and (max-width: 768px) {
   .hamburger {
     display: block;
   }
