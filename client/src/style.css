@@ -11,14 +11,12 @@
   --box-bg: var(--white);
 }
 
-/* DARK MODE */
 body.dark {
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --box-bg: #1e1e1e;
 }
 
-/* Global */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg-color);
@@ -64,7 +62,6 @@ body {
   border-radius: 6px;
 }
 
-/* Hamburger Icon */
 .hamburger {
   display: none;
   font-size: 28px;
@@ -95,7 +92,6 @@ body {
   background-color: #333;
 }
 
-/* Show mobile nav when active */
 .mobile-nav-active {
   display: flex;
 }
@@ -159,7 +155,7 @@ input[type="file"] {
   margin-bottom: 15px;
 }
 
-/* Campaign Boxes */
+/* Campaign Box */
 .campaign-box {
   background: var(--gray-light);
   padding: 20px;
@@ -179,7 +175,7 @@ input[type="file"] {
   margin-top: 10px;
 }
 
-/* Investment amount control */
+/* Investment Amount Controls */
 .invest-amount-container {
   display: flex;
   align-items: center;
@@ -233,7 +229,7 @@ input[type="file"] {
   margin-bottom: 12px;
 }
 
-/* Dashboard grid layout */
+/* Dashboard */
 .dashboard-grid {
   display: flex;
   flex-wrap: wrap;
