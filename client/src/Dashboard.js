@@ -32,7 +32,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
         <div className="dashboard-box">
           <div
             className="bg-image"
-            style={{ backgroundImage: 'url(/Campaign.jpg)' }}
+            style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}
           ></div>
           <div className="content">
             <h3>Available Campaigns</h3>
@@ -49,7 +49,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
         <div className="dashboard-box">
           <div
             className="bg-image"
-            style={{ backgroundImage: 'url(/invest.jpg)' }}
+            style={{ backgroundImage: 'url(/images/invest.jpg)' }}
           ></div>
           <div className="content">
             <h3>Invest in PFCA CapiGrid</h3>
@@ -62,7 +62,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
         <div className="dashboard-box">
           <div
             className="bg-image"
-            style={{ backgroundImage: 'url(/Pre-register.jpg)' }}
+            style={{ backgroundImage: 'url(/images/Pre-register.jpg)' }}
           ></div>
           <div className="content">
             <h3>Pre-Register</h3>
@@ -82,7 +82,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
         <div className="dashboard-box">
           <div
             className="bg-image"
-            style={{ backgroundImage: 'url(/help.jpg)' }}
+            style={{ backgroundImage: 'url(/images/help.jpg)' }}
           ></div>
           <div className="content">
             <h3>Need Help?</h3>
