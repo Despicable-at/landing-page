@@ -37,6 +37,7 @@ body {
   padding: 15px 25px;
   border-radius: 8px;
   margin-bottom: 30px;
+  position: relative;
 }
 
 .navbar .nav-links {
@@ -61,6 +62,42 @@ body {
   color: var(--black);
   padding: 6px 14px;
   border-radius: 6px;
+}
+
+/* Hamburger Icon */
+.hamburger {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.mobile-nav-links {
+  background-color: #222;
+  padding: 15px;
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 65px;
+  right: 15px;
+  width: 250px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.mobile-nav-links a {
+  color: white;
+  padding: 10px 0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.mobile-nav-links a:hover {
+  background-color: #333;
+}
+
+/* Show mobile nav when active */
+.mobile-nav-active {
+  display: flex;
 }
 
 /* Containers */
@@ -223,6 +260,14 @@ input[type="file"] {
   .navbar {
     flex-direction: column;
     gap: 15px;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .desktop-nav-links {
+    display: none;
   }
 
   .dashboard-container {
