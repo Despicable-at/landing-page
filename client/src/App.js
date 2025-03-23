@@ -15,7 +15,7 @@ const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
-  const [menuOpen, setMenuOpen] = useState(false); // Hamburger state
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,17 +50,15 @@ const App = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-    setMenuOpen(false); // Close hamburger menu after navigation
+    setMenuOpen(false); // Close hamburger after navigating
   };
 
   return (
     <>
-      {/* ✅ Navbar - Visible when logged in */}
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
 
-          {/* Desktop Links */}
           <div className="desktop-nav-links">
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -70,10 +68,8 @@ const App = () => {
             <a onClick={handleLogout}>Logout</a>
           </div>
 
-          {/* Hamburger Icon for Mobile */}
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
 
-          {/* Mobile Links */}
           <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -85,7 +81,6 @@ const App = () => {
         </div>
       )}
 
-      {/* ✅ Routes */}
       <Routes>
         <Route path="/" element={
           token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
