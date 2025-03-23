@@ -115,7 +115,13 @@ const LoginForm = ({ setToken, setUser }) => {
       setUser(res.data.user);
       navigate('/dashboard');
     } catch (err) {
-      alert(err.response?.data?.message || 'Login failed');
+      // ✅ Check for unverified email and redirect
+      if (err.response?.status === 403 && err.response?.data?.status === 'unverified') {
+        localStorage.setItem('pendingEmail', email);
+        navigate('/verify');
+      } else {
+        alert(err.response?.data?.message || 'Login failed');
+      }
     }
   };
 
