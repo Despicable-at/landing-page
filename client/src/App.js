@@ -50,7 +50,7 @@ const App = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-    setMenuOpen(false); // Close hamburger after navigating
+    setMenuOpen(false);
   };
 
   return (
@@ -58,7 +58,6 @@ const App = () => {
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
-
           <div className="desktop-nav-links">
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -67,9 +66,7 @@ const App = () => {
             <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
             <a onClick={handleLogout}>Logout</a>
           </div>
-
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
-
           <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -88,9 +85,7 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={
-          token
-            ? <Dashboard user={user} logout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-            : <Navigate to="/" />
+          token ? <Dashboard user={user} logout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} /> : <Navigate to="/" />
         } />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/invest" element={<InvestPage user={user} />} />
@@ -115,12 +110,15 @@ const LoginForm = ({ setToken, setUser }) => {
       setUser(res.data.user);
       navigate('/dashboard');
     } catch (err) {
-      // ✅ Check for unverified email and redirect
-      if (err.response?.status === 403 && err.response?.data?.status === 'unverified') {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+
+      // ✅ Handle Unverified Email Redirection
+      if (status === 403 && message === 'Verify your email first') {
         localStorage.setItem('pendingEmail', email);
         navigate('/verify');
       } else {
-        alert(err.response?.data?.message || 'Login failed');
+        alert(message || 'Login failed');
       }
     }
   };
