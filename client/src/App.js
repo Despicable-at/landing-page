@@ -26,7 +26,7 @@ const App = () => {
   const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/user', {
-        headers: { Authorization: Bearer ${token} }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
     } catch (err) {
@@ -70,7 +70,7 @@ const App = () => {
 
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
 
-          <div className={mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}}>
+          <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
             <a onClick={() => handleNavigate('/profile')}>Profile</a>
