@@ -62,12 +62,15 @@ const Profile = ({ user, setUser }) => {
     <div className="dashboard-container">
       <h2>Profile Settings</h2>
 
-      {/* ✅ Change Profile Picture */}
-      <h3>Change Profile Picture</h3>
-      <div className="profile-section">
-        <img src={profilePic} alt="Profile" />
-        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
+      {/* Change Profile Picture */}
+            <div className="profile-section">
+        <h3>Change Profile Picture</h3>
+        <div className="profile-pic-wrapper">
+          <img src={profilePic || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'} alt="Profile" />
+          <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
+        </div>
       </div>
+
 
       {/* ✅ Change Display Name */}
       <h3>Change Display Name</h3>
