@@ -71,8 +71,23 @@ passport.use(new GoogleStrategy({
   }
 }));
 
+// ✅ FIX: Proper serialize and deserialize for sessions
+passport.serializeUser((user, done) => {
+  done(null, user.id);  // Store only the user ID
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
 // ✅ Google OAuth Routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
@@ -155,16 +170,15 @@ app.post('/resend-verification', async (req, res) => {
   }
 });
 
-// ✅ Login with redirect to /verify if unverified
+// ✅ Login with check for unverified accounts
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user || !await bcrypt.compare(password, user.password)) 
+    if (!user || !await bcrypt.compare(password, user.password))
       return res.status(401).json({ message: 'Invalid credentials' });
 
     if (!user.verified) {
-      // ✅ Tell frontend to redirect to verify page
       return res.status(403).json({ message: 'Email not verified', status: 'unverified' });
     }
 
