@@ -38,7 +38,7 @@ const User = mongoose.model('User', {
 const Campaign = mongoose.model('Campaign', { title: String, description: String, goal: Number, raised: Number, userId: String });
 const PreRegister = mongoose.model('PreRegister', { email: String });
 
-// ✅ Nodemailer Setup
+// ✅ Nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
@@ -71,11 +71,7 @@ passport.use(new GoogleStrategy({
   }
 }));
 
-// ✅ FIX: Proper serialize and deserialize for sessions
-passport.serializeUser((user, done) => {
-  done(null, user.id);  // Store only the user ID
-});
-
+passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
@@ -87,7 +83,6 @@ passport.deserializeUser(async (id, done) => {
 
 // ✅ Google OAuth Routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
@@ -96,10 +91,10 @@ app.get('/auth/google/callback',
   }
 );
 
-// ✅ Root Route
+// ✅ Root
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
-// ✅ Signup Route
+// ✅ Signup
 app.post('/signup', async (req, res) => {
   const { email, password, name } = req.body;
   try {
@@ -170,7 +165,7 @@ app.post('/resend-verification', async (req, res) => {
   }
 });
 
-// ✅ Login with check for unverified accounts
+// ✅ Login with unverified check
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -203,27 +198,46 @@ app.get('/user', async (req, res) => {
   }
 });
 
-// ✅ Profile Update with Cloudinary
+// ✅ Profile Update - including email change with password check and re-verification trigger
 app.put('/update-profile', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
-  const { name, email, currentPassword, newPassword, profilePic } = req.body;
+  const { name, email, currentPassword, newPassword, profilePic, emailPassword } = req.body;
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (name) user.name = name;
-    if (email) user.email = email;
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
+    // ✅ Handle password change
     if (newPassword) {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) return res.status(401).json({ message: 'Incorrect current password' });
       user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    if (profilePic) user.profilePic = profilePic;
-    await user.save();
+    if (name) user.name = name;
 
+    // ✅ Handle email change
+    if (email && email !== user.email) {
+      const isMatch = await bcrypt.compare(emailPassword, user.password);
+      if (!isMatch) return res.status(401).json({ message: 'Incorrect password for email change' });
+
+      user.email = email;
+      user.verified = false; // ✅ Force re-verification
+      user.verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'PFCA CapiGrid New Email Verification',
+        text: `Your new verification code is: ${user.verificationCode}`
+      });
+    }
+
+    if (profilePic) user.profilePic = profilePic;
+
+    await user.save();
     res.json(user);
   } catch (err) {
     console.error('Profile Update Error:', err);
