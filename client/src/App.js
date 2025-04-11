@@ -107,6 +107,22 @@ const LoginForm = ({ setToken, setUser }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+    // Image slider setup
+  const images = [
+    'Campaign.jpg',  //image filenames
+    'Pre-register.jpg',
+    'invest.jpg'
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 3000); // ✅ Change image every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLogin = async () => {
     try {
       const res = await axios.post('https://landing-page-gere.onrender.com/login', { email, password });
@@ -130,6 +146,11 @@ const LoginForm = ({ setToken, setUser }) => {
   };
 
   return (
+    <div className="auth-wrapper"> 
+      <div className="auth-image-slider">
+        <img src={images[currentImage]} alt="Slider" />
+      </div>
+  
     <div className="auth-container">
       <h2>Welcome to PFCA CapiGrid</h2>
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
