@@ -50,28 +50,30 @@ const SignupPage = () => {
         <h2>Create Account</h2>
         <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-        <input 
-      type={showPassword ? "text" : "password"} 
-      placeholder="Password" 
-      value={password} 
-      onChange={e => setPassword(e.target.value)}
-      style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
-    />
-    <span 
-      onClick={() => setShowPassword(!showPassword)} 
-      style={{
-        position: "absolute", 
-        right: "10px", 
-        top: "50%", 
-        transform: "translateY(-50%)", 
-        cursor: "pointer",
-        fontSize: "14px",
-        color: "#aaa"
-      }}
-    >
-      {showPassword ? "Hide" : "Show"}
-    </span>
-  </div>
+        <div style={{ position: "relative", width: "100%" }}>
+  <input 
+    type={showPassword ? "text" : "password"} 
+    placeholder="Password" 
+    value={password} 
+    onChange={e => setPassword(e.target.value)}
+    style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
+  />
+  <span 
+    onClick={() => setShowPassword(!showPassword)} 
+    style={{
+      position: "absolute", 
+      right: "10px", 
+      top: "50%", 
+      transform: "translateY(-50%)", 
+      cursor: "pointer",
+      fontSize: "14px",
+      color: "#aaa"
+    }}
+  >
+    {showPassword ? "Hide" : "Show"}
+  </span>
+</div>
+
         <button onClick={handleSignup}>Sign Up</button>
 
         <p>
@@ -80,6 +82,7 @@ const SignupPage = () => {
         </p>
       </div>
       </div>
+      
       <Footer />
     </div>
   );
