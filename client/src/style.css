@@ -240,45 +240,65 @@ body {
   margin-top: 5px;
 }
 
-/* Input Wrapper */
 .input-wrapper {
   position: relative;
-  width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-/* Style the Input Fields */
-.input-wrapper input {
+input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
   outline: none;
-  transition: all 0.3s ease;
 }
 
-.input-wrapper input:focus {
-  border-color: #4285F4;
+input:focus {
+  border-color: #007bff;
 }
 
-/* Floating Label */
-.input-wrapper label {
+label {
   position: absolute;
   left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-  transition: all 0.3s ease;
+  top: 10px;
+  font-size: 14px;
+  transition: 0.3s ease all;
   pointer-events: none;
 }
 
-/* When Input is Focused or Filled, Move Label */
-.input-wrapper input:focus + label,
-.input-wrapper .filled {
-  top: 5px;
+input:focus ~ label,
+input.filled ~ label {
+  top: -10px;
   font-size: 12px;
-  color: #4285F4;
+  color: #007bff;
+}
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 50px; /* Extra space for the show/hide text */
+}
+
+.password-container span {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.password-container span:hover {
+  color: #007bff;
 }
 
 h1, h2, h3 {
