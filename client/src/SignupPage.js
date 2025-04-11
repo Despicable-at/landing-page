@@ -39,6 +39,9 @@ const SignupPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+
+  const [showPassword, setShowPassword] = useState(false);
+  
   return (
     <div className="auth-wrapper"> 
     <div className="auth-main">
