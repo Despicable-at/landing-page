@@ -105,23 +105,8 @@ const App = () => {
 const LoginForm = ({ setToken, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  // Image slider setup
-  const images = [
-    '/images/Campaign.jpg', 
-    '/images/Pre-register.jpg',
-    '/images/invest.jpg'
-  ];
-
-  const [currentImage, setCurrentImage] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleLogin = async () => {
     try {
@@ -144,8 +129,6 @@ const LoginForm = ({ setToken, setUser }) => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
@@ -164,36 +147,27 @@ const LoginForm = ({ setToken, setUser }) => {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
+              className={email ? "filled" : ""}
             />
             <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
           </div>
 
-         <div className="password-container" style={{ position: "relative", width: "100%" }}>
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  placeholder="Password" 
-                  value={password} 
-                  onChange={e => setPassword(e.target.value)}
-                  style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
-                />
-                {password && (
-                  <span 
-                    onClick={() => setShowPassword(!showPassword)} 
-                    style={{
-                      position: "absolute", 
-                      right: "10px", 
-                      top: "50%", 
-                      transform: "translateY(-50%)", 
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      color: "#aaa"
-                    }}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </span>
-                )}
-              </div>
-
+          {/* Password Input with Show/Hide Functionality */}
+          <div className="password-container">
+            <input 
+              type={showPassword ? "text" : "password"} 
+              placeholder="Password" 
+              value={password} 
+              onChange={e => setPassword(e.target.value)}
+            />
+            {password && (
+              <span 
+                onClick={() => setShowPassword(!showPassword)} 
+              >
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            )}
+          </div>
 
           <button onClick={handleLogin}>Login</button>
 
