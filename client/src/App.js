@@ -105,8 +105,23 @@ const App = () => {
 const LoginForm = ({ setToken, setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  // Image slider setup
+  const images = [
+    '/images/Campaign.jpg', 
+    '/images/Pre-register.jpg',
+    '/images/invest.jpg'
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -128,6 +143,8 @@ const LoginForm = ({ setToken, setUser }) => {
   const handleGoogleLogin = () => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="auth-wrapper">
@@ -152,21 +169,17 @@ const LoginForm = ({ setToken, setUser }) => {
             <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
           </div>
 
-          {/* Password Input with Show/Hide Functionality */}
-          <div className="password-container">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              placeholder="Password" 
-              value={password} 
+          {/* Password Input with Floating Label */}
+          <div className="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              value={password}
               onChange={e => setPassword(e.target.value)}
+              required
+              className={password ? "filled" : ""}
             />
-            {password && (
-              <span 
-                onClick={() => setShowPassword(!showPassword)} 
-              >
-                {showPassword ? "Hide" : "Show"}
-              </span>
-            )}
+            <label htmlFor="password" className={password ? "filled" : ""}>Password</label>
           </div>
 
           <button onClick={handleLogin}>Login</button>
@@ -184,8 +197,6 @@ const LoginForm = ({ setToken, setUser }) => {
     </div>
   );
 };
-
-
 
 const Footer = () => {
   const [showLanguages, setShowLanguages] = useState(false);
@@ -235,4 +246,5 @@ const Footer = () => {
     </footer>
   );
 };
+
 export default App;
