@@ -155,9 +155,26 @@ const LoginForm = ({ setToken, setUser }) => {
       <div className="auth-container">
         <h2>Welcome to PFCA CapiGrid</h2>
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-         <div className="password-container">
-    <input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-    <span onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer", marginLeft: "10px" }}>
+     <div className="password-container" style={{ position: "relative", width: "100%" }}>
+    <input 
+      type={showPassword ? "text" : "password"} 
+      placeholder="Password" 
+      value={password} 
+      onChange={e => setPassword(e.target.value)}
+      style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
+    />
+    <span 
+      onClick={() => setShowPassword(!showPassword)} 
+      style={{
+        position: "absolute", 
+        right: "10px", 
+        top: "50%", 
+        transform: "translateY(-50%)", 
+        cursor: "pointer",
+        fontSize: "14px",
+        color: "#aaa"
+      }}
+    >
       {showPassword ? "Hide" : "Show"}
     </span>
   </div>
