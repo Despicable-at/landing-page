@@ -118,6 +118,15 @@ body {
   margin-left: 820px;
 }
 
+.auth-image-slider {
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 3px 25px;
+  border-radius: 12px;
+  margin-left: 820px;
+}
+
 h1, h2, h3 {
   color: var(--black);
   margin-bottom: 15px;
