@@ -109,9 +109,9 @@ const LoginForm = ({ setToken, setUser }) => {
 
   // Image slider setup
   const images = [
-    '/Campaign.jpg',  // image filenames
-    '/Pre-register.jpg',
-    '/invest.jpg'
+    '/images/Campaign.jpg',  // image filenames
+    '/images/Pre-register.jpg',
+    '/images/invest.jpg'
   ];
 
   const [currentImage, setCurrentImage] = useState(0);
