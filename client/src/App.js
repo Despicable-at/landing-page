@@ -109,7 +109,7 @@ const LoginForm = ({ setToken, setUser }) => {
 
   // Image slider setup
   const images = [
-    '/images/Campaign.jpg',  // image filenames
+    '/images/Campaign.jpg', 
     '/images/Pre-register.jpg',
     '/images/invest.jpg'
   ];
@@ -119,7 +119,7 @@ const LoginForm = ({ setToken, setUser }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 3000); // ✅ Change image every 3 seconds
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -131,7 +131,6 @@ const LoginForm = ({ setToken, setUser }) => {
       setUser(res.data.user);
       navigate('/dashboard');
     } catch (err) {
-      // ✅ Check for unverified email and redirect
       if (err.response?.status === 403 && err.response?.data?.status === 'unverified') {
         localStorage.setItem('pendingEmail', email);
         navigate('/verify');
@@ -148,53 +147,70 @@ const LoginForm = ({ setToken, setUser }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="auth-wrapper"> 
-    <div className="auth-main">
-      <div className="auth-image-slider">
-        <img src={images[currentImage]} alt="Slider" />
-      </div>
-  
-      <div className="auth-container">
-        <h2>Welcome to PFCA CapiGrid</h2>
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-     <div className="password-container" style={{ position: "relative", width: "100%" }}>
-    <input 
-      type={showPassword ? "text" : "password"} 
-      placeholder="Password" 
-      value={password} 
-      onChange={e => setPassword(e.target.value)}
-      style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
-    />
-    <span 
-      onClick={() => setShowPassword(!showPassword)} 
-      style={{
-        position: "absolute", 
-        right: "10px", 
-        top: "50%", 
-        transform: "translateY(-50%)", 
-        cursor: "pointer",
-        fontSize: "14px",
-        color: "#aaa"
-      }}
-    >
-      {showPassword ? "Hide" : "Show"}
-    </span>
-  </div>
-        <button onClick={handleLogin}>Login</button>
+    <div className="auth-wrapper">
+      <div className="auth-main">
+        <div className="auth-image-slider">
+          <img src={images[currentImage]} alt="Slider" />
+        </div>
 
-        <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
-          <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" style={{ marginRight: '8px' }} />
-          Sign in with Google
-        </button>
+        <div className="auth-container">
+          <h2>Welcome to PFCA CapiGrid</h2>
+          
+          {/* Email Input with Floating Label */}
+          <div className="input-wrapper">
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+            <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
+          </div>
 
-        <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
+         <div className="password-container" style={{ position: "relative", width: "100%" }}>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)}
+                  style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
+                />
+                {password && (
+                  <span 
+                    onClick={() => setShowPassword(!showPassword)} 
+                    style={{
+                      position: "absolute", 
+                      right: "10px", 
+                      top: "50%", 
+                      transform: "translateY(-50%)", 
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      color: "#aaa"
+                    }}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </span>
+                )}
+              </div>
+
+
+          <button onClick={handleLogin}>Login</button>
+
+          <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
+            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" style={{ marginRight: '8px' }} />
+            Sign in with Google
+          </button>
+
+          <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
+        </div>
       </div>
-      </div>
-            
+
       <Footer />
     </div>
   );
 };
+
 
 
 const Footer = () => {
