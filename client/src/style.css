@@ -240,6 +240,7 @@ body {
   margin-top: 5px;
 }
 
+/* Input Wrapper */
 .input-wrapper {
   position: relative;
   margin-bottom: 20px;
@@ -260,13 +261,16 @@ input:focus {
   border-color: #007bff;
 }
 
+/* Floating Label Styling */
 label {
   position: absolute;
   left: 10px;
-  top: 10px;
-  font-size: 14px;
-  transition: 0.3s ease all;
+  top: 50%;
+  font-size: 16px;
+  color: #aaa;
   pointer-events: none;
+  transition: 0.3s ease all;
+  transform: translateY(-50%);
 }
 
 input:focus ~ label,
@@ -276,6 +280,11 @@ input.filled ~ label {
   color: #007bff;
 }
 
+input.filled {
+  border-color: #007bff;
+}
+
+/* Password Container Styling */
 .password-container {
   position: relative;
   width: 100%;
