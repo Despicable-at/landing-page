@@ -213,7 +213,7 @@ const LoginForm = ({ setToken, setUser }) => {
               style={{
                 position: "absolute", 
                 left: "10px", 
-                top: password ? "10px" : "50%",  // Moves the label above when the input is filled
+                top: password ? "20px" : "50%",  // Moves the label above when the input is filled
                 fontSize: password ? "12px" : "16px",  // Shrinks the font when the label is moved above
                 color: password ? "#007bff" : "#aaa", // Color change on focus
                 transition: "0.3s ease all",
