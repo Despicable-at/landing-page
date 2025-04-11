@@ -164,6 +164,8 @@ const LoginForm = ({ setToken, setUser }) => {
 
         <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
       </div>
+            
+      <Footer />
     </div>
   );
 };
