@@ -23,8 +23,29 @@ const SignupPage = () => {
     }
   };
 
+    // Image slider setup
+  const images = [
+    '/images/Campaign.jpg',  // image filenames
+    '/images/Pre-register.jpg',
+    '/images/invest.jpg'
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 3000); // ✅ Change image every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="auth-container">
+  <div className="auth-wrapper"> 
+      <div className="auth-image-slider">
+        <img src={images[currentImage]} alt="Slider" />
+      </div>
+  
+      <div className="auth-container">
       <h2>Create Account</h2>
       <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
@@ -36,6 +57,7 @@ const SignupPage = () => {
         <span onClick={() => navigate('/')} style={{ color: 'blue', cursor: 'pointer' }}> Login</span>
       </p>
     </div>
+  </div>
   );
 };
 
