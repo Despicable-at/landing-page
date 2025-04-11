@@ -168,4 +168,53 @@ const LoginForm = ({ setToken, setUser }) => {
   );
 };
 
+
+const Footer = () => {
+  const [showLanguages, setShowLanguages] = useState(false);
+  const toggleLanguages = () => {
+    setShowLanguages(!showLanguages);
+  };
+
+  // List of additional languages (for demonstration; you can extend this list)
+  const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
+
+  return (
+    <footer className="footer">
+      <div className="footer-links">
+        <a href="#">PFCAfrica</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Youtube</a>
+        <a href="#">Twitter</a>
+        <a href="#">Terms</a>
+        <a href="#">About</a>
+        <div className="language-dropdown">
+          <button onClick={toggleLanguages}>
+            English <span>&#x25B2;</span>
+          </button>
+          {showLanguages && (
+            <div className="dropdown-menu">
+              {languages.map((lang) => (
+                <div
+                  key={lang}
+                  className="dropdown-item"
+                  onClick={() => {
+                    alert(`Translate to ${lang}`);
+                    setShowLanguages(false);
+                  }}
+                >
+                  {lang}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="footer-copy">
+        &copy; {new Date().getFullYear()} PFCAfrica. All rights reserved.
+      </div>
+    </footer>
+  );
+};
 export default App;
