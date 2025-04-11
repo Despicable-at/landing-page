@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect import
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,17 +6,14 @@ const SignupPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
       const res = await axios.post('https://landing-page-gere.onrender.com/signup', { name, email, password });
       alert(res.data.message);
-
-      // Store email for verification if needed
       localStorage.setItem('pendingEmail', email);
-
-      // Redirect to /verify page after successful signup
       navigate('/verify');
     } catch (err) {
       alert(err.response?.data?.message || 'Signup failed');
@@ -25,7 +22,7 @@ const SignupPage = () => {
 
   // Image slider setup
   const images = [
-    '/images/Campaign.jpg',  // image filenames
+    '/images/Campaign.jpg',
     '/images/Pre-register.jpg',
     '/images/invest.jpg'
   ];
@@ -35,12 +32,10 @@ const SignupPage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 3000); // Change image every 3 seconds
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  const [showPassword, setShowPassword] = useState(false);
-  
   return (
     <div className="auth-wrapper"> 
       <div className="auth-main">
@@ -84,19 +79,14 @@ const SignupPage = () => {
             <input 
               type={showPassword ? "text" : "password"} 
               id="password"
-              placeholder=" " /* Use a space for placeholder to prevent label overlap */
+              placeholder=" " 
               value={password} 
               onChange={e => setPassword(e.target.value)}
               style={{
                 width: "100%",
-                paddingRight: "50px", // Adds space for the text inside
-                paddingLeft: "10px",
-                paddingTop: "12px",
-                fontSize: "16px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                outline: "none",
+                paddingRight: "50px", // Space for show/hide text
               }}
+              required 
               className={password ? "filled" : ""}
             />
             {password && (
@@ -153,7 +143,6 @@ const Footer = () => {
     setShowLanguages(!showLanguages);
   };
 
-  // List of additional languages (for demonstration; you can extend this list)
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
 
   return (
