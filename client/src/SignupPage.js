@@ -39,46 +39,66 @@ const SignupPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-
   const [showPassword, setShowPassword] = useState(false);
   
   return (
     <div className="auth-wrapper"> 
-    <div className="auth-main">
-      <div className="auth-image-slider">
-        <img src={images[currentImage]} alt="Slider" />
-      </div>
+      <div className="auth-main">
+        <div className="auth-image-slider">
+          <img src={images[currentImage]} alt="Slider" />
+        </div>
   
-    <div className="auth-container">
-        <h2>Create Account</h2>
-      <div className="input-wrapper">
-        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required className={name ? "filled" : ""}/>
-        <label htmlFor="name" className={name ? "filled" : ""}>Full Name</label>
-      </div>  
-        <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} required className={email ? "filled" : ""}/>
-        <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
+        <div className="auth-container">
+          <h2>Create Account</h2>
 
+          {/* Full Name Input with Floating Label */}
+          <div className="input-wrapper">
+            <input 
+              type="text" 
+              id="name"
+              placeholder=" " 
+              value={name} 
+              onChange={e => setName(e.target.value)} 
+              required 
+              className={name ? "filled" : ""}
+            />
+            <label htmlFor="name" className={name ? "filled" : ""}>Full Name</label>
+          </div>
+
+          {/* Email Input with Floating Label */}
+          <div className="input-wrapper">
+            <input 
+              type="email" 
+              id="email"
+              placeholder=" " 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              required 
+              className={email ? "filled" : ""}
+            />
+            <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
+          </div>
+
+          {/* Password Input with Show/Hide and Floating Label */}
           <div className="password-container" style={{ position: "relative", width: "100%" }}>
-            {/* Password Input */}
             <input 
               type={showPassword ? "text" : "password"} 
               id="password"
-              placeholder=" "  // Use a space for placeholder to prevent label overlap
+              placeholder=" " /* Use a space for placeholder to prevent label overlap */
               value={password} 
               onChange={e => setPassword(e.target.value)}
               style={{
                 width: "100%",
                 paddingRight: "50px", // Adds space for the text inside
-                paddingLeft: "10px",  // Adjust padding for the label
-                paddingTop: "12px",   // Align the text with the label
+                paddingLeft: "10px",
+                paddingTop: "12px",
                 fontSize: "16px",
                 border: "1px solid #ccc",
                 borderRadius: "4px",
                 outline: "none",
-              }} 
+              }}
+              className={password ? "filled" : ""}
             />
-            
-            {/* Show/Hide Password */}
             {password && (
               <span 
                 onClick={() => setShowPassword(!showPassword)} 
@@ -95,32 +115,31 @@ const SignupPage = () => {
                 {showPassword ? "Hide" : "Show"}
               </span>
             )}
-            
-            {/* Floating Label */}
             <label 
-              htmlFor="password" 
+              htmlFor="password"
               style={{
-                position: "absolute", 
-                left: "10px", 
-                top: password ? "25px" : "50%",  // Moves the label above when the input is filled
-                fontSize: password ? "12px" : "16px",  // Shrinks the font when the label is moved above
-                color: password ? "#007bff" : "#aaa", // Color change on focus
+                position: "absolute",
+                left: "10px",
+                top: password ? "25px" : "50%",
+                fontSize: password ? "12px" : "16px",
+                color: password ? "#007bff" : "#aaa",
                 transition: "0.3s ease all",
                 pointerEvents: "none",
                 transform: "translateY(-50%)",
               }}
+              className={password ? "filled" : ""}
             >
               Password
             </label>
-      </div>
+          </div>
 
-        <button onClick={handleSignup}>Sign Up</button>
+          <button onClick={handleSignup}>Sign Up</button>
 
-        <p>
-          Already have an account? 
-          <span onClick={() => navigate('/')} style={{ color: 'blue', cursor: 'pointer' }}> Login</span>
-        </p>
-      </div>
+          <p>
+            Already have an account? 
+            <span onClick={() => navigate('/')} style={{ color: 'blue', cursor: 'pointer' }}> Login</span>
+          </p>
+        </div>
       </div>
       
       <Footer />
