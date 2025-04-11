@@ -109,21 +109,55 @@ body {
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-.auth-container {
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  padding: 3px 25px;
-  border-radius: 12px;
-  margin-left: 820px;
+/* Wrapper for the entire auth section */
+.auth-wrapper {
+  display: flex; /* Use flexbox to position the slider and the auth container side by side */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 20px; /* Add some gap between the slider and auth container */
 }
 
+/* Auth container for the login/signup form */
+.auth-container {
+  width: 100%;
+  max-width: 400px; /* Set a max width for the form */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px; /* Increased padding for better spacing */
+  border-radius: 12px;
+  margin: 0; /* Remove margin-left */
+  background-color: white; /* Ensure white background */
+  box-sizing: border-box;
+}
+
+/* Image slider styling */
 .auth-image-slider {
   width: 100%;
-  max-width: 500px;
-  padding: 3px 25px;
-  margin-left: 205px;
+  max-width: 600px; /* Resize the slider to be slightly wider */
+  display: block; /* Show by default on PC */
+  box-sizing: border-box;
+  border-radius: 12px; /* Optional: Rounded corners for the image */
 }
+
+/* Ensure images inside the slider are uniformly sized */
+.auth-image-slider img {
+  width: 100%; /* Make sure images are responsive */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 12px; /* Optional: Rounded corners for images */
+  object-fit: cover; /* Crop the image to cover the container without stretching */
+}
+
+/* For phone screens, hide the image slider */
+@media screen and (max-width: 768px) {
+  .auth-image-slider {
+    display: none; /* Hide the image slider on mobile */
+  }
+
+  .auth-container {
+    max-width: 100%; /* Make the auth container take full width on smaller screens */
+  }
+}
+
 
 h1, h2, h3 {
   color: var(--black);
