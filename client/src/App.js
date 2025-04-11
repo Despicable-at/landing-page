@@ -155,7 +155,12 @@ const LoginForm = ({ setToken, setUser }) => {
       <div className="auth-container">
         <h2>Welcome to PFCA CapiGrid</h2>
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+         <div className="password-container">
+    <input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+    <span onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer", marginLeft: "10px" }}>
+      {showPassword ? "Hide" : "Show"}
+    </span>
+  </div>
         <button onClick={handleLogin}>Login</button>
 
         <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
