@@ -145,6 +145,8 @@ const LoginForm = ({ setToken, setUser }) => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="auth-wrapper"> 
     <div className="auth-main">
