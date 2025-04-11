@@ -54,10 +54,10 @@ const SignupPage = () => {
       <div className="input-wrapper">
         <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required className={name ? "filled" : ""}/>
         <label htmlFor="name" className={name ? "filled" : ""}>Full Name</label>
-  
+      </div>  
         <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} required className={email ? "filled" : ""}/>
         <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
-      </div>
+
           <div className="password-container" style={{ position: "relative", width: "100%" }}>
             {/* Password Input */}
             <input 
