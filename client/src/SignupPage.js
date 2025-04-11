@@ -49,33 +49,70 @@ const SignupPage = () => {
         <img src={images[currentImage]} alt="Slider" />
       </div>
   
-      <div className="auth-container">
+    <div className="auth-container">
         <h2>Create Account</h2>
-        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-        <div style={{ position: "relative", width: "100%" }}>
-  <input 
-    type={showPassword ? "text" : "password"} 
-    placeholder="Password" 
-    value={password} 
-    onChange={e => setPassword(e.target.value)}
-    style={{ width: "100%", paddingRight: "50px" }} // Adds space for the text inside
-  />
-  <span 
-    onClick={() => setShowPassword(!showPassword)} 
-    style={{
-      position: "absolute", 
-      right: "10px", 
-      top: "50%", 
-      transform: "translateY(-50%)", 
-      cursor: "pointer",
-      fontSize: "14px",
-      color: "#aaa"
-    }}
-  >
-    {showPassword ? "Hide" : "Show"}
-  </span>
-</div>
+      <div className="input-wrapper">
+        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required className={name ? "filled" : ""}/>
+        <label htmlFor="name" className={name ? "filled" : ""}>Full Name</label>
+  
+        <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} required className={email ? "filled" : ""}/>
+        <label htmlFor="email" className={email ? "filled" : ""}>Email</label>
+      </div>
+          <div className="password-container" style={{ position: "relative", width: "100%" }}>
+            {/* Password Input */}
+            <input 
+              type={showPassword ? "text" : "password"} 
+              id="password"
+              placeholder=" "  // Use a space for placeholder to prevent label overlap
+              value={password} 
+              onChange={e => setPassword(e.target.value)}
+              style={{
+                width: "100%",
+                paddingRight: "50px", // Adds space for the text inside
+                paddingLeft: "10px",  // Adjust padding for the label
+                paddingTop: "12px",   // Align the text with the label
+                fontSize: "16px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                outline: "none",
+              }} 
+            />
+            
+            {/* Show/Hide Password */}
+            {password && (
+              <span 
+                onClick={() => setShowPassword(!showPassword)} 
+                style={{
+                  position: "absolute", 
+                  right: "10px", 
+                  top: "50%", 
+                  transform: "translateY(-50%)", 
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  color: "#aaa"
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            )}
+            
+            {/* Floating Label */}
+            <label 
+              htmlFor="password" 
+              style={{
+                position: "absolute", 
+                left: "10px", 
+                top: password ? "25px" : "50%",  // Moves the label above when the input is filled
+                fontSize: password ? "12px" : "16px",  // Shrinks the font when the label is moved above
+                color: password ? "#007bff" : "#aaa", // Color change on focus
+                transition: "0.3s ease all",
+                pointerEvents: "none",
+                transform: "translateY(-50%)",
+              }}
+            >
+              Password
+            </label>
+      </div>
 
         <button onClick={handleSignup}>Sign Up</button>
 
