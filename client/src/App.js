@@ -107,9 +107,9 @@ const LoginForm = ({ setToken, setUser }) => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-    // Image slider setup
+  // Image slider setup
   const images = [
-    'Campaign.jpg',  //image filenames
+    'Campaign.jpg',  // image filenames
     'Pre-register.jpg',
     'invest.jpg'
   ];
@@ -151,18 +151,19 @@ const LoginForm = ({ setToken, setUser }) => {
         <img src={images[currentImage]} alt="Slider" />
       </div>
   
-    <div className="auth-container">
-      <h2>Welcome to PFCA CapiGrid</h2>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+      <div className="auth-container">
+        <h2>Welcome to PFCA CapiGrid</h2>
+        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+        <button onClick={handleLogin}>Login</button>
 
-      <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
-        <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" style={{ marginRight: '8px' }} />
-        Sign in with Google
-      </button>
+        <button onClick={handleGoogleLogin} style={{ backgroundColor: '#4285F4', marginTop: '15px' }}>
+          <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" style={{ marginRight: '8px' }} />
+          Sign in with Google
+        </button>
 
-      <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
+        <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
+      </div>
     </div>
   );
 };
