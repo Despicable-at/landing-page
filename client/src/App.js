@@ -146,7 +146,6 @@ const LoginForm = ({ setToken, setUser }) => {
   };
 
   return (
-    <div className="auth-wrapper"> 
       <div className="auth-image-slider">
         <img src={images[currentImage]} alt="Slider" />
       </div>
@@ -164,7 +163,6 @@ const LoginForm = ({ setToken, setUser }) => {
 
         <p>Don’t have an account? <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/signup')}>Create one</span></p>
       </div>
-    </div>
   );
 };
 
