@@ -111,11 +111,24 @@ body {
 
 /* Wrapper for the entire auth section */
 .auth-wrapper {
-  display: flex; /* Use flexbox to position the slider and the auth container side by side */
+  display: flex;
+  flex-direction: column;    /* Use column to have auth-main on top and footer at bottom */
+  min-height: 100vh;         /* Full viewport height so footer is at the bottom */
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  gap: 20px; /* Add some gap between the slider and auth container */
+  padding-bottom: 20px;      /* Space for footer */
+  box-sizing: border-box;
+}
+
+.auth-main {
+  display: flex;
+  flex-direction: row;       /* Slider and login form side by side */
+  justify-content: center;
+  align-items: center;
+  gap: 20px;                 /* Space between slider and form */
+  width: 100%;
+  max-width: 1100px;         /* Adjust as needed */
+  box-sizing: border-box;
 }
 
 /* Auth container for the login/signup form */
