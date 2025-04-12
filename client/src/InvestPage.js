@@ -75,7 +75,7 @@ const InvestPage = ({ user }) => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="dashboard-container">
       <h2>PFCA CapiGrid Investment Plan</h2>
       <p>GHS 500 - GHS 10,000 Range | Bonus Equity for GHS 5,000+</p>
 
