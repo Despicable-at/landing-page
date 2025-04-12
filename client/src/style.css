@@ -413,15 +413,19 @@ input[type="file"] {
   font-size: 1.5rem;
 }
 
-.terms-box {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 15px;
-  background: var(--section-bg);
-  margin-bottom: 20px;
-  transition: background-color 0.5s ease;
+.checkbox-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
 }
+
+.checkbox-container label {
+  font-size: 1rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
 
 .thank-you-container {
   width: 100%;
