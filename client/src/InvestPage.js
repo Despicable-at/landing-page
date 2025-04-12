@@ -10,7 +10,7 @@ const InvestPage = ({ user }) => {
 
   const calculateEquity = (amt) => {
     let base = (amt / 500) * 0.05;
-    if (amt >= 5000) base *= 1.1; // 10% Bonus if 5000 or more
+    if (amt >= 5000) base *= 1.1;
     return base.toFixed(2);
   };
 
@@ -18,58 +18,28 @@ const InvestPage = ({ user }) => {
   const decrementAmount = () => setAmount(prev => Math.max(Number(prev) - 100, 500));
 
   const handleProceed = async () => {
-    if (agreed) {
-      try {
-        await axios.post('https://landing-page-gere.onrender.com/save-terms-acceptance', {
-          userId: user?._id,
-          email: user?.email,
-          amount,
-          estimatedEquity: calculateEquity(amount)
-        });
-        navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
-      } catch (err) {
-        console.error(err);
-        alert("Failed to save your acceptance. Try again.");
-      }
-    } else {
+    if (!agreed) {
       alert("You must agree to the terms before proceeding.");
+      return;
+    }
+    try {
+      await axios.post('https://landing-page-gere.onrender.com/save-terms-acceptance', {
+        userId: user?._id,
+        email: user?.email,
+        amount,
+        estimatedEquity: calculateEquity(amount)
+      });
+      navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save your acceptance. Try again.");
     }
   };
 
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text(`PFCA CapiGrid Investment Terms and Conditions\n\n`, 10, 10);
-    doc.text(`1. Investment Overview
-- GHS 500 = 0.05% equity ownership in PFCA CapiGrid.
-- Ownership proportional to company valuation.
-
-2. Share Allocation
-- Ownership rights include dividends & profit-sharing.
-- Shares are non-transferable without consent.
-
-3. Lock-in Period
-- A 12-month lock-in period applies. Early withdrawal is not allowed.
-
-4. Dividends
-- Paid annually based on net profits and board approval.
-
-5. Risks
-- No guarantee of profit or return. Investment involves risks, including loss of capital.
-
-6. Refund Policy
-- Investments are non-refundable after confirmation.
-
-7. Compliance
-- Governed by Ghanaian laws.
-
-8. Termination
-- PFCA CapiGrid may modify or terminate this plan with prior notice.
-
-9. Dispute Resolution
-- Governed by Ghanaian laws and settled by arbitration.
-
-10. Acknowledgment
-- By proceeding, you agree to these terms and accept all associated risks.`, 10, 20);
+    doc.text(`1. Investment Overview\n- GHS 500 = 0.05% equity...`, 10, 20);
     doc.save("PFCA_CapiGrid_Investment_Terms.pdf");
   };
 
@@ -104,16 +74,24 @@ const InvestPage = ({ user }) => {
         <p><strong>8. Dispute:</strong> Settled by arbitration in Ghana.</p>
       </div>
 
-      <div className="checkbox-wrapper">
+      <div className="checkbox-wrapper" style={{ margin: '20px 0' }}>
         <label className="checkbox-label">
-          <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} />
+          <input 
+            type="checkbox" 
+            checked={agreed} 
+            onChange={() => setAgreed(!agreed)} 
+          />
           <span>I agree to the Terms & Conditions</span>
         </label>
       </div>
 
       <button onClick={downloadPDF}>Download Terms (PDF)</button>
-        
-      <button onClick={handleProceed} style={{ marginTop: '20px' }}>Proceed to Payment</button>
+      <button 
+        onClick={handleProceed} 
+        style={{ marginTop: '20px' }}
+      >
+        Proceed to Payment
+      </button>
     </div>
   );
 };
