@@ -96,7 +96,6 @@ const InvestPage = ({ user }) => {
 
     {/* Action Buttons */}
     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-      <button onClick={downloadPDF}>Download Terms (PDF)</button>
       <button onClick={handleProceed}>Proceed to Payment</button>
     </div>
   </div>
