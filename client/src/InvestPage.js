@@ -1,4 +1,3 @@
-// InvestPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
@@ -106,10 +105,13 @@ const InvestPage = ({ user }) => {
       </div>
 
       <button onClick={downloadPDF}>Download Terms (PDF)</button>
-      <br /><br />
-      <label>
-        <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} /> I agree to the Terms & Conditions
-      </label>
+
+      {/* Center the "I agree" checkbox and label */}
+      <div className="checkbox-container">
+        <label>
+          <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} /> I agree to the Terms & Conditions
+        </label>
+      </div>
 
       <button onClick={handleProceed} style={{ marginTop: '20px' }}>Proceed to Payment</button>
     </div>
