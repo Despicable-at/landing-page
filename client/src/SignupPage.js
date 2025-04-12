@@ -76,19 +76,26 @@ const SignupPage = () => {
 
           {/* Password Input with Show/Hide and Floating Label */}
           <div className="password-container" style={{ position: "relative", width: "100%" }}>
+            {/* Password Input */}
             <input 
               type={showPassword ? "text" : "password"} 
               id="password"
-              placeholder=" " 
+              placeholder=" "  // Use a space for placeholder to prevent label overlap
               value={password} 
               onChange={e => setPassword(e.target.value)}
               style={{
                 width: "100%",
-                paddingRight: "50px", // Space for show/hide text
-              }}
-              required 
-              className={password ? "filled" : ""}
+                paddingRight: "50px", // Adds space for the text inside
+                paddingLeft: "10px",  // Adjust padding for the label
+                paddingTop: "12px",   // Align the text with the label
+                fontSize: "16px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                outline: "none",
+              }} 
             />
+            
+            {/* Show/Hide Password */}
             {password && (
               <span 
                 onClick={() => setShowPassword(!showPassword)} 
@@ -105,19 +112,20 @@ const SignupPage = () => {
                 {showPassword ? "Hide" : "Show"}
               </span>
             )}
+            
+            {/* Floating Label */}
             <label 
-              htmlFor="password"
+              htmlFor="password" 
               style={{
-                position: "absolute",
-                left: "10px",
-                top: password ? "25px" : "50%",
-                fontSize: password ? "12px" : "16px",
-                color: password ? "#007bff" : "#aaa",
+                position: "absolute", 
+                left: "10px", 
+                top: password ? "25px" : "50%",  // Moves the label above when the input is filled
+                fontSize: password ? "12px" : "16px",  // Shrinks the font when the label is moved above
+                color: password ? "#007bff" : "#aaa", // Color change on focus
                 transition: "0.3s ease all",
                 pointerEvents: "none",
                 transform: "translateY(-50%)",
               }}
-              className={password ? "filled" : ""}
             >
               Password
             </label>
