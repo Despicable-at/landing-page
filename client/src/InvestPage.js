@@ -74,26 +74,33 @@ const InvestPage = ({ user }) => {
         <p><strong>8. Dispute:</strong> Settled by arbitration in Ghana.</p>
       </div>
 
-      <div className="checkbox-wrapper" style={{ margin: '20px 0' }}>
-        <label className="checkbox-label">
-          <input 
-            type="checkbox" 
-            checked={agreed} 
-            onChange={() => setAgreed(!agreed)} 
-          />
-          <span>I agree to the Terms & Conditions</span>
-        </label>
-      </div>
-
-      <button onClick={downloadPDF}>Download Terms (PDF)</button>
-      <button 
-        onClick={handleProceed} 
-        style={{ marginTop: '20px' }}
-      >
-        Proceed to Payment
-      </button>
+    <div className="checkbox-wrapper" style={{ 
+      display: 'flex',
+      justifyContent: 'center',
+      margin: '25px 0'
+    }}>
+      <label className="checkbox-label" style={{ 
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
+      }}>
+        <input 
+          type="checkbox" 
+          checked={agreed} 
+          onChange={() => setAgreed(!agreed)} 
+          style={{ margin: 0 }}
+        />
+        <span>I agree to the Terms & Conditions</span>
+      </label>
     </div>
-  );
+
+    {/* Action Buttons */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <button onClick={downloadPDF}>Download Terms (PDF)</button>
+      <button onClick={handleProceed}>Proceed to Payment</button>
+    </div>
+  </div>
+);
 };
 
 export default InvestPage;
