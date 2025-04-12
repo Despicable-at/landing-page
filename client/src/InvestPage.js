@@ -105,7 +105,10 @@ const InvestPage = ({ user }) => {
       </div>
 
       <button onClick={downloadPDF}>Download Terms (PDF)</button>
-
+        <label className="checkbox-label">
+    <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} />
+    <span>I agree to the Terms & Conditions</span>
+  </label>
       <button onClick={handleProceed} style={{ marginTop: '20px' }}>Proceed to Payment</button>
     </div>
   );
