@@ -22,9 +22,9 @@ const SignupPage = () => {
 
   // Image slider setup
   const images = [
-    '/images/Campaign.jpg',
-    '/images/Pre-register.jpg',
-    '/images/invest.jpg'
+    '/images/Campaign-Photoroom.png',
+    '/images/Pre-register-Photoroom.png',
+    '/images/invest-Photoroom.png'
   ];
 
   const [currentImage, setCurrentImage] = useState(0);
