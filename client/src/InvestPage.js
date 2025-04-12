@@ -71,10 +71,18 @@ const InvestPage = ({ user }) => {
     doc.save("PFCA_CapiGrid_Investment_Terms.pdf");
   };
 
-  const TermsModal = () => (
-    <div className="terms-modal-overlay">
-      <div className="terms-modal">
+const TermsModal = () => (
+  <div className="terms-modal-overlay">
+    <div className="terms-modal">
+      <div className="modal-header">
+        <button 
+          className="modal-close-button"
+          onClick={() => setShowTermsModal(false)}
+        >
+          &larr; Back
+        </button>
         <h2>PFCA CapiGrid Investment Terms</h2>
+      </div>
         
         <div className="terms-content">
           <p><strong>1. Investment Overview:</strong> You are purchasing equity shares in PFCA CapiGrid...</p>
