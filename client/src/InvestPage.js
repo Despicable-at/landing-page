@@ -49,7 +49,7 @@ const InvestPage = ({ user }) => {
         <div className="amount-selector">
           <button 
             className="amount-button"
-            onClick={() => setAmount(prev => Math.max(500, prev - 100)}
+            onClick={() => setAmount(prev => Math.max(500, prev - 100))}
           >
             -
           </button>
@@ -64,10 +64,10 @@ const InvestPage = ({ user }) => {
               className="amount-input"
             />
           </div>
-          <button 
-            className="amount-button"
-            onClick={() => setAmount(prev => Math.min(10000, prev + 100)}
-          >
+            <button 
+              className="amount-button"
+              onClick={() => setAmount(prev => Math.min(10000, prev + 100))}
+            >
             +
           </button>
         </div>
