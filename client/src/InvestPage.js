@@ -104,17 +104,17 @@ const InvestPage = ({ user }) => {
         <p><strong>8. Dispute:</strong> Settled by arbitration in Ghana.</p>
       </div>
 
+      <div className="checkbox-wrapper">
+        <label className="checkbox-label">
+          <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} />
+          <span>I agree to the Terms & Conditions</span>
+        </label>
+      </div>
+
       <button onClick={downloadPDF}>Download Terms (PDF)</button>
         
       <button onClick={handleProceed} style={{ marginTop: '20px' }}>Proceed to Payment</button>
     </div>
-    <div className="checkbox-wrapper">
-  <label className="checkbox-label">
-    <input type="checkbox" checked={agreed} onChange={() => setAgreed(!agreed)} />
-    <span>I agree to the Terms & Conditions</span>
-  </label>
-</div>
-
   );
 };
 
