@@ -469,22 +469,23 @@ input[type="file"] {
   justify-content: flex-end;
   flex-wrap: wrap;
 }
-
 .modal-close-button {
   position: absolute;
   left: 15px;
   top: 15px;
-  padding: 5px;
-  font-size: 1.2rem;
-  background: rgba(255, 193, 7, 0.1);
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  background: none;
+  border: none;
+  color: var(--primary-yellow);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .download-pdf {
   background: none;
   border: 2px solid var(--primary-yellow);
@@ -600,20 +601,16 @@ input[type="file"] {
 
 /* Mobile amount controls */
 @media (max-width: 480px) {
-    .modal-close-button {
+  .modal-close-button {
     left: 10px;
     top: 10px;
-    width: 30px;
-    height: 30px;
+    font-size: 1.2rem;
+    width: 25px;
+    height: 25px;
   }
   
   .terms-modal {
     padding: 1rem 0.5rem;
-  }
-  
-  .amount-selector {
-    flex-direction: row; /* Keep buttons inline */
-    gap: 0.5rem;
   }
 
   .amount-button {
