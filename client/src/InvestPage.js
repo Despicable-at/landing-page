@@ -4,22 +4,27 @@ import jsPDF from 'jspdf';
 import axios from 'axios';
 
 const InvestPage = ({ user }) => {
-  const [agreed, setAgreed] = useState(false);
   const [amount, setAmount] = useState(500);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [modalAgreed, setModalAgreed] = useState(false);
   const navigate = useNavigate();
 
-  // Maintain existing backend logic
   const calculateEquity = (amt) => {
     let base = (amt / 500) * 0.05;
     if (amt >= 5000) base *= 1.1;
     return base.toFixed(2);
   };
 
-  const handleProceed = async () => {
-    if (!agreed) {
-      alert("You must agree to the terms before proceeding.");
+  const handleProceed = () => {
+    setShowTermsModal(true);
+  };
+
+  const handleTermsAgreement = async () => {
+    if (!modalAgreed) {
+      alert("You must agree to the terms to continue");
       return;
     }
+
     try {
       await axios.post('https://landing-page-gere.onrender.com/save-terms-acceptance', {
         userId: user?._id,
@@ -35,11 +40,57 @@ const InvestPage = ({ user }) => {
   };
 
   const downloadPDF = () => {
-    // Existing PDF generation code
+    const doc = new jsPDF();
+    doc.text(`PFCA CapiGrid Investment Terms and Conditions\n\n`, 10, 10);
+    doc.text(`1. Investment Overview\n- GHS 500 = 0.05% equity ownership...`, 10, 20);
+    doc.save("PFCA_CapiGrid_Investment_Terms.pdf");
   };
 
+  const TermsModal = () => (
+    <div className="terms-modal-overlay">
+      <div className="terms-modal">
+        <h2>PFCA CapiGrid Investment Terms</h2>
+        
+        <div className="terms-content">
+          <p><strong>1. Investment Overview:</strong> You are purchasing equity shares in PFCA CapiGrid...</p>
+          <p><strong>2. Share Allocation:</strong> Equity ownership, dividends, non-transferable without consent.</p>
+          <p><strong>3. Lock-in Period:</strong> 12 months minimum hold period.</p>
+          <p><strong>4. Dividends:</strong> Paid annually if declared by the board.</p>
+          <p><strong>5. Risk:</strong> You acknowledge investment risks including loss of capital.</p>
+          <p><strong>6. Non-Refundable:</strong> Payments cannot be reversed after confirmation.</p>
+          <p><strong>7. Legal:</strong> Governed by Ghanaian Law.</p>
+          <p><strong>8. Dispute:</strong> Settled by arbitration in Ghana.</p>
+        </div>
+
+        <div className="modal-actions">
+          <label className="modal-checkbox">
+            <input
+              type="checkbox"
+              checked={modalAgreed}
+              onChange={(e) => setModalAgreed(e.target.checked)}
+            />
+            <span>I have read and agree to all terms and conditions</span>
+          </label>
+
+          <div className="modal-buttons">
+            <button className="download-pdf" onClick={downloadPDF}>
+              Download Full Terms (PDF)
+            </button>
+            <button 
+              className="agree-button" 
+              onClick={handleTermsAgreement}
+              disabled={!modalAgreed}
+            >
+              Agree & Continue to Payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="dashboard-container" style={{ maxWidth: '800px' }}>
+    <div className="dashboard-container">
       <div className="investment-header">
         <h2>PFCA CapiGrid Investment Plan</h2>
         <p className="investment-subtitle">GHS 500 - GHS 10,000 Range | Bonus Equity for GHS 5,000+</p>
@@ -64,10 +115,10 @@ const InvestPage = ({ user }) => {
               className="amount-input"
             />
           </div>
-            <button 
-              className="amount-button"
-              onClick={() => setAmount(prev => Math.min(10000, prev + 100))}
-            >
+          <button 
+            className="amount-button"
+            onClick={() => setAmount(prev => Math.min(10000, prev + 100))}
+          >
             +
           </button>
         </div>
@@ -84,39 +135,11 @@ const InvestPage = ({ user }) => {
         </div>
       </div>
 
-      <div className="terms-container">
-        <div className="terms-box">
-          <h3 className="terms-title">Investment Terms</h3>
-          {/* Existing terms content */}
-        </div>
+      <button className="proceed-button" onClick={handleProceed}>
+        Review Terms & Proceed to Payment
+      </button>
 
-        <div className="terms-agreement">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="terms-checkbox"
-            />
-            <span>I agree to the Terms & Conditions</span>
-          </label>
-        </div>
-      </div>
-
-      <div className="action-buttons">
-        <button 
-          className="download-button"
-          onClick={downloadPDF}
-        >
-          Download Full Terms (PDF)
-        </button>
-        <button 
-          className="proceed-button"
-          onClick={handleProceed}
-        >
-          Proceed to Secure Payment
-        </button>
-      </div>
+      {showTermsModal && <TermsModal />}
     </div>
   );
 };
