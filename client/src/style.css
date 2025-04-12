@@ -412,25 +412,128 @@ input[type="file"] {
 .invest-amount-container button {
   font-size: 1.5rem;
 }
+/* Investment Control Styles */
+.amount-control-container {
+  background: var(--section-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
 
-.checkbox-wrapper {
-  width: 100%;
-  padding: 15px 0;
+.amount-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.amount-button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--primary-yellow);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.amount-button:hover {
+  transform: scale(1.1);
+}
+
+.amount-display {
+  position: relative;
+  border: 2px solid var(--primary-yellow);
+  border-radius: 8px;
+  padding: 1rem 2rem;
+}
+
+.amount-input {
+  font-size: 1.8rem;
+  width: 120px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.equity-display {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.metric-box {
+  background: var(--box-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--primary-yellow);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.download-button {
+  background: transparent;
+  border: 2px solid var(--primary-yellow);
+  color: var(--primary-yellow);
+}
+
+.proceed-button {
+  background: var(--primary-yellow);
+  color: var(--black);
+  font-weight: bold;
+  padding: 1rem 2rem;
+}
+
+.download-button:hover,
+.proceed-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Terms Agreement */
+.terms-agreement {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--section-bg);
+  border-radius: 8px;
 }
 
 .checkbox-label {
-  font-size: 0.95rem;
-  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
 }
 
-.checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-}
-
-.terms-box {
-  margin-bottom: 25px; /* Creates space before checkbox */
+.terms-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary-yellow);
 }
 
 
