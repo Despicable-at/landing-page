@@ -49,7 +49,7 @@ const App = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-    setMenuOpen(false); // Close hamburger after navigating
+    setMenuOpen(false);
   };
 
   return (
@@ -108,7 +108,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -153,7 +153,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             <button 
               className="slider-button"
               onClick={() => {
-                setIsSwitching(true);
+                setIsSwitching(!isSwitching);
                 setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
               }}
             >
@@ -219,7 +219,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
             <span 
               onClick={() => {
-                setIsSwitching(true);
+                setIsSwitching(!isSwitching);
                 setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
               }}
             >
@@ -239,7 +239,6 @@ const Footer = () => {
     setShowLanguages(!showLanguages);
   };
 
-  // List of additional languages (for demonstration; you can extend this list)
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
 
   return (
