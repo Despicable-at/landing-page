@@ -37,7 +37,14 @@ const App = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     localStorage.setItem('darkMode', newMode);
+    // Add dark class to body and specific elements
     document.body.className = newMode ? 'dark' : '';
+    const elementsToUpdate = [
+      ...document.querySelectorAll('.auth-container-switch, .footer, .auth-wrapper')
+    ];
+    elementsToUpdate.forEach(el => {
+      el.classList.toggle('dark-mode', newMode);
+    });
   };
 
   const handleLogout = () => {
