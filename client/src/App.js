@@ -111,7 +111,6 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   const [isSwitching, setIsSwitching] = useState(false);
   const navigate = useNavigate();
 
-    // Update handle navigation
   const handleSwitch = () => {
     setIsSwitching(true);
     setTimeout(() => {
@@ -119,7 +118,6 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
       setIsSwitching(false);
     }, 600);
   };
-
 
   const handleSubmit = async () => {
     try {
@@ -149,14 +147,9 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
-  const AuthForm = ({ isLogin, setToken, setUser }) => {
-  // ... other state
-  const [isSwitching, setIsSwitching] = useState(false);
-
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        {/* Desktop Image Slider */}
         <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}>
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
@@ -174,11 +167,9 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
           </div>
         </div>
 
-        {/* Form Container */}
         <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
           <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
           
-          {/* Mobile Header */}
           <div className="mobile-auth-header">
             <h2>{isLogin ? 'CapiGrid' : 'Create Account'}</h2>
           </div>
@@ -247,7 +238,6 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
               </>
             )}
           </div>
-
 
           <p className="auth-switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
