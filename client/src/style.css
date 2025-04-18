@@ -155,7 +155,7 @@ body {
 .auth-image-slider.login-panel {
   background: 
     linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
-    url('/images/freepik2.png') center/cover;
+    url('https://capigrid-frontend.onrender.com/images/freepik2.png') center/cover;
 }
 
 
@@ -163,7 +163,7 @@ body {
 .auth-image-slider.signup-panel {
   background: 
     linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
-    url('/images/freepik1.png') center/cover;
+    url('https://capigrid-frontend.onrender.com/images/freepik1.png') center/cover;
 }
 
 .slider-content {
