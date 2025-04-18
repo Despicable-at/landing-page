@@ -108,16 +108,8 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
-
-  const handleSwitch = () => {
-    setIsSwitching(true);
-    setTimeout(() => {
-      navigate(isLogin ? '/signup' : '/');
-      setIsSwitching(false);
-    }, 600);
-  };
 
   const handleSubmit = async () => {
     try {
@@ -160,20 +152,21 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             </p>
             <button 
               className="slider-button"
-              onClick={handleSwitch}
+              onClick={() => {
+                setIsSwitching(!isSwitching);
+                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
+              }}
             >
               {isLogin ? 'SIGN UP' : 'SIGN IN'}
             </button>
           </div>
         </div>
 
+        {/* Form Container */}
         <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
           <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
           
-          <div className="mobile-auth-header">
-            <h2>{isLogin ? 'CapiGrid' : 'Create Account'}</h2>
-          </div>
-          
+          {/* Form Fields */}
           <div className="auth-fields">
             {!isLogin && (
               <div className="input-wrapper">
@@ -241,7 +234,12 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
 
           <p className="auth-switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-            <span onClick={handleSwitch}>
+            <span 
+              onClick={() => {
+                setIsSwitching(!isSwitching);
+                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
+              }}
+            >
               {isLogin ? 'Sign up' : 'Log in'}
             </span>
           </p>
