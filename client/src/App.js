@@ -164,9 +164,10 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
           </div>
         </div>
 
-        <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
+       <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
           <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
 
+          {/* Name Input (only shown for signup) */}
           {!isLogin && (
             <div className="input-wrapper">
               <input
@@ -175,11 +176,13 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
                 required
+                placeholder=" "
               />
               <label htmlFor="name">Full Name</label>
             </div>
           )}
 
+          {/* Email Input */}
           <div className="input-wrapper">
             <input
               type="email"
@@ -187,23 +190,32 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}
               required
+              placeholder=" "
             />
             <label htmlFor="email">Email</label>
           </div>
 
+          {/* Password Input */}
           <div className="password-container">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              id="password"
-              value={formData.password} 
-              onChange={e => setFormData({...formData, password: e.target.value})}
-            />
-            {formData.password && (
-              <span onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? "Hide" : "Show"}
-              </span>
-            )}
-            <label htmlFor="password">Password</label>
+            <div className="input-wrapper">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                id="password"
+                value={formData.password} 
+                onChange={e => setFormData({...formData, password: e.target.value})}
+                required
+                placeholder=" "
+              />
+              <label htmlFor="password">Password</label>
+              {formData.password && (
+                <span 
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </span>
+              )}
+            </div>
           </div>
 
           <button className="auth-button" onClick={handleSubmit}>
