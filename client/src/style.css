@@ -272,8 +272,27 @@ body {
 
 .password-container {
   position: relative;
-  width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
+}
+.password-container .input-wrapper {
+  margin-bottom: 0;
+}
+
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  background: white;
+  padding: 0 5px;
+}
+
+.password-toggle:hover {
+  color: #007bff;
 }
 
 .password-container span {
