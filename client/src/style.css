@@ -33,6 +33,20 @@ body {
   overflow-x: hidden;
 }
 
+/* dark mode */
+.dark-mode.auth-container-switch {
+  background: #000 !important;
+}
+
+.dark-mode.footer {
+  background: #1e1e1e !important;
+  color: white !important;
+}
+
+.dark-mode.auth-wrapper {
+  background: #1e1e1e !important;
+}
+
 /* Navbar */
 .navbar {
   display: flex;
