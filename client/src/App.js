@@ -108,7 +108,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(!isLogin);
+  const [isSwitching, setIsSwitching] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -142,7 +142,11 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}>
+        <div className="mobile-auth-header">
+          <h2>{isLogin ? 'CapiGrid' : 'Create Account'}</h2>
+        </div>
+
+        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'}`}>
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
             <p>
@@ -152,21 +156,16 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             </p>
             <button 
               className="slider-button"
-              onClick={() => {
-                setIsSwitching(!isSwitching);
-                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
-              }}
+              onClick={() => navigate(isLogin ? '/signup' : '/')}
             >
               {isLogin ? 'SIGN UP' : 'SIGN IN'}
             </button>
           </div>
         </div>
 
-        {/* Form Container */}
-        <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
-          <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
+        <div className="auth-container">
+          <h2 className="desktop-title">{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
           
-          {/* Form Fields */}
           <div className="auth-fields">
             {!isLogin && (
               <div className="input-wrapper">
@@ -234,12 +233,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
 
           <p className="auth-switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-            <span 
-              onClick={() => {
-                setIsSwitching(!isSwitching);
-                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
-              }}
-            >
+            <span onClick={() => navigate(isLogin ? '/signup' : '/')}>
               {isLogin ? 'Sign up' : 'Log in'}
             </span>
           </p>
