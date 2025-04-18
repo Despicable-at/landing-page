@@ -142,7 +142,9 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        <div className={`auth-image-slider ${isSwitching ? 'switch' : ''}`}>
+        <div 
+          className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}
+        >
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
             <p>
