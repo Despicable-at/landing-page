@@ -139,14 +139,25 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
+  const AuthForm = ({ isLogin, setToken, setUser }) => {
+  // ... other state
+  const [isSwitching, setIsSwitching] = useState(false);
+
+  // Update handle navigation
+  const handleSwitch = () => {
+    setIsSwitching(true);
+    setTimeout(() => {
+      navigate(isLogin ? '/signup' : '/');
+      setIsSwitching(false);
+    }, 600);
+  };
+
+
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        <div className="mobile-auth-header">
-          <h2>{isLogin ? 'CapiGrid' : 'Create Account'}</h2>
-        </div>
-
-        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'}`}>
+        {/* Desktop Image Slider */}
+        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}>
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
             <p>
@@ -156,15 +167,21 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             </p>
             <button 
               className="slider-button"
-              onClick={() => navigate(isLogin ? '/signup' : '/')}
+              onClick={handleSwitch}
             >
               {isLogin ? 'SIGN UP' : 'SIGN IN'}
             </button>
           </div>
         </div>
 
-        <div className="auth-container">
-          <h2 className="desktop-title">{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
+        {/* Form Container */}
+        <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
+          <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
+          
+          {/* Mobile Header */}
+          <div className="mobile-auth-header">
+            <h2>{isLogin ? 'CapiGrid' : 'Create Account'}</h2>
+          </div>
           
           <div className="auth-fields">
             {!isLogin && (
@@ -231,9 +248,10 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
             )}
           </div>
 
+
           <p className="auth-switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-            <span onClick={() => navigate(isLogin ? '/signup' : '/')}>
+            <span onClick={handleSwitch}>
               {isLogin ? 'Sign up' : 'Log in'}
             </span>
           </p>
