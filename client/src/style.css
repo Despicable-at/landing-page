@@ -133,7 +133,6 @@ body {
 
 .auth-image-slider {
   flex: 1;
-  background: linear-gradient(45deg, #FFC107, #ff8b07);
   padding: 40px;
   color: white;
   display: flex;
@@ -144,10 +143,27 @@ body {
   position: absolute;
   width: 50%;
   height: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 .auth-image-slider.switch {
   transform: translateX(100%);
+}
+
+/* Login Panel Background */
+.auth-image-slider.login-panel {
+  background: 
+    linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
+    url('/images/freepik2.png') center/cover;
+}
+
+
+/* Signup Panel Background */
+.auth-image-slider.signup-panel {
+  background: 
+    linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
+    url('/images/freepik1.png') center/cover;
 }
 
 .slider-content {
