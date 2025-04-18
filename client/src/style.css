@@ -97,7 +97,19 @@ body {
   background-color: #333;
 }
 
-/* Auth Components */
+/* Containers */
+.dashboard-container, .section {
+  width: 100%;
+  max-width: 900px;
+  margin: 30px auto;
+  background: var(--box-bg);
+  padding: 35px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Wrapper for the entire auth section */
 .auth-wrapper {
   display: flex;
   flex-direction: column;
@@ -121,8 +133,6 @@ body {
 
 .auth-image-slider {
   flex: 1;
-  background: linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
-    url('https://capigrid-frontend.onrender.com/images/freepik2.png') center/cover;
   padding: 40px;
   color: white;
   display: flex;
@@ -133,10 +143,26 @@ body {
   position: absolute;
   width: 50%;
   height: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
+.auth-image-slider.switch {
+  transform: translateX(100%);
+}
+
+/* Login Panel Background */
+.auth-image-slider.login-panel {
+  background: 
+    linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
+    url('https://capigrid-frontend.onrender.com/images/freepik2.png') center/cover;
+}
+
+
+/* Signup Panel Background */
 .auth-image-slider.signup-panel {
-  background: linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
+  background: 
+    linear-gradient(45deg, rgba(255, 193, 7, 0.85), rgba(255, 139, 7, 0.85)),
     url('https://capigrid-frontend.onrender.com/images/freepik1.png') center/cover;
 }
 
@@ -184,6 +210,10 @@ body {
   height: 100%;
 }
 
+.auth-container.switch {
+  transform: translateX(-100%);
+}
+
 .auth-container h2 {
   color: #333;
   font-size: 2rem;
@@ -194,17 +224,17 @@ body {
 .input-wrapper {
   position: relative;
   margin-bottom: 25px;
-  width: 100%;
+  width: 100%; /* Ensure full width */
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 12px 40px 12px 15px;
+  padding: 12px 40px 12px 15px; /* Consistent padding */
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .input-wrapper label {
@@ -230,10 +260,24 @@ body {
   background: white;
 }
 
+/* avoid overlapping */
+.input-wrapper input::placeholder {
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.input-wrapper input:focus::placeholder {
+  opacity: 1;
+}
+
 .password-container {
   position: relative;
   margin-bottom: 20px;
 }
+.password-container .input-wrapper {
+  margin-bottom: 0;
+}
+
 
 .password-toggle {
   position: absolute;
@@ -245,6 +289,19 @@ body {
   font-size: 14px;
   background: white;
   padding: 0 5px;
+}
+
+.password-toggle:hover {
+  color: #007bff;
+}
+
+.password-container span {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
 }
 
 .auth-button {
@@ -259,6 +316,10 @@ body {
   transition: 0.3s all ease;
 }
 
+.auth-button:hover {
+  background: #ffb300;
+}
+
 .google-button {
   width: 100%;
   padding: 15px;
@@ -271,6 +332,100 @@ body {
   justify-content: center;
   gap: 10px;
   cursor: pointer;
+  transition: 0.3s all ease;
+}
+
+.google-button:hover {
+  background: #f8f9fa;
+}
+
+.auth-switch-text {
+  margin-top: 20px;
+  color: #666;
+}
+
+.auth-switch-text span {
+  color: #FFC107;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
+/* Mobile-first responsive styles */
+@media (max-width: 768px) {
+  .auth-wrapper {
+    padding: 0;
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-main {
+    flex: 1;
+    flex-direction: column;
+    min-height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100%;
+    position: relative;
+    overflow: visible;
+  }
+
+  .auth-image-slider {
+    display: none;
+  }
+
+  .auth-container {
+    position: relative;
+    width: 100%;
+    padding: 40px 20px;
+    box-shadow: none;
+    background: white;
+    transform: none !important;
+    height: auto;
+  }
+
+  .auth-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+
+  .auth-switch-text {
+    position: static;
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 1px solid #dbdbdb;
+    background: transparent;
+  }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 769px) {
+  .auth-image-slider {
+    display: flex;
+  }
+}
+
+/* For phone screens, hide the image slider */
+@media screen and (max-width: 768px) {
+  .auth-image-slider {
+    display: none;
+  }
+
+  .auth-container {
+    position: relative !important;
+    transform: none !important;
+    width: 100% !important;
+    right: auto !important;
+    height: auto !important;
+  }
+}
+
+/* Add these to your style.css */
+.auth-fields {
+  width: 100%;
+  max-width: 350px;
 }
 
 .divider {
@@ -289,72 +444,26 @@ body {
   border-bottom: 1px solid #dbdbdb;
 }
 
-.auth-switch-text {
-  margin-top: 20px;
-  color: #666;
-  text-align: center;
+.divider::before {
+  margin-right: 10px;
 }
 
-.auth-switch-text span {
-  color: #FFC107;
-  cursor: pointer;
-  font-weight: 500;
+.divider::after {
+  margin-left: 10px;
 }
 
-/* Mobile Styles */
-.mobile-auth-header {
-  display: none;
-}
-
+/* Mobile-specific adjustments */
 @media (max-width: 768px) {
-  .auth-wrapper {
-    padding: 0;
-    background: white;
-  }
-
-  .auth-main {
-    flex-direction: column;
-    min-height: 100vh;
-    border-radius: 0;
-    box-shadow: none;
-    max-width: 100%;
-  }
-
-  .auth-image-slider {
-    display: none;
-  }
-
-  .auth-container {
-    position: relative;
-    width: 100% !important;
-    height: auto !important;
-    padding: 30px 20px !important;
-    transform: none !important;
-    right: auto !important;
-  }
-
-  .auth-container h2 {
-    display: none;
-  }
-
-  .mobile-auth-header {
-    display: block;
-    text-align: center;
-    padding: 40px 20px 20px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .auth-switch-text {
-    position: static;
-    margin-top: 20px;
-    padding: 15px;
-    border-top: 1px solid #dbdbdb;
-    background: transparent;
-  }
-
   .auth-fields {
-    width: 100%;
-    max-width: 100%;
+    padding: 0 10px;
+  }
+  
+  .auth-button {
+    margin-top: 10px;
+  }
+  
+  .google-button {
+    margin-top: 10px;
   }
 }
 
