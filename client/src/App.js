@@ -111,6 +111,16 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   const [isSwitching, setIsSwitching] = useState(false);
   const navigate = useNavigate();
 
+    // Update handle navigation
+  const handleSwitch = () => {
+    setIsSwitching(true);
+    setTimeout(() => {
+      navigate(isLogin ? '/signup' : '/');
+      setIsSwitching(false);
+    }, 600);
+  };
+
+
   const handleSubmit = async () => {
     try {
       if (isLogin) {
@@ -142,16 +152,6 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   const AuthForm = ({ isLogin, setToken, setUser }) => {
   // ... other state
   const [isSwitching, setIsSwitching] = useState(false);
-
-  // Update handle navigation
-  const handleSwitch = () => {
-    setIsSwitching(true);
-    setTimeout(() => {
-      navigate(isLogin ? '/signup' : '/');
-      setIsSwitching(false);
-    }, 600);
-  };
-
 
   return (
     <div className="auth-wrapper">
