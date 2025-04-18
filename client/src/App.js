@@ -142,9 +142,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        <div 
-          className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}
-        >
+        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}>
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
             <p>
@@ -164,39 +162,38 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
           </div>
         </div>
 
-       <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
+        {/* Form Container */}
+        <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
           <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
+          
+          {/* Form Fields */}
+          <div className="auth-fields">
+            {!isLogin && (
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={e => setFormData({...formData, name: e.target.value})}
+                  required
+                  placeholder=" "
+                />
+                <label htmlFor="name">Full Name</label>
+              </div>
+            )}
 
-          {/* Name Input (only shown for signup) */}
-          {!isLogin && (
             <div className="input-wrapper">
               <input
-                type="text"
-                id="name"
-                value={formData.name}
-                onChange={e => setFormData({...formData, name: e.target.value})}
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={e => setFormData({...formData, email: e.target.value})}
                 required
                 placeholder=" "
               />
-              <label htmlFor="name">Full Name</label>
+              <label htmlFor="email">Email</label>
             </div>
-          )}
 
-          {/* Email Input */}
-          <div className="input-wrapper">
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={e => setFormData({...formData, email: e.target.value})}
-              required
-              placeholder=" "
-            />
-            <label htmlFor="email">Email</label>
-          </div>
-
-          {/* Password Input */}
-          <div className="password-container">
             <div className="input-wrapper">
               <input 
                 type={showPassword ? "text" : "password"} 
@@ -216,18 +213,24 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
                 </span>
               )}
             </div>
-          </div>
 
-          <button className="auth-button" onClick={handleSubmit}>
-            {isLogin ? 'Login' : 'Sign Up'}
-          </button>
-
-          {isLogin && (
-            <button className="google-button" onClick={handleGoogleLogin}>
-              <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
-              Sign in with Google
+            <button className="auth-button" onClick={handleSubmit}>
+              {isLogin ? 'Log In' : 'Sign Up'}
             </button>
-          )}
+
+            {isLogin && (
+              <>
+                <div className="divider">
+                  <span>OR</span>
+                </div>
+                
+                <button className="google-button" onClick={handleGoogleLogin}>
+                  <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
+                  Continue with Google
+                </button>
+              </>
+            )}
+          </div>
 
           <p className="auth-switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
@@ -237,7 +240,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
                 setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
               }}
             >
-              {isLogin ? 'Create one' : 'Login'}
+              {isLogin ? 'Sign up' : 'Log in'}
             </span>
           </p>
         </div>
