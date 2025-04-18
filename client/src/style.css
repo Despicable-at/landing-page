@@ -223,18 +223,18 @@ body {
 
 .input-wrapper {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  width: 100%; /* Ensure full width */
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 12px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 12px 40px 12px 15px; /* Consistent padding */
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .input-wrapper label {
