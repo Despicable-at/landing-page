@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import SignupPage from './SignupPage';
 import VerifyEmail from './VerifyEmail';
 import Dashboard from './Dashboard';
 import OAuthCallback from './OAuthCallback';
@@ -83,9 +82,9 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={
-          token ? <Navigate to="/dashboard" /> : <LoginForm setToken={setToken} setUser={setUser} />
+          token ? <Navigate to="/dashboard" /> : <AuthForm isLogin={true} setToken={setToken} setUser={setUser} />
         } />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signup" element={<AuthForm isLogin={false} setToken={setToken} setUser={setUser} />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={
           token
@@ -102,19 +101,42 @@ const App = () => {
   );
 };
 
-const LoginForm = ({ setToken, setUser }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const AuthForm = ({ isLogin, setToken, setUser }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    // Keep your existing login logic
+  const handleSubmit = async () => {
+    try {
+      if (isLogin) {
+        const res = await axios.post('https://landing-page-gere.onrender.com/login', formData);
+        localStorage.setItem('token', res.data.token);
+        setToken(res.data.token);
+        setUser(res.data.user);
+        navigate('/dashboard');
+      } else {
+        const res = await axios.post('https://landing-page-gere.onrender.com/signup', formData);
+        alert(res.data.message);
+        localStorage.setItem('pendingEmail', formData.email);
+        navigate('/verify');
+      }
+    } catch (err) {
+      if (isLogin && err.response?.status === 403 && err.response?.data?.status === 'unverified') {
+        localStorage.setItem('pendingEmail', formData.email);
+        navigate('/verify');
+      } else {
+        alert(err.response?.data?.message || (isLogin ? 'Login failed' : 'Signup failed'));
+      }
+    }
   };
 
   const handleGoogleLogin = () => {
-    // Keep your existing Google login logic
+    window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
   };
 
   return (
@@ -122,45 +144,59 @@ const LoginForm = ({ setToken, setUser }) => {
       <div className="auth-main">
         <div className={`auth-image-slider ${isSwitching ? 'switch' : ''}`}>
           <div className="slider-content">
-            <h2>Welcome Back!</h2>
-            <p>To keep connected with us please login with your personal info</p>
+            <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
+            <p>
+              {isLogin 
+                ? 'To keep connected with us please login with your personal info'
+                : 'Enter your personal details and start journey with us'}
+            </p>
             <button 
               className="slider-button"
               onClick={() => {
                 setIsSwitching(true);
-                setTimeout(() => navigate('/signup'), 600);
+                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
               }}
             >
-              SIGN IN
+              {isLogin ? 'SIGN UP' : 'SIGN IN'}
             </button>
           </div>
         </div>
 
         <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
-          <h2>Sign in to CapiGrid</h2>
-          
-          {/* Email Input */}
+          <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
+
+          {!isLogin && (
+            <div className="input-wrapper">
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+                required
+              />
+              <label htmlFor="name">Full Name</label>
+            </div>
+          )}
+
           <div className="input-wrapper">
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={e => setFormData({...formData, email: e.target.value})}
               required
-              className={email ? "filled" : ""}
             />
             <label htmlFor="email">Email</label>
           </div>
 
-          {/* Password Input */}
           <div className="password-container">
             <input 
               type={showPassword ? "text" : "password"} 
               id="password"
-              value={password} 
-              onChange={e => setPassword(e.target.value)}
+              value={formData.password} 
+              onChange={e => setFormData({...formData, password: e.target.value})}
             />
-            {password && (
+            {formData.password && (
               <span onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? "Hide" : "Show"}
               </span>
@@ -168,25 +204,26 @@ const LoginForm = ({ setToken, setUser }) => {
             <label htmlFor="password">Password</label>
           </div>
 
-          <button className="auth-button" onClick={handleLogin}>Login</button>
-
-          <button 
-            className="google-button" 
-            onClick={handleGoogleLogin}
-          >
-            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
-            Sign in with Google
+          <button className="auth-button" onClick={handleSubmit}>
+            {isLogin ? 'Login' : 'Sign Up'}
           </button>
 
+          {isLogin && (
+            <button className="google-button" onClick={handleGoogleLogin}>
+              <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
+              Sign in with Google
+            </button>
+          )}
+
           <p className="auth-switch-text">
-            Don’t have an account? {' '}
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
             <span 
               onClick={() => {
                 setIsSwitching(true);
-                setTimeout(() => navigate('/signup'), 600);
+                setTimeout(() => navigate(isLogin ? '/signup' : '/'), 600);
               }}
             >
-              Create one
+              {isLogin ? 'Create one' : 'Login'}
             </span>
           </p>
         </div>
