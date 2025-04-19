@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import './style.css';
-import { NotificationContext } from '../context/NotificationContext';
+import { NotificationContext } from './NotificationContext';
 
 const Profile = ({ user, setUser }) => {
   const [name, setName] = useState(user?.name || '');
