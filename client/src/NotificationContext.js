@@ -1,16 +1,16 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useCallback, useContext } from 'react';
 import Notification from './Notification';
 
-// 1️⃣ Create context
-const NotificationContext = createContext();
+// Create and export the context
+export const NotificationContext = createContext();
 
-// 2️⃣ Create provider component
+// Create provider component
 export const NotificationProvider = ({ children }) => {
   const [notification, setNotification] = useState(null);
 
-  const showNotification = (type, message) => {
+  const showNotification = useCallback((type, message) => {
     setNotification({ type, message });
-  };
+  }, []);
 
   return (
     <NotificationContext.Provider value={showNotification}>
@@ -26,10 +26,7 @@ export const NotificationProvider = ({ children }) => {
   );
 };
 
-// 3️⃣ Create custom hook for consumption
+// Create custom hook
 export const useNotification = () => {
   return useContext(NotificationContext);
 };
-
-// 4️⃣ Export context as default
-export default NotificationContext;
