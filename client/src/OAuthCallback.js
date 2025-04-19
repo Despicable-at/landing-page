@@ -1,26 +1,59 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { NotificationContext } from './NotificationContext';
+import { useNotification } from './NotificationContext';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const showNotification = useContext(NotificationContext);
+  const showNotification = useNotification();
+  const [status, setStatus] = useState('Processing authentication...');
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('token');
+    const handleOAuthCallback = async () => {
+      try {
+        const urlParams = new URLSearchParams(location.search);
+        const token = urlParams.get('token');
+        const error = urlParams.get('error');
 
-    if (token) {
-      localStorage.setItem('token', token);
-      navigate('/dashboard');
-    } else {
-      showNotification('error', "Google login failed");
-      navigate('/');
-    }
-  }, [navigate, location]);
+        if (error) {
+          throw new Error(error || 'Authentication failed');
+        }
 
-  return <p>Logging you in...</p>;
+        if (!token) {
+          throw new Error('No authentication token received');
+        }
+
+        // Validate token format before storing
+        if (typeof token !== 'string' || token.length < 10) {
+          throw new Error('Invalid token format');
+        }
+
+        // Store token in sessionStorage instead of localStorage
+        sessionStorage.setItem('token', token);
+        
+        setStatus('Authentication successful! Redirecting...');
+        showNotification('success', 'Logged in successfully');
+        
+        // Wait for notification to show before redirect
+        setTimeout(() => navigate('/dashboard'), 1500);
+
+      } catch (err) {
+        const errorMessage = err.message.replace(/_/g, ' ');
+        setStatus(`Error: ${errorMessage}`);
+        showNotification('error', errorMessage);
+        setTimeout(() => navigate('/'), 3000);
+      }
+    };
+
+    handleOAuthCallback();
+  }, [navigate, location, showNotification]);
+
+  return (
+    <div className="oauth-callback-container">
+      <div className="loading-spinner"></div>
+      <p className="status-message">{status}</p>
+    </div>
+  );
 };
 
 export default OAuthCallback;
