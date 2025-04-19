@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import axios from 'axios';
+import { NotificationContext } from '../context/NotificationContext';
 
 const InvestPage = ({ user }) => {
   const [amount, setAmount] = useState(500);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const navigate = useNavigate();
+  const showNotification = useContext(NotificationContext);
 
   const calculateEquity = (amt) => {
     let base = (amt / 500) * 0.05;
@@ -14,35 +16,23 @@ const InvestPage = ({ user }) => {
     return base.toFixed(2);
   };
 
-  const handleProceed = () => {
-    setShowTermsModal(true);
+  const handleProceed = () => setShowTermsModal(true);
+
+  const handleTermsAgreement = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'https://landing-page-gere.onrender.com/process-investment',
+        { amount: Number(amount), termsAccepted: true },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to process agreement";
+      showNotification('error', msg);
+    }
   };
 
-const handleTermsAgreement = async () => {
-  try {
-    // Get the auth token from localStorage
-    const token = localStorage.getItem('token');
-    
-    // Use the correct endpoint and format
-    await axios.post(
-      'https://landing-page-gere.onrender.com/process-investment',
-      {
-        amount: Number(amount),
-        termsAccepted: true
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    
-    navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
-  } catch (err) {
-    console.error('Investment Error:', err.response?.data || err.message);
-    alert(err.response?.data?.message || "Failed to process your agreement. Please try again.");
-  }
-};
 
   const downloadPDF = () => {
     const doc = new jsPDF();
