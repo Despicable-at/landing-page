@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import axios from 'axios';
-import { NotificationContext } from '../context/NotificationContext';
+import { NotificationContext } from './NotificationContext';
 
 const InvestPage = ({ user }) => {
   const [amount, setAmount] = useState(500);
