@@ -11,24 +11,30 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const showNotification = useNotification();
 
 useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    navigate('/login');
+    return;
+  }
+
   const fetchCampaigns = async () => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setCampaigns(res.data);
     } catch (err) {
-      console.error('Failed to fetch campaigns', err);
       if (err.response?.status === 401) {
-        // Keep session expiration notification but remove campaign error
-        logout();
+        localStorage.removeItem('token');
         navigate('/login');
       }
-      // Removed all other notifications for campaigns
     } finally {
       setLoading(false);
     }
   };
+
+  fetchCampaigns();
+}, [navigate]); // Only navigate dependency
 
   // Check both token and user existence
   const token = localStorage.getItem('token');
