@@ -99,6 +99,23 @@ app.get('/auth/google/callback',
   }
 );
 
+app.get('/verify-payment/:reference', async (req, res) => {
+  try {
+    const response = await axios.get(
+      `https://api.paystack.co/transaction/verify/${req.params.reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+        }
+      }
+    );
+    res.json(response.data);
+  } catch (err) {
+    console.error('Verify Payment Error:', err);
+    res.status(500).json({ error: 'Payment verification failed' });
+  }
+});
+
 // ✅ Root
 app.get('/', (req, res) => res.send('PFCA CapiGrid Backend is running ✅'));
 
@@ -315,6 +332,44 @@ app.post('/upload-image', async (req, res) => {
   } catch (err) {
     console.error('Cloudinary Upload Error:', err);
     res.status(500).json({ error: 'Cloudinary upload failed' });
+  }
+});
+
+app.post('/record-investment', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const investment = new InvestmentAgreement({
+      userId: decoded.id,
+      amount: req.body.amount,
+      termsAccepted: true,
+      paymentRef: req.body.paystackRef
+    });
+    await investment.save();
+    res.json({ message: 'Investment recorded' });
+  } catch (err) {
+    console.error('Record Investment Error:', err);
+    res.status(500).json({ message: 'Failed to record investment' });
+  }
+});
+
+app.post('/send-investment-receipt', async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: req.body.email,
+      subject: 'PFCA CapiGrid Investment Confirmation',
+      html: `
+        <h2>Investment Confirmation</h2>
+        <p>Amount: GHS ${req.body.amount}</p>
+        <p>Equity: ${req.body.equityPercent}%</p>
+        <p>Reference: ${req.body.paystackRef}</p>
+      `
+    });
+    res.json({ message: 'Receipt sent' });
+  } catch (err) {
+    console.error('Send Receipt Error:', err);
+    res.status(500).json({ message: 'Failed to send receipt' });
   }
 });
 
