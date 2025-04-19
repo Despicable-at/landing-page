@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
-import { NotificationContext } from './NotificationContext';
+import { useNotification } from './NotificationContext';
 
 const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
-  const showNotification = useContext(NotificationContext);
+  const [loading, setLoading] = useState(true);
+  const showNotification = useNotification();
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -18,11 +19,37 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
         setCampaigns(res.data);
       } catch (err) {
         console.error('Failed to fetch campaigns', err);
-        showNotification('error', 'Failed to load campaigns');
+        if (err.response?.status === 401) {
+          showNotification('error', 'Session expired - please login again');
+          logout();
+        } else {
+          showNotification('error', 'Failed to load campaigns');
+        }
+      } finally {
+        setLoading(false);
       }
     };
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
     fetchCampaigns();
-  }, []);
+  }, [user, navigate, logout, showNotification]);
+
+  const handlePreRegister = async () => {
+    try {
+      await axios.post('https://landing-page-gere.onrender.com/pre-register', { 
+        email: user?.email 
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      showNotification('success', 'Pre-Registration successful!');
+    } catch (err) {
+      showNotification('error', err.response?.data?.message || 'Pre-Registration failed');
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -33,12 +60,26 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
           <div className="bg-image" style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}></div>
           <div className="content">
             <h3>Available Campaigns</h3>
-            {campaigns.length > 0 ? campaigns.map((c, i) => (
-              <div key={i} className="campaign-box">
-                <strong>{c.title}</strong>
-                <div className="image-placeholder">[Campaign Image]</div>
-              </div>
-            )) : <p>No campaigns available yet</p>}
+            {loading ? (
+              <div className="loading-spinner">Loading...</div>
+            ) : campaigns.length > 0 ? (
+              campaigns.map((campaign) => (
+                <div key={campaign._id} className="campaign-box">
+                  <strong>{campaign.title}</strong>
+                  {campaign.imageUrl ? (
+                    <img 
+                      src={campaign.imageUrl} 
+                      alt={campaign.title} 
+                      className="campaign-image"
+                    />
+                  ) : (
+                    <div className="image-placeholder">[Campaign Image]</div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No campaigns available yet</p>
+            )}
           </div>
         </div>
 
@@ -47,7 +88,12 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
           <div className="content">
             <h3>Invest in PFCA CapiGrid</h3>
             <p>Become part of our journey. Click below to invest now!</p>
-            <button onClick={() => navigate('/invest')}>Invest Now</button>
+            <button 
+              onClick={() => navigate('/invest')}
+              aria-label="Navigate to investment page"
+            >
+              Invest Now
+            </button>
           </div>
         </div>
 
@@ -56,14 +102,13 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
           <div className="content">
             <h3>Pre-Register</h3>
             <p>Get notified when we launch the main platform.</p>
-            <button onClick={async () => {
-              try {
-                await axios.post('https://landing-page-gere.onrender.com/pre-register', { email: user?.email });
-                showNotification('success', 'Pre-Registration successful!');
-              } catch (err) {
-                showNotification('error', 'Pre-Registration failed');
-              }
-            }}>Pre-Register</button>
+            <button 
+              onClick={handlePreRegister}
+              aria-label="Pre-register for main platform"
+              disabled={!user?.email}
+            >
+              Pre-Register
+            </button>
           </div>
         </div>
 
@@ -72,7 +117,12 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
           <div className="content">
             <h3>Need Help?</h3>
             <p>Contact our support team for help or inquiries.</p>
-            <button onClick={() => window.location.href = 'mailto:support@pfcafrica.online'}>Contact Support</button>
+            <button 
+              onClick={() => window.location.href = 'mailto:support@pfcafrica.online'}
+              aria-label="Contact support via email"
+            >
+              Contact Support
+            </button>
           </div>
         </div>
       </div>
