@@ -32,7 +32,6 @@ const App = () => {
       setUser(res.data);
     } catch (err) {
       console.error('Fetch user error:', err);
-      showNotification('error', 'Failed to load user data');
     }
   };
 
