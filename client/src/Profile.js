@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import './style.css';
+import { NotificationContext } from '../context/NotificationContext';
 
 const Profile = ({ user, setUser }) => {
   const [name, setName] = useState(user?.name || '');
@@ -8,53 +9,57 @@ const Profile = ({ user, setUser }) => {
   const [emailPassword, setEmailPassword] = useState('');
   const [profilePic, setProfilePic] = useState(user?.profilePic || 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png');
   const [imageFile, setImageFile] = useState(null);
-
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const showNotification = useContext(NotificationContext);
 
   const handleImageUpload = async () => {
-    const formData = new FormData();
-    formData.append('file', imageFile);
-    formData.append('upload_preset', 'your_preset'); // ✅ Replace with your Cloudinary preset
-    const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
-    return res.data.secure_url;
+    try {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+      formData.append('upload_preset', 'your_preset');
+      const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData);
+      return res.data.secure_url;
+    } catch (err) {
+      showNotification('error', 'Image upload failed');
+      return profilePic;
+    }
   };
 
   const handleSave = async () => {
     if (newPassword && newPassword !== confirmPassword) {
-      alert('New password and confirm password do not match');
+      showNotification('error', 'Passwords do not match');
       return;
     }
 
-    let newProfilePic = profilePic;
-    if (imageFile) newProfilePic = await handleImageUpload();
-
     try {
+      let newProfilePic = profilePic;
+      if (imageFile) newProfilePic = await handleImageUpload();
+
       const res = await axios.put('https://landing-page-gere.onrender.com/update-profile', {
         name,
         profilePic: newProfilePic,
         currentPassword,
         newPassword,
-        email: newEmail,         // ✅ Only sent if user enters new email
-        emailPassword           // ✅ Password required if changing email
+        email: newEmail,
+        emailPassword
       }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
 
-      alert('Profile updated successfully');
-
-      // ✅ If email changed, log out user for re-verification
+      showNotification('success', 'Profile updated successfully');
+      
       if (newEmail) {
-        alert('Email changed! Please verify your new email.');
+        showNotification('info', 'Please verify your new email');
         localStorage.removeItem('token');
         window.location.href = '/verify';
       } else {
         setUser(res.data);
       }
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || 'Failed to update profile');
+      const msg = err.response?.data?.message || 'Update failed';
+      showNotification('error', msg);
     }
   };
 
