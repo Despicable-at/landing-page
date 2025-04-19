@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import VerifyEmail from './VerifyEmail';
@@ -36,6 +36,16 @@ const App = () => {
     }
   };
 
+  const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
+    <button 
+      className={`dark-mode-toggle-btn ${darkMode ? 'dark' : ''}`}
+      onClick={toggleDarkMode}
+      aria-label="Toggle dark mode"
+    >
+      {darkMode ? '☀️' : '🌙'}
+    </button>
+  );
+
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -57,29 +67,29 @@ const App = () => {
   };
 
   return (
-    <>
+    <NotificationProvider>
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
 
           <div className="desktop-nav-links">
-            <button onClick={() => handleNavigate('/dashboard')}>Dashboard</button>
-            <button onClick={() => handleNavigate('/invest')}>Invest</button>
-            <button onClick={() => handleNavigate('/profile')}>Profile</button>
-            <button onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</button>
+            <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
+            <a onClick={() => handleNavigate('/invest')}>Invest</a>
+            <a onClick={() => handleNavigate('/profile')}>Profile</a>
+            <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
             <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
-            <button onClick={handleLogout}>Logout</button>
+            <a onClick={handleLogout}>Logout</a>
           </div>
 
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
 
           <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
-            <button onClick={() => handleNavigate('/dashboard')}>Dashboard</button>
-            <button onClick={() => handleNavigate('/invest')}>Invest</button>
-            <button onClick={() => handleNavigate('/profile')}>Profile</button>
-            <button onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</button>
+            <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
+            <a onClick={() => handleNavigate('/invest')}>Invest</a>
+            <a onClick={() => handleNavigate('/profile')}>Profile</a>
+            <a onClick={toggleDarkMode}>{darkMode ? '☀ Light' : '🌙 Dark'}</a>
             <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
-            <button onClick={handleLogout}>Logout</button>
+            <a onClick={handleLogout}>Logout</a>
           </div>
         </div>
       )}
@@ -101,21 +111,10 @@ const App = () => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
       </Routes>
-
       <GlobalDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-    </>
+    </NotificationProvider>
   );
 };
-
-const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
-  <button 
-    className={`dark-mode-toggle-btn ${darkMode ? 'dark' : ''}`}
-    onClick={toggleDarkMode}
-    aria-label="Toggle dark mode"
-  >
-    {darkMode ? '☀️' : '🌙'}
-  </button>
-);
 
 const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
   const showNotification = useNotification();
