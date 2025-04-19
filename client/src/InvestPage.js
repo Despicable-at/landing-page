@@ -18,21 +18,31 @@ const InvestPage = ({ user }) => {
     setShowTermsModal(true);
   };
 
-  const handleTermsAgreement = async () => {
-    try {
-      await axios.post('https://landing-page-gere.onrender.com/save-terms-acceptance', {
-        userId: user?._id,
-        email: user?.email,
-        amount,
-        estimatedEquity: calculateEquity(amount),
-        agreed: true // Explicit agreement flag
-      });
-      navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to process your agreement. Please try again.");
-    }
-  };
+const handleTermsAgreement = async () => {
+  try {
+    // Get the auth token from localStorage
+    const token = localStorage.getItem('token');
+    
+    // Use the correct endpoint and format
+    await axios.post(
+      'https://landing-page-gere.onrender.com/process-investment',
+      {
+        amount: Number(amount),
+        termsAccepted: true
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    
+    navigate(`/invest-payment?amount=${amount}&equity=${calculateEquity(amount)}`);
+  } catch (err) {
+    console.error('Investment Error:', err.response?.data || err.message);
+    alert(err.response?.data?.message || "Failed to process your agreement. Please try again.");
+  }
+};
 
   const downloadPDF = () => {
     const doc = new jsPDF();
