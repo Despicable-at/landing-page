@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import VerifyEmail from './VerifyEmail';
@@ -9,6 +9,7 @@ import InvestPayment from './InvestPayment';
 import ThankYou from './ThankYou';
 import Profile from './Profile';
 import './style.css';
+import { NotificationProvider, NotificationContext } from './context/NotificationContext';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -16,11 +17,12 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const showNotification = useContext(NotificationContext);
 
   useEffect(() => {
     if (token) fetchUserData(token);
     document.body.className = darkMode ? 'dark' : '';
-    }, [token, darkMode]);  // Remove the element class toggling here
+  }, [token, darkMode]);
 
   const fetchUserData = async (token) => {
     try {
@@ -30,11 +32,11 @@ const App = () => {
       setUser(res.data);
     } catch (err) {
       console.error('Fetch user error:', err);
+      showNotification('error', 'Failed to load user data');
     }
   };
 
-  const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => {
-  return (
+  const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
     <button 
       className={`dark-mode-toggle-btn ${darkMode ? 'dark' : ''}`}
       onClick={toggleDarkMode}
@@ -43,18 +45,19 @@ const App = () => {
       {darkMode ? '☀️' : '🌙'}
     </button>
   );
-};
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     localStorage.setItem('darkMode', newMode);
+    showNotification('success', `Switched to ${newMode ? 'dark' : 'light'} mode`);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    showNotification('info', 'You have been logged out');
     navigate('/');
   };
 
@@ -64,7 +67,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <NotificationProvider>
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
@@ -108,8 +111,8 @@ const App = () => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
       </Routes>
-        <GlobalDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-    </>
+      <GlobalDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    </NotificationProvider>
   );
 };
 
@@ -122,6 +125,7 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
+  const showNotification = useContext(NotificationContext);
 
   const handleSubmit = async () => {
     try {
@@ -130,19 +134,22 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         setUser(res.data.user);
+        showNotification('success', 'Login successful!');
         navigate('/dashboard');
       } else {
         const res = await axios.post('https://landing-page-gere.onrender.com/signup', formData);
-        alert(res.data.message);
+        showNotification('success', res.data.message);
         localStorage.setItem('pendingEmail', formData.email);
         navigate('/verify');
       }
     } catch (err) {
       if (isLogin && err.response?.status === 403 && err.response?.data?.status === 'unverified') {
+        showNotification('warning', 'Please verify your email first');
         localStorage.setItem('pendingEmail', formData.email);
         navigate('/verify');
       } else {
-        alert(err.response?.data?.message || (isLogin ? 'Login failed' : 'Signup failed'));
+        const msg = err.response?.data?.message || (isLogin ? 'Login failed' : 'Signup failed');
+        showNotification('error', msg);
       }
     }
   };
@@ -174,11 +181,9 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
           </div>
         </div>
 
-        {/* Form Container */}
         <div className={`auth-container ${isSwitching ? 'switch' : ''}`}>
           <h2>{isLogin ? 'Sign in to CapiGrid' : 'Create Account'}</h2>
           
-          {/* Form Fields */}
           <div className="auth-fields">
             {!isLogin && (
               <div className="input-wrapper">
@@ -264,10 +269,8 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
 
 const Footer = ({ darkMode }) => {
   const [showLanguages, setShowLanguages] = useState(false);
-  const toggleLanguages = () => {
-    setShowLanguages(!showLanguages);
-  };
-
+  const showNotification = useContext(NotificationContext);
+  const toggleLanguages = () => setShowLanguages(!showLanguages);
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
 
   return (
@@ -292,7 +295,7 @@ const Footer = ({ darkMode }) => {
                   key={lang}
                   className="dropdown-item"
                   onClick={() => {
-                    alert(`Translate to ${lang}`);
+                    showNotification('info', `Translate to ${lang}`);
                     setShowLanguages(false);
                   }}
                 >
