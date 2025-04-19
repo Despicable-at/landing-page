@@ -20,17 +20,7 @@ const App = () => {
   useEffect(() => {
     if (token) fetchUserData(token);
     document.body.className = darkMode ? 'dark' : '';
-    // Update specific elements when dark mode changes
-    const updateElements = () => {
-      const elements = [
-        ...document.querySelectorAll('.auth-container, .footer, .auth-wrapper')
-      ];
-      elements.forEach(el => {
-        el?.classList.toggle('dark-mode', darkMode);
-      });
-    };
-    updateElements();
-  }, [token, darkMode]);
+    }, [token, darkMode]);  // Remove the element class toggling here
 
   const fetchUserData = async (token) => {
     try {
@@ -42,6 +32,18 @@ const App = () => {
       console.error('Fetch user error:', err);
     }
   };
+
+  const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => {
+  return (
+    <button 
+      className={`dark-mode-toggle-btn ${darkMode ? 'dark' : ''}`}
+      onClick={toggleDarkMode}
+      aria-label="Toggle dark mode"
+    >
+      {darkMode ? '☀️' : '🌙'}
+    </button>
+  );
+};
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -91,9 +93,9 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={
-          token ? <Navigate to="/dashboard" /> : <AuthForm isLogin={true} setToken={setToken} setUser={setUser} />
+          token ? <Navigate to="/dashboard" /> : <AuthForm isLogin={true} setToken={setToken} setUser={setUser} darkMode={darkMode} />
         } />
-        <Route path="/signup" element={<AuthForm isLogin={false} setToken={setToken} setUser={setUser} />} />
+        <Route path="/signup" element={<AuthForm isLogin={false} setToken={setToken} setUser={setUser} darkMode={darkMode} />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={
           token
@@ -106,11 +108,12 @@ const App = () => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
       </Routes>
+        <GlobalDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
     </>
   );
 };
 
-const AuthForm = ({ isLogin, setToken, setUser }) => {
+const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -151,7 +154,7 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
   return (
     <div className="auth-wrapper">
       <div className="auth-main">
-        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''}`}>
+        <div className={`auth-image-slider ${isLogin ? 'login-panel' : 'signup-panel'} ${isSwitching ? 'switch' : ''} ${darkMode ? 'dark-mode' : ''}`}>
           <div className="slider-content">
             <h2>{isLogin ? 'Welcome Back!' : 'Hello, Friend!'}</h2>
             <p>
@@ -254,12 +257,12 @@ const AuthForm = ({ isLogin, setToken, setUser }) => {
           </p>
         </div>
       </div>
-      <Footer />
+      <Footer darkMode={darkMode} />
     </div>
   );
 };
 
-const Footer = () => {
+const Footer = ({ darkMode }) => {
   const [showLanguages, setShowLanguages] = useState(false);
   const toggleLanguages = () => {
     setShowLanguages(!showLanguages);
@@ -268,7 +271,7 @@ const Footer = () => {
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
 
   return (
-    <footer className="footer">
+    <footer className={`footer ${darkMode ? 'dark-mode' : ''}`}>
       <div className="footer-links">
         <a href="#">PFCAfrica</a>
         <a href="#">Contact Us</a>
