@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { NotificationContext } from '../context/NotificationContext';
+import { NotificationContext } from './NotificationContext';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
