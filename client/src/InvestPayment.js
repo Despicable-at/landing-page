@@ -70,7 +70,7 @@ const InvestPayment = ({ user }) => {
         throw new Error('Payment verification failed');
       }
 
-      // Record investment
+      // Fixed axios.post call with added comma
       await axios.post(
         'https://landing-page-gere.onrender.com/record-investment',
         { 
@@ -78,10 +78,9 @@ const InvestPayment = ({ user }) => {
           paystackRef: response.reference,
           equity: initialEquity
         },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
 
-      // Send receipt
       await axios.post(
         'https://landing-page-gere.onrender.com/send-investment-receipt',
         {
