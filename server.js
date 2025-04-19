@@ -373,6 +373,9 @@ app.post('/send-investment-receipt', async (req, res) => {
   }
 });
 
+// Example Express error redirect
+res.redirect(`/oauth-callback?error=${encodeURIComponent(error.message)}`);
+
 // ✅ Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ PFCA CapiGrid Backend running on port ${PORT}`));
