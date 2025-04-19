@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { NotificationContext } from '../context/NotificationContext';
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
   const [email] = useState(localStorage.getItem('pendingEmail') || '');
   const [code, setCode] = useState('');
-  const [message, setMessage] = useState('');
-  const [resendMsg, setResendMsg] = useState('');
+  const showNotification = useContext(NotificationContext);
 
   const handleVerify = async () => {
     try {
       const res = await axios.post('https://landing-page-gere.onrender.com/verify-email', { email, code });
-      setMessage(res.data.message);
-      localStorage.removeItem('pendingEmail'); // ✅ Clear pending email
-      setTimeout(() => navigate('/'), 3000);   // ✅ Redirect to login
+      showNotification('success', res.data.message);
+      localStorage.removeItem('pendingEmail');
+      setTimeout(() => navigate('/'), 3000);
     } catch (err) {
-      setMessage(err.response?.data?.message || 'Verification failed');
+      showNotification('error', err.response?.data?.message || 'Verification failed');
     }
   };
 
   const handleResend = async () => {
     try {
       const res = await axios.post('https://landing-page-gere.onrender.com/resend-verification', { email });
-      setResendMsg(res.data.message);
+      showNotification('success', res.data.message);
     } catch (err) {
-      setResendMsg(err.response?.data?.message || 'Failed to resend code');
+      showNotification('error', err.response?.data?.message || 'Resend failed');
     }
   };
 
