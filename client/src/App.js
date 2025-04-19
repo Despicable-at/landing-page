@@ -9,7 +9,7 @@ import InvestPayment from './InvestPayment';
 import ThankYou from './ThankYou';
 import Profile from './Profile';
 import './style.css';
-import { NotificationProvider, NotificationContext } from './NotificationContext';
+import { NotificationProvider, useNotification } from './NotificationContext';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -17,7 +17,7 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true');
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const showNotification = useContext(NotificationContext);
+  const showNotification = useNotification();
 
   useEffect(() => {
     if (token) fetchUserData(token);
@@ -117,6 +117,7 @@ const App = () => {
 };
 
 const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
+  const showNotification = useNotification();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -125,7 +126,6 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
-  const showNotification = useContext(NotificationContext);
 
   const handleSubmit = async () => {
     try {
@@ -268,8 +268,8 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
 };
 
 const Footer = ({ darkMode }) => {
+  const showNotification = useNotification();
   const [showLanguages, setShowLanguages] = useState(false);
-  const showNotification = useContext(NotificationContext);
   const toggleLanguages = () => setShowLanguages(!showLanguages);
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese', 'Arabic'];
 
