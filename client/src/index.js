@@ -6,7 +6,11 @@ import { NotificationProvider } from './NotificationContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Router>
-    <App />
-  </Router>
+  <React.StrictMode>
+    <Router>
+      <NotificationProvider>
+        <App />
+      </NotificationProvider>
+    </Router>
+  </React.StrictMode>
 );
