@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { NotificationContext } from '../context/NotificationContext';
 
 const InvestPayment = ({ user }) => {
   const location = useLocation();
@@ -9,17 +10,17 @@ const InvestPayment = ({ user }) => {
   const amount = params.get('amount') || 500;
   const equity = params.get('equity') || '0.05';
   const [loading, setLoading] = useState(false);
+  const showNotification = useContext(NotificationContext);
 
   const handlePaystack = () => {
     if (!user?.email) {
-      alert('Please log in to continue with payment');
+      showNotification('error', 'Please log in to continue with payment');
       navigate('/');
       return;
     }
 
     if (isNaN(amount) || amount < 500 || amount > 10000) {
-      alert('Invalid investment amount');
-      setLoading(false);
+      showNotification('error', 'Invalid investment amount');
       return;
     }
 
@@ -40,15 +41,8 @@ const InvestPayment = ({ user }) => {
           }
 
           await axios.post('https://landing-page-gere.onrender.com/record-investment', 
-            {
-              amount: Number(amount),
-              paystackRef: response.reference
-            }, 
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            }
+            { amount: Number(amount), paystackRef: response.reference }, 
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
           );
 
           await axios.post('https://landing-page-gere.onrender.com/send-investment-receipt', {
@@ -58,17 +52,17 @@ const InvestPayment = ({ user }) => {
             paystackRef: response.reference
           });
 
+          showNotification('success', 'Payment processed successfully!');
           navigate(`/thank-you?ref=${response.reference}`);
         } catch (err) {
-          console.error('Payment Error:', err);
-          alert(`Payment failed: ${err.response?.data?.message || err.message}`);
+          showNotification('error', `Payment failed: ${err.message}`);
         } finally {
           setLoading(false);
         }
       },
       onClose: function () {
         setLoading(false);
-        alert('Payment window closed - complete your payment within 24 hours');
+        showNotification('info', 'Payment window closed - complete within 24h');
       }
     });
 
