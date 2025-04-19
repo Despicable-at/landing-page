@@ -34,7 +34,7 @@ body {
 }
 
 /* dark mode */
-.dark-mode.auth-container-switch {
+.dark-mode.auth-container {
   background: #000 !important;
 }
 
