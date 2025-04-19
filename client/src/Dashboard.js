@@ -10,46 +10,49 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const showNotification = useNotification();
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        setCampaigns(res.data);
-      } catch (err) {
-        console.error('Failed to fetch campaigns', err);
-        if (err.response?.status === 401) {
-          showNotification('error', 'Session expired - please login again');
-          logout();
-        } else {
-          showNotification('error', 'Failed to load campaigns');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
-    fetchCampaigns();
-  }, [user, navigate, logout, showNotification]);
-
-  const handlePreRegister = async () => {
+useEffect(() => {
+  const fetchCampaigns = async () => {
     try {
-      await axios.post('https://landing-page-gere.onrender.com/pre-register', { 
-        email: user?.email 
-      }, {
+      const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      showNotification('success', 'Pre-Registration successful!');
+      setCampaigns(res.data);
     } catch (err) {
-      showNotification('error', err.response?.data?.message || 'Pre-Registration failed');
+      console.error('Failed to fetch campaigns', err);
+      if (err.response?.status === 401) {
+        // Keep session expiration notification but remove campaign error
+        logout();
+        navigate('/login');
+      }
+      // Removed all other notifications for campaigns
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Check both token and user existence
+  const token = localStorage.getItem('token');
+  if (!token || !user) {
+    navigate('/login');
+    return;
+  }
+
+  fetchCampaigns();
+}, [user, navigate, logout]); // Removed showNotification from dependencies
+
+const handlePreRegister = async () => {
+  try {
+    await axios.post('https://landing-page-gere.onrender.com/pre-register', { 
+      email: user?.email 
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    showNotification('success', 'Pre-Registration successful!');
+  } catch (err) {
+    // Keep pre-registration error notification
+    showNotification('error', err.response?.data?.message || 'Pre-Registration failed');
+  }
+};
 
   return (
     <div className="dashboard-container">
