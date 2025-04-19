@@ -10,27 +10,35 @@ const InvestPayment = ({ user }) => {
   const equity = params.get('equity') || '0.05';
   const [loading, setLoading] = useState(false);
 
-  const handlePaystack = () => {
-    setLoading(true);
-    const handler = window.PaystackPop.setup({
-      key: 'pk_test_bcc2176c6a383d2832ff3be512ddf3357913ca0a', // ✅ Replace with your live key
-      email: user?.email,
-      amount: amount * 100, // Paystack reads in kobo/pesewas
-      currency: 'GHS',
-      callback: async function (response) {
-        setLoading(false);
-        alert(`✅ Investment Successful! Ref: ${response.reference}`);
+const handlePaystack = () => {
+  setLoading(true);
+  const handler = window.PaystackPop.setup({
+    key: 'pk_test_bcc2176c6a383d2832ff3be512ddf3357913ca0a',
+    email: user?.email,
+    amount: amount * 100,
+    currency: 'GHS',
+    callback: async function (response) {
+      try {
+        // Verify transaction was actually successful
+        const verifyResponse = await axios.get(
+          `https://landing-page-gere.onrender.com/verify-payment/${response.reference}`
+        );
 
-        // ✅ 1. Save to Database
+        if (verifyResponse.data.status !== 'success') {
+          throw new Error('Payment verification failed');
+        }
+
+        // Record investment
         await axios.post('https://landing-page-gere.onrender.com/record-investment', {
-          userId: user._id,
-          email: user.email,
           amount,
-          equityPercent: equity,
           paystackRef: response.reference
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         });
 
-        // ✅ 2. Auto-send Email Receipt
+        // Send receipt
         await axios.post('https://landing-page-gere.onrender.com/send-investment-receipt', {
           email: user.email,
           amount,
@@ -38,30 +46,45 @@ const InvestPayment = ({ user }) => {
           paystackRef: response.reference
         });
 
-        // ✅ 3. Redirect to Thank You Page
-        navigate(`/thank-you?amount=${amount}&equity=${equity}&ref=${response.reference}`);
-      },
-      onClose: function () {
+        navigate(`/thank-you?ref=${response.reference}`);
+      } catch (err) {
+        console.error('Payment Processing Error:', err);
+        alert(`Error: ${err.response?.data?.message || err.message}`);
+      } finally {
         setLoading(false);
-        alert('Transaction closed');
       }
-    });
+    },
+    onClose: function () {
+      setLoading(false);
+      alert('Payment window closed');
+    }
+  });
 
-    handler.openIframe();
-  };
-
-  return (
-    <div className="auth-container">
-      <h2>Confirm Your Investment</h2>
-      <p>Investing <strong>GHS {amount}</strong> for <strong>{equity}% equity</strong></p>
-
-      {loading ? (
-        <p>Processing Payment... ⏳</p>
-      ) : (
-        <button onClick={handlePaystack}>Pay with Paystack</button>
-      )}
-    </div>
-  );
+  handler.openIframe();
 };
+
+return (
+  <div className="auth-container">
+    <h2>Confirm Your Investment</h2>
+    <p>Investing <strong>GHS {amount}</strong> for <strong>{equity}% equity</strong></p>
+
+    {loading ? (
+      <div className="processing-payment">
+        <div className="spinner"></div>
+        <p>Processing Payment...</p>
+        <p className="processing-note">
+          Please keep this window open until payment completes
+        </p>
+      </div>
+    ) : (
+      <button 
+        onClick={handlePaystack}
+        disabled={loading}
+      >
+        Pay with Paystack
+      </button>
+    )}
+  </div>
+);
 
 export default InvestPayment;
