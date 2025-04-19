@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { NotificationContext } from '../context/NotificationContext';
+import { NotificationContext } from './NotificationContext';
 
 const InvestPayment = ({ user }) => {
   const location = useLocation();
