@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { NotificationContext } from '../context/NotificationContext';
+import { NotificationContext } from './NotificationContext';
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
