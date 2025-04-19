@@ -35,6 +35,14 @@ const User = mongoose.model('User', {
   verificationCode: String,
   profilePic: String
 });
+
+const InvestmentAgreement = mongoose.model('InvestmentAgreement', {
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  amount: Number,
+  termsAccepted: Boolean,
+  timestamp: { type: Date, default: Date.now }
+});
+
 const Campaign = mongoose.model('Campaign', { title: String, description: String, goal: Number, raised: Number, userId: String });
 const PreRegister = mongoose.model('PreRegister', { email: String });
 
@@ -249,6 +257,46 @@ app.put('/update-profile', async (req, res) => {
 app.get('/campaigns', async (req, res) => {
   const campaigns = await Campaign.find();
   res.json(campaigns);
+});
+
+// ✅ Add this route after the campaigns routes
+app.post('/process-investment', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const { amount, termsAccepted } = req.body;
+
+  try {
+    // Verify authentication
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!termsAccepted) return res.status(400).json({ message: 'You must accept the terms' });
+
+    // Create investment agreement
+    const agreement = new InvestmentAgreement({
+      userId: user._id,
+      amount,
+      termsAccepted
+    });
+
+    await agreement.save();
+    
+    // Update user's campaign if needed (example)
+    await Campaign.findOneAndUpdate(
+      { userId: user._id },
+      { $inc: { raised: amount } },
+      { new: true, upsert: true }
+    );
+
+    res.json({ 
+      message: 'Investment processed successfully',
+      agreementId: agreement._id
+    });
+
+  } catch (err) {
+    console.error('Investment Error:', err);
+    res.status(500).json({ message: 'Failed to process investment agreement' });
+  }
 });
 
 // ✅ Pre-Registration
