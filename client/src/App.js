@@ -9,7 +9,7 @@ import InvestPayment from './InvestPayment';
 import ThankYou from './ThankYou';
 import Profile from './Profile';
 import './style.css';
-import { useNotification } from './NotificationContext';
+import { NotificationProvider, useNotification } from './NotificationContext';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
