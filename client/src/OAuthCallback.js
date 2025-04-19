@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { NotificationContext } from '../context/NotificationContext';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const showNotification = useContext(NotificationContext);
 
   useEffect(() => {
-    // ✅ Pull token from search params
     const urlParams = new URLSearchParams(location.search);
     const token = urlParams.get('token');
 
     if (token) {
       localStorage.setItem('token', token);
-      navigate('/dashboard');  // ✅ Redirect to dashboard
+      navigate('/dashboard');
     } else {
-      alert("Google login failed or token missing.");
+      showNotification('error', "Google login failed");
       navigate('/');
     }
   }, [navigate, location]);
