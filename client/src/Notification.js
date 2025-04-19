@@ -14,13 +14,10 @@ const Notification = ({ message, type, onClose }) => {
         {type === 'error' && '❌'}
         {type === 'info' && 'ℹ️'}
       </div>
-      <div className="notification-content">
-        <h4>{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
-        <p>{message}</p>
+      <div className="notification-message">
+        {message}
       </div>
       <button className="notification-close" onClick={onClose}>×</button>
     </div>
   );
 };
-
-export default Notification;
