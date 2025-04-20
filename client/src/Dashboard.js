@@ -38,7 +38,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
     };
 
     fetchCampaigns();
-  }, []); // no dependencies
+  }, [setLoadingScreen]); // no dependencies
 
   return (
     <div className="dashboard-container">
