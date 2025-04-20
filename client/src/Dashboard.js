@@ -31,11 +31,8 @@ useEffect(() => {
   };
 
   fetchCampaigns();
-}, []);
+}, []); // ✅ No need to include navigate since we're not using it
 
-
-  fetchCampaigns();
-}, []); // Only navigate dependency
 
   // Check both token and user existence
   const token = localStorage.getItem('token');
@@ -67,29 +64,15 @@ const handlePreRegister = async () => {
 
       <div className="dashboard-grid">
         <div className="dashboard-box">
-          <div className="bg-image" style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}></div>
+           <div className="bg-image" style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}></div>
           <div className="content">
             <h3>Available Campaigns</h3>
-            {loading ? (
-              <div className="loading-spinner">Loading...</div>
-            ) : campaigns.length > 0 ? (
-              campaigns.map((campaign) => (
-                <div key={campaign._id} className="campaign-box">
-                  <strong>{campaign.title}</strong>
-                  {campaign.imageUrl ? (
-                    <img 
-                      src={campaign.imageUrl} 
-                      alt={campaign.title} 
-                      className="campaign-image"
-                    />
-                  ) : (
-                    <div className="image-placeholder">[Campaign Image]</div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No campaigns available yet</p>
-            )}
+            {campaigns.length > 0 ? campaigns.map((c, i) => (
+              <div key={i} className="campaign-box">
+                <strong>{c.title}</strong>
+                <div className="image-placeholder">[Campaign Image]</div>
+              </div>
+            )) : <p>No campaigns available yet</p>}
           </div>
         </div>
 
