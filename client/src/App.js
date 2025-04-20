@@ -11,6 +11,14 @@ import Profile from './Profile';
 import './style.css';
 import { NotificationProvider, useNotification } from './NotificationContext';
 
+// 1. LoadingScreen component
+const LoadingScreen = () => (
+  <div className="loading-screen">
+    <img src="/logo.png" alt="PFCA Logo" className="loading-logo" />
+    <p className="loading-text">Powered by PFCA</p>
+  </div>
+);
+
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
@@ -18,6 +26,7 @@ const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const showNotification = useNotification();
+  const [loadingScreen, setLoadingScreen] = useState(false);
 
   useEffect(() => {
     if (token) fetchUserData(token);
@@ -65,6 +74,11 @@ const App = () => {
     setMenuOpen(false);
   };
 
+  if (loadingScreen) {
+    return <LoadingScreen />;
+  }
+
+
   return (
     <NotificationProvider>
       {token && (
@@ -95,15 +109,37 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={
-          token ? <Navigate to="/dashboard" /> : <AuthForm isLogin={true} setToken={setToken} setUser={setUser} darkMode={darkMode} />
-        } />
-        <Route path="/signup" element={<AuthForm isLogin={false} setToken={setToken} setUser={setUser} darkMode={darkMode} />} />
+          token
+            ? <Navigate to="/dashboard" />
+            : <AuthForm
+                isLogin={true}
+                setToken={setToken}
+                setUser={setUser}
+                darkMode={darkMode}
+                setLoadingScreen={setLoadingScreen}    // pass setter
+              />
+        }/>
+        <Route path="/signup" element={
+          <AuthForm
+            isLogin={false}
+            setToken={setToken}
+            setUser={setUser}
+            darkMode={darkMode}
+            setLoadingScreen={setLoadingScreen}
+          />
+        }/>
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/dashboard" element={
           token
-            ? <Dashboard user={user} logout={handleLogout} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            ? <Dashboard
+                user={user}
+                logout={handleLogout}
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                setLoadingScreen={setLoadingScreen}  // pass setter
+              />
             : <Navigate to="/" />
-        } />
+        }/>
         <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/invest" element={<InvestPage user={user} />} />
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
@@ -115,13 +151,9 @@ const App = () => {
   );
 };
 
-const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
+const AuthForm = ({ isLogin, setToken, setUser, darkMode, setLoadingScreen }) => {
   const showNotification = useNotification();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
@@ -134,6 +166,8 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode }) => {
         setToken(res.data.token);
         setUser(res.data.user);
         showNotification('success', 'Login successful!');
+        // 5. Turn on loader just before navigating to Dashboard
+        setLoadingScreen(true);
         navigate('/dashboard');
       } else {
         const res = await axios.post('https://landing-page-gere.onrender.com/signup', formData);
