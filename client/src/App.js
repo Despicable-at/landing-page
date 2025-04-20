@@ -186,15 +186,7 @@ const fetchUserData = async (token) => {
               />
             : <Navigate to="/" />
         }/>
-        <Route 
-          path="/oauth-callback" 
-          element={
-            <OAuthCallback 
-              setLoadingScreen={setLoadingScreen}  // Pass the setter
-              setToken={setToken}
-            />
-          }
-        />
+        <Route path="/oauth-callback" element={<OAuthCallback setToken={setToken} setUser={setUser} />} />
         <Route path="/invest" element={<InvestPage user={user} />} />
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
         <Route path="/thank-you" element={<ThankYou />} />
