@@ -61,11 +61,13 @@ useEffect(() => {
 }, [token]); // This ensures user state updates when token changes
 
   
+// Add this effect
 useEffect(() => {
   const handleStorageChange = () => {
     const newToken = localStorage.getItem('token');
     if (newToken !== token) {
       setToken(newToken);
+      fetchUserData(newToken); // 💡 Force user data fetch
     }
   };
 
