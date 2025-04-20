@@ -35,7 +35,7 @@ useEffect(() => {
 
 
   fetchCampaigns();
-}, [navigate]); // Only navigate dependency
+}, []); // Only navigate dependency
 
   // Check both token and user existence
   const token = localStorage.getItem('token');
