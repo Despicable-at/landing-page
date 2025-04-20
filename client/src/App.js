@@ -173,6 +173,7 @@ useEffect(() => {
           element={
             <OAuthCallback 
               setLoadingScreen={setLoadingScreen}  // Pass the setter
+              setToken={setToken}
             />
           }
         />
