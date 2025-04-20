@@ -12,11 +12,9 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
 
 useEffect(() => {
   const token = localStorage.getItem('token');
-  
-  if (!token) {
-    navigate('/login');
-    return;
-  }
+
+  // If no token, just skip fetching campaigns
+  if (!token) return;
 
   const fetchCampaigns = async () => {
     try {
@@ -27,10 +25,14 @@ useEffect(() => {
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('token');
-        navigate();
+        // Removed navigate('/login')
       }
     }
   };
+
+  fetchCampaigns();
+}, []);
+
 
   fetchCampaigns();
 }, [navigate]); // Only navigate dependency
