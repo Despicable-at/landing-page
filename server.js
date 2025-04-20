@@ -97,7 +97,7 @@ app.get('/auth/google/callback',
   (req, res) => {
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     // Remove the hash from the redirect URL
-    res.redirect(`${process.env.FRONTEND_URL}/#/oauth-callback?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-callback?token=${token}`);
   }
 );
 
