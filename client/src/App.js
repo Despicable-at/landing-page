@@ -158,34 +158,35 @@ const AuthForm = ({ isLogin, setToken, setUser, darkMode, setLoadingScreen }) =>
   const [isSwitching, setIsSwitching] = useState(!isLogin);
   const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    try {
-      if (isLogin) {
-        const res = await axios.post('https://landing-page-gere.onrender.com/login', formData);
-        localStorage.setItem('token', res.data.token);
-        setToken(res.data.token);
-        setUser(res.data.user);
-        showNotification('success', 'Login successful!');
-        // 5. Turn on loader just before navigating to Dashboard
-        setLoadingScreen(true);
-        navigate('/dashboard');
-      } else {
-        const res = await axios.post('https://landing-page-gere.onrender.com/signup', formData);
-        showNotification('success', res.data.message);
-        localStorage.setItem('pendingEmail', formData.email);
-        navigate('/verify');
-      }
-    } catch (err) {
-      if (isLogin && err.response?.status === 403 && err.response?.data?.status === 'unverified') {
-        showNotification('warning', 'Please verify your email first');
-        localStorage.setItem('pendingEmail', formData.email);
-        navigate('/verify');
-      } else {
-        const msg = err.response?.data?.message || (isLogin ? 'Login failed' : 'Signup failed');
-        showNotification('error', msg);
-      }
+const handleSubmit = async () => {
+  try {
+    if (isLogin) {
+      setLoadingScreen(true); // <-- Show loading immediately
+      const res = await axios.post('https://landing-page-gere.onrender.com/login', formData);
+      localStorage.setItem('token', res.data.token);
+      setToken(res.data.token);
+      setUser(res.data.user);
+      showNotification('success', 'Login successful!');
+      navigate('/dashboard');
+    } else {
+      const res = await axios.post('https://landing-page-gere.onrender.com/signup', formData);
+      showNotification('success', res.data.message);
+      localStorage.setItem('pendingEmail', formData.email);
+      navigate('/verify');
     }
-  };
+  } catch (err) {
+    setLoadingScreen(false); // Turn it off on error
+    if (isLogin && err.response?.status === 403 && err.response?.data?.status === 'unverified') {
+      showNotification('warning', 'Please verify your email first');
+      localStorage.setItem('pendingEmail', formData.email);
+      navigate('/verify');
+    } else {
+      const msg = err.response?.data?.message || (isLogin ? 'Login failed' : 'Signup failed');
+      showNotification('error', msg);
+    }
+  }
+};
+
 
   const handleGoogleLogin = () => {
     window.location.href = 'https://landing-page-gere.onrender.com/auth/google';
