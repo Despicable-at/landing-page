@@ -47,7 +47,7 @@ const OAuthCallback = () => {
 
 
     handleOAuthCallback();
-  }, [navigate, location, showNotification]);
+  }, [navigate, location.search, showNotification]);
 
   return (
     <div className="oauth-callback-container">
