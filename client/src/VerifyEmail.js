@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { NotificationContext } from './NotificationContext';
+import { useNotification } from './NotificationContext';
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
   const [email] = useState(localStorage.getItem('pendingEmail') || '');
   const [code, setCode] = useState('');
-  const showNotification = useContext(NotificationContext);
+  const showNotification = useNotification();
 
   const handleVerify = async () => {
     try {
