@@ -17,34 +17,32 @@ const Dashboard = ({
   const showNotification = useNotification();
 
   useEffect(() => {
-    setLoadingScreen(false);
-    const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
-    // If no token, just skip fetching campaigns
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchCampaigns = async () => {
-      try {
-        const res = await axios.get(
-          'https://landing-page-gere.onrender.com/my-campaigns',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setCampaigns(res.data);
-      } catch (err) {
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          // Redirect removed
-        }
-      } finally {
-        setLoading(false);
+  const fetchCampaigns = async () => {
+    try {
+      const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCampaigns(res.data);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        localStorage.removeItem('token');
       }
-    };
+    } finally {
+      setLoading(false);
+      setLoadingScreen(false); // ← move this here to wait for data
+    }
+  };
 
+  if (token) {
     fetchCampaigns();
-  }, [setLoadingScreen]); // no dependencies
+  } else {
+    setLoading(false);
+    setLoadingScreen(false); // ← also here in case there’s no token
+  }
+}, [setLoadingScreen]);
+
 
   return (
     <div className="dashboard-container">
