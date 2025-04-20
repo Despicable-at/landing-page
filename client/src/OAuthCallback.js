@@ -8,15 +8,18 @@ const OAuthCallback = () => {
   const showNotification = useNotification();
 
   useEffect(() => {
-    // Parse query parameters from location.search
+    // Parse both hash and query parameters
+    const hashParams = new URLSearchParams(location.hash.split("?")[1]);
     const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get('token');
+    
+    const token = hashParams.get('token') || queryParams.get('token');
 
     if (token) {
       localStorage.setItem('token', token);
       navigate('/dashboard');
     } else {
-      showNotification('error', "Google login failed: No token received");
+      const error = hashParams.get('error') || queryParams.get('error');
+      showNotification('error', `Google login failed: ${error || 'No token received'}`);
       navigate('/');
     }
   }, [navigate, location, showNotification]);
