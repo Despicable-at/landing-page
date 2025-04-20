@@ -10,26 +10,23 @@ const OAuthCallback = ({ setLoadingScreen }) => {
   useEffect(() => {
     setLoadingScreen(true);
     
-    // Handle URL format with potential double slash
-    const hash = window.location.hash.replace('//#', '/#');
-    const hashParams = new URLSearchParams(hash.split("?")[1]);
+    // Unified parameter parsing
+    const hashParams = new URLSearchParams(location.hash.split("?")[1]);
     const queryParams = new URLSearchParams(location.search);
-    
     const token = hashParams.get('token') || queryParams.get('token');
 
     if (token) {
+      // Update both localStorage and state immediately
       localStorage.setItem('token', token);
       window.dispatchEvent(new Event('storage'));
       
-      // Force navigation check
-      if (window.location.pathname !== '/dashboard') {
-        navigate('/dashboard'); // Use React Router navigation instead of window.location
-      }
+      // Force React Router navigation
+      navigate('/dashboard', { replace: true });
     } else {
       setLoadingScreen(false);
       const error = hashParams.get('error') || queryParams.get('error');
       showNotification('error', `Google login failed: ${error || 'No token received'}`);
-      navigate('/');
+      navigate('/', { replace: true });
     }
   }, [navigate, location, showNotification, setLoadingScreen]);
 
