@@ -35,7 +35,7 @@ const OAuthCallback = () => {
         showNotification('success', 'Logged in successfully');
 
         // Wait for notification to show before redirect
-        setTimeout(() => navigate('/dashboard'), 1500);
+        setTimeout(() => navigate('/#/dashboard'), 1500);
 
       } catch (err) {
         const errorMessage = err.message.replace(/_/g, ' ');
