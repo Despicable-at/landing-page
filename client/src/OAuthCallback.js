@@ -1,31 +1,25 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const OAuthCallback = ({ setLoadingScreen }) => {
+const OAuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    setLoadingScreen(true);
-    
-    // URL cleanup
-    const cleanHash = window.location.hash
-      .replace('//#', '/#')
-      .replace('##', '#');
-    
-    const hashParams = new URLSearchParams(cleanHash.split('?')[1]);
-    const token = hashParams.get('token');
+    // ✅ Pull token from search params
+    const urlParams = new URLSearchParams(location.search);
+    const token = urlParams.get('token');
 
     if (token) {
-      // Direct storage bypass
       localStorage.setItem('token', token);
-      window.location.href = '/#/dashboard'; // Hard navigation
+      navigate('/dashboard');  // ✅ Redirect to dashboard
     } else {
-      navigate('/', { replace: true });
+      alert("Google login failed or token missing.");
+      navigate('/');
     }
-  }, [navigate, setLoadingScreen]);
+  }, [navigate, location]);
 
-  return null;
+  return <p>Logging you in...</p>;
 };
 
 export default OAuthCallback;
