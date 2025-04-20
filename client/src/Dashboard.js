@@ -9,40 +9,39 @@ const Dashboard = ({
   logout,
   darkMode,
   toggleDarkMode,
-  setLoadingScreen    // ← make sure this prop is passed in
+  setLoadingScreen
 }) => {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const showNotification = useNotification();
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
 
-  const fetchCampaigns = async () => {
-    try {
-      const res = await axios.get(
-        'https://landing-page-gere.onrender.com/my-campaigns',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setCampaigns(res.data);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        localStorage.removeItem('token');
+    const fetchCampaigns = async () => {
+      try {
+        const res = await axios.get(
+          'https://landing-page-gere.onrender.com/my-campaigns',
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setCampaigns(res.data);
+      } catch (err) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+        }
+      } finally {
+        setLoading(false);
+        // Do NOT control loading screen here anymore — handled from login
       }
-    } finally {
-      setLoading(false);
-      if (setLoadingScreen) setLoadingScreen(false); // 👈 now it's safely placed
-    }
-  };
+    };
 
-  if (token) {
-    fetchCampaigns();
-  } else {
-    setLoading(false);
-    if (setLoadingScreen) setLoadingScreen(false); // fallback if no token
-  }
-}, [setLoadingScreen]);
+    if (token) {
+      fetchCampaigns();
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
 
 
