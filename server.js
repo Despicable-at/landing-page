@@ -90,14 +90,19 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // ✅ Google OAuth Routes
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-// In the Google OAuth callback route
+app.get('/auth/google', 
+  passport.authenticate('google', {
+    scope: ['profile', 'email']
+  })
+);
+
+
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    // Remove the hash from the redirect URL
-    res.redirect(`${process.env.FRONTEND_URL}/oauth-callback?token=${token}`);
+    res.redirect(${process.env.FRONTEND_URL}/#/oauth-callback?token=${token});
+
   }
 );
 
