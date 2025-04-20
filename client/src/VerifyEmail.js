@@ -8,26 +8,31 @@ const VerifyEmail = () => {
   const [email] = useState(localStorage.getItem('pendingEmail') || '');
   const [code, setCode] = useState('');
   const showNotification = useNotification();
+  const [message, setMessage] = useState('');
+  const [resendMsg, setResendMsg] = useState('');
 
-  const handleVerify = async () => {
-    try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/verify-email', { email, code });
-      showNotification('success', res.data.message);
-      localStorage.removeItem('pendingEmail');
-      setTimeout(() => navigate('/'), 3000);
-    } catch (err) {
-      showNotification('error', err.response?.data?.message || 'Verification failed');
-    }
-  };
+const handleVerify = async () => {
+  try {
+    const res = await axios.post('https://landing-page-gere.onrender.com/verify-email', { email, code });
+    setMessage(res.data.message); // ✅ Set message
+    showNotification('success', res.data.message);
+    localStorage.removeItem('pendingEmail');
+    setTimeout(() => navigate('/'), 3000);
+  } catch (err) {
+    showNotification('error', err.response?.data?.message || 'Verification failed');
+  }
+};
 
-  const handleResend = async () => {
-    try {
-      const res = await axios.post('https://landing-page-gere.onrender.com/resend-verification', { email });
-      showNotification('success', res.data.message);
-    } catch (err) {
-      showNotification('error', err.response?.data?.message || 'Resend failed');
-    }
-  };
+const handleResend = async () => {
+  try {
+    const res = await axios.post('https://landing-page-gere.onrender.com/resend-verification', { email });
+    setResendMsg(res.data.message); // ✅ Set resend message
+    showNotification('success', res.data.message);
+  } catch (err) {
+    showNotification('error', err.response?.data?.message || 'Resend failed');
+  }
+};
+
 
   return (
     <div className="auth-container">
