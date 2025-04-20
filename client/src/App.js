@@ -34,18 +34,33 @@ const App = () => {
   }, [token, darkMode]);
 
   
-  useEffect(() => {
-    if (loadingScreen) {
-      const timer = setTimeout(() => {
-        setLoadingScreen(false);
-        // Only navigate if we have a token
-        if (localStorage.getItem('token')) {
-          navigate('/dashboard');
-        }
-      }, 6000);
-      return () => clearTimeout(timer);
+useEffect(() => {
+  if (loadingScreen) {
+    const timer = setTimeout(() => {
+      setLoadingScreen(false);
+      // Check localStorage directly instead of state
+      if (localStorage.getItem('token')) {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
+    }, 6000);
+    return () => clearTimeout(timer);
+  }
+}, [loadingScreen, navigate]);
+
+
+useEffect(() => {
+  const handleStorageChange = () => {
+    const newToken = localStorage.getItem('token');
+    if (newToken !== token) {
+      setToken(newToken);
     }
-  }, [loadingScreen, navigate]);
+  };
+
+  window.addEventListener('storage', handleStorageChange);
+  return () => window.removeEventListener('storage', handleStorageChange);
+}, [token]);
   
   const fetchUserData = async (token) => {
     try {
