@@ -10,16 +10,22 @@ const OAuthCallback = ({ setLoadingScreen }) => {  // Add setLoadingScreen prop
 useEffect(() => {
   setLoadingScreen(true);
   
-  const hashParams = new URLSearchParams(location.hash.split("?")[1]);
+  // Handle URL format with potential double slash
+  const hash = window.location.hash.replace('//#', '/#');
+  const hashParams = new URLSearchParams(hash.split("?")[1]);
   const token = hashParams.get('token');
 
   if (token) {
     localStorage.setItem('token', token);
-    window.dispatchEvent(new Event('storage')); // Force storage event
+    window.dispatchEvent(new Event('storage'));
+    // Force immediate navigation check
+    if (window.location.pathname !== '/dashboard') {
+      window.location.replace('/#/dashboard');
+    }
   } else {
     // Error handling
   }
-}, []);
+}, [setLoadingScreen]);
 
     const hashParams = new URLSearchParams(location.hash.split("?")[1]);
     const queryParams = new URLSearchParams(location.search);
