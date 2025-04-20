@@ -11,6 +11,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const showNotification = useNotification();
 
   useEffect(() => {
+    setLoadingScreen(false);
     const token = localStorage.getItem('token');
 
     // If no token, just skip fetching campaigns
