@@ -12,6 +12,7 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
 
 useEffect(() => {
   const token = localStorage.getItem('token');
+  
   if (!token) {
     navigate('/login');
     return;
@@ -26,10 +27,8 @@ useEffect(() => {
     } catch (err) {
       if (err.response?.status === 401) {
         localStorage.removeItem('token');
-        navigate('/login');
+        navigate();
       }
-    } finally {
-      setLoading(false);
     }
   };
 
