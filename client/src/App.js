@@ -35,20 +35,13 @@ const App = () => {
 
   
 // Modify your loading screen timeout effect
+// Add this new effect
 useEffect(() => {
-  if (loadingScreen) {
-    const timer = setTimeout(() => {
-      setLoadingScreen(false);
-      // Check BOTH localStorage AND user state
-      if (localStorage.getItem('token') && user) {
-        navigate('/dashboard');
-      } else {
-        navigate('/');
-      }
-    }, 6000);
-    return () => clearTimeout(timer);
+  if (user && token) {
+    navigate('/dashboard', { replace: true });
+    setLoadingScreen(false);
   }
-}, [loadingScreen, navigate, user]); // Add user as dependency
+}, [user, token, navigate, setLoadingScreen]);
 
   // Add this effect to sync user state
 useEffect(() => {
@@ -75,16 +68,27 @@ useEffect(() => {
   return () => window.removeEventListener('storage', handleStorageChange);
 }, [token]);
   
-  const fetchUserData = async (token) => {
-    try {
-      const res = await axios.get('https://landing-page-gere.onrender.com/user', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUser(res.data);
-    } catch (err) {
-      console.error('Fetch user error:', err);
+const fetchUserData = async (token) => {
+  try {
+    const res = await axios.get('https://landing-page-gere.onrender.com/user', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    // Atomic state update
+    setUser(res.data);
+    setToken(token);
+    localStorage.setItem('token', token);
+    
+    // Immediate navigation
+    if (window.location.hash !== '#/dashboard') {
+      navigate('/dashboard', { replace: true });
     }
-  };
+    
+  } catch (err) {
+    console.error('Fetch user error:', err);
+    handleLogout();
+  }
+};
 
   const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
     <button 
