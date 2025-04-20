@@ -14,7 +14,7 @@ import { NotificationProvider, useNotification } from './NotificationContext';
 // 1. LoadingScreen component
 const LoadingScreen = () => (
   <div className="loading-screen">
-    <img src="/capigrid.png" alt="PFCA Logo" className="loading-logo" />
+    <img src="capigrid-frontend.onrender.com/images/capigrid.png" alt="PFCA Logo" className="loading-logo" />
     <p className="loading-text">Powered by PFCA</p>
   </div>
 );
