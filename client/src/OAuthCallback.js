@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useNotification } from './NotificationContext';
 
@@ -28,12 +28,12 @@ const OAuthCallback = () => {
           throw new Error('Invalid token format');
         }
 
-        // Store token in sessionStorage instead of localStorage
+        // Store token in sessionStorage (or localStorage if needed)
         sessionStorage.setItem('token', token);
-        
+
         setStatus('Authentication successful! Redirecting...');
         showNotification('success', 'Logged in successfully');
-        
+
         // Wait for notification to show before redirect
         setTimeout(() => navigate('/dashboard'), 1500);
 
