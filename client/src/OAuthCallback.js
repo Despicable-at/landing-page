@@ -7,7 +7,8 @@ const OAuthCallback = () => {
   const location = useLocation();
   const showNotification = useNotification();
   const [status, setStatus] = useState('Processing authentication...');
-useEffect(() => {
+
+  useEffect(() => {
   const handleOAuthCallback = async () => {
     try {
       const urlParams = new URLSearchParams(location.search);
@@ -34,7 +35,8 @@ useEffect(() => {
       showNotification('success', 'Logged in successfully');
 
       // Wait for notification to show before redirect
-      setTimeout(() => navigate('/dashboard'), 1500);  // Updated this line
+      setTimeout(() => navigate('/dashboard'), 1500);  // Corrected redirection path
+
     } catch (err) {
       const errorMessage = err.message.replace(/_/g, ' ');
       setStatus(`Error: ${errorMessage}`);
@@ -42,9 +44,6 @@ useEffect(() => {
       setTimeout(() => navigate('/'), 3000);
     }
   };
-
-  handleOAuthCallback();
-}, [location.search, navigate]);
 
 
     handleOAuthCallback();
