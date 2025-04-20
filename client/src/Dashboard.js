@@ -16,14 +16,15 @@ const Dashboard = ({
   const [loading, setLoading] = useState(true);
   const showNotification = useNotification();
 
-  useEffect(() => {
+useEffect(() => {
   const token = localStorage.getItem('token');
 
   const fetchCampaigns = async () => {
     try {
-      const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        'https://landing-page-gere.onrender.com/my-campaigns',
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setCampaigns(res.data);
     } catch (err) {
       if (err.response?.status === 401) {
@@ -31,7 +32,7 @@ const Dashboard = ({
       }
     } finally {
       setLoading(false);
-      setLoadingScreen(false); // ← move this here to wait for data
+      if (setLoadingScreen) setLoadingScreen(false); // 👈 now it's safely placed
     }
   };
 
@@ -39,9 +40,10 @@ const Dashboard = ({
     fetchCampaigns();
   } else {
     setLoading(false);
-    setLoadingScreen(false); // ← also here in case there’s no token
+    if (setLoadingScreen) setLoadingScreen(false); // fallback if no token
   }
 }, [setLoadingScreen]);
+
 
 
   return (
