@@ -33,6 +33,17 @@ const App = () => {
     document.body.className = darkMode ? 'dark' : '';
   }, [token, darkMode]);
 
+    useEffect(() => {
+    if (loadingScreen) {
+      const timer = setTimeout(() => {
+        setLoadingScreen(false);
+        navigate('/dashboard'); // Navigate to dashboard after 6 seconds
+      }, 6000); // 6 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [loadingScreen, navigate]);
+
+  
   const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/user', {
