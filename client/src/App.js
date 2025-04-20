@@ -38,8 +38,8 @@ useEffect(() => {
   if (loadingScreen) {
     const timer = setTimeout(() => {
       setLoadingScreen(false);
-      // Check localStorage directly instead of state
-      if (localStorage.getItem('token')) {
+      // Force check both token and user state
+      if (localStorage.getItem('token') && user) {
         navigate('/dashboard');
       } else {
         navigate('/');
@@ -47,8 +47,7 @@ useEffect(() => {
     }, 6000);
     return () => clearTimeout(timer);
   }
-}, [loadingScreen, navigate]);
-
+}, [loadingScreen, navigate, user]); // Add user to dependencies
 
 useEffect(() => {
   const handleStorageChange = () => {
