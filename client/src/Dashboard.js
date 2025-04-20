@@ -10,53 +10,34 @@ const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const showNotification = useNotification();
 
-useEffect(() => {
-  const token = localStorage.getItem('token');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
 
-  // If no token, just skip fetching campaigns
-  if (!token) return;
-
-  const fetchCampaigns = async () => {
-    try {
-      const res = await axios.get('https://landing-page-gere.onrender.com/my-campaigns', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCampaigns(res.data);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        localStorage.removeItem('token');
-        // Removed navigate('/login')
-      }
+    // If no token, just skip fetching campaigns
+    if (!token) {
+      setLoading(false);
+      return;
     }
-  };
 
-  fetchCampaigns();
-}, []); // ✅ No need to include navigate since we're not using it
+    const fetchCampaigns = async () => {
+      try {
+        const res = await axios.get(
+          'https://landing-page-gere.onrender.com/my-campaigns',
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setCampaigns(res.data);
+      } catch (err) {
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          // Redirect removed
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-
-  // Check both token and user existence
-  const token = localStorage.getItem('token');
-  if (!token || !user) {
-    navigate('/login');
-    return;
-  }
-
-  fetchCampaigns();
-}, [user, navigate, logout]); // Removed showNotification from dependencies
-
-const handlePreRegister = async () => {
-  try {
-    await axios.post('https://landing-page-gere.onrender.com/pre-register', { 
-      email: user?.email 
-    }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    });
-    showNotification('success', 'Pre-Registration successful!');
-  } catch (err) {
-    // Keep pre-registration error notification
-    showNotification('error', err.response?.data?.message || 'Pre-Registration failed');
-  }
-};
+    fetchCampaigns();
+  }, []); // no dependencies
 
   return (
     <div className="dashboard-container">
@@ -64,7 +45,7 @@ const handlePreRegister = async () => {
 
       <div className="dashboard-grid">
         <div className="dashboard-box">
-           <div className="bg-image" style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}></div>
+          <div className="bg-image" style={{ backgroundImage: 'url(/images/Campaign.jpg)' }}></div>
           <div className="content">
             <h3>Available Campaigns</h3>
             {campaigns.length > 0 ? campaigns.map((c, i) => (
@@ -77,27 +58,51 @@ const handlePreRegister = async () => {
         </div>
 
         <div className="dashboard-box">
-          <div className="bg-image" style={{ backgroundImage: 'url(/images/invest.jpg)' }}></div>
+          <div
+            className="bg-image"
+            style={{ backgroundImage: 'url(/images/invest.jpg)' }}
+          ></div>
           <div className="content">
             <h3>Invest in PFCA CapiGrid</h3>
             <p>Become part of our journey. Click below to invest now!</p>
-            <button 
-              onClick={() => navigate('/invest')}
-              aria-label="Navigate to investment page"
-            >
+            <button onClick={() => navigate('/invest')} aria-label="Invest">
               Invest Now
             </button>
           </div>
         </div>
 
         <div className="dashboard-box">
-          <div className="bg-image" style={{ backgroundImage: 'url(/images/Pre-register.jpg)' }}></div>
+          <div
+            className="bg-image"
+            style={{ backgroundImage: 'url(/images/Pre-register.jpg)' }}
+          ></div>
           <div className="content">
             <h3>Pre-Register</h3>
             <p>Get notified when we launch the main platform.</p>
-            <button 
-              onClick={handlePreRegister}
-              aria-label="Pre-register for main platform"
+            <button
+              onClick={async () => {
+                try {
+                  await axios.post(
+                    'https://landing-page-gere.onrender.com/pre-register',
+                    { email: user?.email },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          'token'
+                        )}`,
+                      },
+                    }
+                  );
+                  showNotification('success', 'Pre-Registration successful!');
+                } catch (err) {
+                  showNotification(
+                    'error',
+                    err.response?.data?.message ||
+                      'Pre-Registration failed'
+                  );
+                }
+              }}
+              aria-label="Pre-register"
               disabled={!user?.email}
             >
               Pre-Register
@@ -106,13 +111,18 @@ const handlePreRegister = async () => {
         </div>
 
         <div className="dashboard-box">
-          <div className="bg-image" style={{ backgroundImage: 'url(/images/help.jpg)' }}></div>
+          <div
+            className="bg-image"
+            style={{ backgroundImage: 'url(/images/help.jpg)' }}
+          ></div>
           <div className="content">
             <h3>Need Help?</h3>
             <p>Contact our support team for help or inquiries.</p>
-            <button 
-              onClick={() => window.location.href = 'mailto:support@pfcafrica.online'}
-              aria-label="Contact support via email"
+            <button
+              onClick={() =>
+                (window.location.href = 'mailto:support@pfcafrica.online')
+              }
+              aria-label="Contact support"
             >
               Contact Support
             </button>
