@@ -34,11 +34,12 @@ const App = () => {
   }, [token, darkMode]);
 
   
+// Modify your loading screen timeout effect
 useEffect(() => {
   if (loadingScreen) {
     const timer = setTimeout(() => {
       setLoadingScreen(false);
-      // Force check both token and user state
+      // Check BOTH localStorage AND user state
       if (localStorage.getItem('token') && user) {
         navigate('/dashboard');
       } else {
@@ -47,8 +48,19 @@ useEffect(() => {
     }, 6000);
     return () => clearTimeout(timer);
   }
-}, [loadingScreen, navigate, user]); // Add user to dependencies
+}, [loadingScreen, navigate, user]); // Add user as dependency
 
+  // Add this effect to sync user state
+useEffect(() => {
+  const checkAuth = async () => {
+    if (token) {
+      await fetchUserData(token);
+    }
+  };
+  checkAuth();
+}, [token]); // This ensures user state updates when token changes
+
+  
 useEffect(() => {
   const handleStorageChange = () => {
     const newToken = localStorage.getItem('token');
