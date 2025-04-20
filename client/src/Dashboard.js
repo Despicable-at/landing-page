@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { useNotification } from './NotificationContext';
 
-const Dashboard = ({ user, logout, darkMode, toggleDarkMode }) => {
+const Dashboard = ({
+  user,
+  logout,
+  darkMode,
+  toggleDarkMode,
+  setLoadingScreen    // ← make sure this prop is passed in
+}) => {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
