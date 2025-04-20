@@ -33,16 +33,19 @@ const App = () => {
     document.body.className = darkMode ? 'dark' : '';
   }, [token, darkMode]);
 
-    useEffect(() => {
+  
+  useEffect(() => {
     if (loadingScreen) {
       const timer = setTimeout(() => {
         setLoadingScreen(false);
-        navigate('/dashboard'); // Navigate to dashboard after 6 seconds
-      }, 6000); // 6 seconds
+        // Only navigate if we have a token
+        if (localStorage.getItem('token')) {
+          navigate('/dashboard');
+        }
+      }, 6000);
       return () => clearTimeout(timer);
     }
   }, [loadingScreen, navigate]);
-
   
   const fetchUserData = async (token) => {
     try {
@@ -151,7 +154,14 @@ const App = () => {
               />
             : <Navigate to="/" />
         }/>
-        <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route 
+          path="/oauth-callback" 
+          element={
+            <OAuthCallback 
+              setLoadingScreen={setLoadingScreen}  // Pass the setter
+            />
+          }
+        />
         <Route path="/invest" element={<InvestPage user={user} />} />
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
         <Route path="/thank-you" element={<ThankYou />} />
