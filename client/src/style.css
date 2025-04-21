@@ -1231,8 +1231,9 @@ body.dark .summary-box {
 }
 
 .loading-logo {
-  width: 350px;
+  width: 250px;
   height: auto;
+  margin-top: 200px;
 }
 
 .loading-text {
