@@ -34,7 +34,17 @@ const App = () => {
   }, [token, darkMode]);
 
   
+useEffect(() => {
+  const handleHashChange = () => {
+    if (window.location.hash.includes('oauth-callback')) {
+      window.location.hash = '/dashboard';
+    }
+  };
 
+  window.addEventListener('hashchange', handleHashChange);
+  return () => window.removeEventListener('hashchange', handleHashChange);
+}, []);
+  
 useEffect(() => {
   if (token) {
     fetchUserData(token).then(() => {
