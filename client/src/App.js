@@ -51,7 +51,7 @@ useEffect(() => {
   const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/user', {
-        headers: { Authorization: Bearer ${token} }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
     } catch (err) {
