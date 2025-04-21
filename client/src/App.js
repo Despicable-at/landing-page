@@ -43,52 +43,22 @@ useEffect(() => {
   }
 }, [user, token, navigate, setLoadingScreen]);
 
-  // Add this effect to sync user state
-useEffect(() => {
-  const checkAuth = async () => {
-    if (token) {
-      await fetchUserData(token);
-    }
-  };
-  checkAuth();
-}, [token]); // This ensures user state updates when token changes
-
+  useEffect(() => {
+    console.log("App Loaded ✅");
+    if (token) fetchUserData(token);
+  }, [token]);
   
-// Add this effect
-useEffect(() => {
-  const handleStorageChange = () => {
-    const newToken = localStorage.getItem('token');
-    if (newToken !== token) {
-      setToken(newToken);
-      fetchUserData(newToken); // 💡 Force user data fetch
+  const fetchUserData = async (token) => {
+    try {
+      const res = await axios.get('https://landing-page-gere.onrender.com/user', {
+        headers: { Authorization: Bearer ${token} }
+      });
+      setUser(res.data);
+    } catch (err) {
+      console.error('Fetch user error:', err);
     }
   };
 
-  window.addEventListener('storage', handleStorageChange);
-  return () => window.removeEventListener('storage', handleStorageChange);
-}, [token]);
-  
-const fetchUserData = async (token) => {
-  try {
-    const res = await axios.get('https://landing-page-gere.onrender.com/user', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    
-    // Atomic state update
-    setUser(res.data);
-    setToken(token);
-    localStorage.setItem('token', token);
-    
-    // Immediate navigation
-    if (window.location.hash !== '#/dashboard') {
-      navigate('/dashboard', { replace: true });
-    }
-    
-  } catch (err) {
-    console.error('Fetch user error:', err);
-    handleLogout();
-  }
-};
 
   const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
     <button 
