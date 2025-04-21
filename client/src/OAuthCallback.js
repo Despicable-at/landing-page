@@ -5,21 +5,23 @@ const OAuthCallback = ({ setToken }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get both hash and query parameters
-    const hash = window.location.hash.substring(1);
-    const search = window.location.search;
+    // First try to get token from hash (new flow)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    let token = hashParams.get('token');
     
-    // Try hash first, then query params
-    const params = new URLSearchParams(hash || search);
-    const token = params.get('token');
+    // Fallback to query params (old flow)
+    if (!token) {
+      const queryParams = new URLSearchParams(window.location.search);
+      token = queryParams.get('token');
+    }
 
     if (token) {
       localStorage.setItem('token', token);
       setToken(token);
-      // Force dashboard navigation
-      navigate('/dashboard', { replace: true });
+      // Force hard redirect to ensure dashboard loads
+      window.location.href = `${window.location.origin}/#/dashboard`;
     } else {
-      navigate('/', { replace: true });
+      navigate('/');
     }
   }, [navigate, setToken]);
 
