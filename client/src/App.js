@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import VerifyEmail from './VerifyEmail';
@@ -11,7 +11,7 @@ import Profile from './Profile';
 import './style.css';
 import { NotificationProvider, useNotification } from './NotificationContext';
 
-// 1. LoadingScreen component
+// LoadingScreen component
 const LoadingScreen = () => (
   <div className="loading-screen">
     <img src="https://capigrid-frontend.onrender.com/images/capigrid.png" alt="PFCA Logo" className="loading-logo" />
@@ -28,34 +28,23 @@ const App = () => {
   const showNotification = useNotification();
   const [loadingScreen, setLoadingScreen] = useState(false);
 
+  // Fetch user on token or darkMode change
   useEffect(() => {
     if (token) fetchUserData(token);
     document.body.className = darkMode ? 'dark' : '';
   }, [token, darkMode]);
 
-  
-useEffect(() => {
-  const handleHashChange = () => {
-    if (window.location.hash.includes('oauth-callback')) {
-      window.location.hash = '/dashboard';
+  // Ensure after login with token we land on /dashboard
+  useEffect(() => {
+    if (token) {
+      fetchUserData(token).then(() => {
+        if (window.location.hash.includes('oauth-callback')) {
+          navigate('/dashboard', { replace: true });
+        }
+      });
     }
-  };
+  }, [token, navigate]);
 
-  window.addEventListener('hashchange', handleHashChange);
-  return () => window.removeEventListener('hashchange', handleHashChange);
-}, []);
-  
-useEffect(() => {
-  if (token) {
-    fetchUserData(token).then(() => {
-      // After user data is loaded, ensure we're on dashboard
-      if (window.location.hash.includes('oauth-callback')) {
-        navigate('/dashboard', { replace: true });
-      }
-    });
-  }
-}, [token]);
-  
   const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/user', {
@@ -67,7 +56,7 @@ useEffect(() => {
     }
   };
 
-
+  // Dark mode toggle button
   const GlobalDarkModeToggle = ({ darkMode, toggleDarkMode }) => (
     <button 
       className={`dark-mode-toggle-btn ${darkMode ? 'dark' : ''}`}
@@ -102,13 +91,11 @@ useEffect(() => {
     return <LoadingScreen />;
   }
 
-
   return (
     <NotificationProvider>
       {token && (
         <div className="navbar">
           <div className="brand"><strong>PFCA CapiGrid</strong></div>
-
           <div className="desktop-nav-links">
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -117,9 +104,7 @@ useEffect(() => {
             <a href="https://pfcafrica.online" target="_blank" rel="noreferrer">About PFCAfrica</a>
             <a onClick={handleLogout}>Logout</a>
           </div>
-
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
-
           <div className={`mobile-nav-links ${menuOpen ? 'mobile-nav-active' : ''}`}>
             <a onClick={() => handleNavigate('/dashboard')}>Dashboard</a>
             <a onClick={() => handleNavigate('/invest')}>Invest</a>
@@ -130,6 +115,7 @@ useEffect(() => {
           </div>
         </div>
       )}
+
       <Routes>
         <Route path="/" element={
           token
@@ -142,11 +128,10 @@ useEffect(() => {
                 setLoadingScreen={setLoadingScreen}
               />
         }/>
-
         <Route 
           path="/dashboard" 
           element={
-            localStorage.getItem('token')
+            token
               ? <Dashboard
                   user={user}
                   logout={handleLogout}
@@ -156,7 +141,6 @@ useEffect(() => {
               : <Navigate to="/" />
           } 
         />
-
         <Route path="/signup" element={
           <AuthForm
             isLogin={false}
@@ -166,7 +150,6 @@ useEffect(() => {
             setLoadingScreen={setLoadingScreen}
           />
         }/>
-        
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/oauth-callback" element={<OAuthCallback setToken={setToken} />} />
         <Route path="/invest" element={<InvestPage user={user} />} />
@@ -174,6 +157,7 @@ useEffect(() => {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
       </Routes>
+
       <GlobalDarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
     </NotificationProvider>
   );
