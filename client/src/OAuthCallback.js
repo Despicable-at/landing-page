@@ -5,24 +5,25 @@ const OAuthCallback = ({ setToken }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Extract token from URL hash
+    // Get both hash and query parameters
     const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
+    const search = window.location.search;
+    
+    // Try hash first, then query params
+    const params = new URLSearchParams(hash || search);
     const token = params.get('token');
 
     if (token) {
-      // Store token and update state
       localStorage.setItem('token', token);
       setToken(token);
-      // Redirect to dashboard
+      // Force dashboard navigation
       navigate('/dashboard', { replace: true });
     } else {
-      // Handle error case
       navigate('/', { replace: true });
     }
   }, [navigate, setToken]);
 
-  return null; // No rendering needed
+  return null;
 };
 
 export default OAuthCallback;
