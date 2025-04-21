@@ -35,10 +35,16 @@ const App = () => {
 
   
 
-  useEffect(() => {
-    console.log("App Loaded ✅");
-    if (token) fetchUserData(token);
-  }, [token]);
+useEffect(() => {
+  if (token) {
+    fetchUserData(token).then(() => {
+      // After user data is loaded, ensure we're on dashboard
+      if (window.location.hash.includes('oauth-callback')) {
+        navigate('/dashboard', { replace: true });
+      }
+    });
+  }
+}, [token]);
   
   const fetchUserData = async (token) => {
     try {
