@@ -114,11 +114,23 @@ const App = () => {
           </div>
         </div>
       )}
+      <Routes>
+        <Route path="/" element={
+          token
+            ? <Navigate to="/dashboard" />
+            : <AuthForm
+                isLogin={true}
+                setToken={setToken}
+                setUser={setUser}
+                darkMode={darkMode}
+                setLoadingScreen={setLoadingScreen}
+              />
+        }/>
 
         <Route 
           path="/dashboard" 
           element={
-            localStorage.getItem('token') // ✅ Use localStorage directly like Version A
+            localStorage.getItem('token')
               ? <Dashboard
                   user={user}
                   logout={handleLogout}
@@ -128,6 +140,7 @@ const App = () => {
               : <Navigate to="/" />
           } 
         />
+
         <Route path="/signup" element={
           <AuthForm
             isLogin={false}
@@ -137,19 +150,9 @@ const App = () => {
             setLoadingScreen={setLoadingScreen}
           />
         }/>
+        
         <Route path="/verify" element={<VerifyEmail />} />
-        <Route path="/dashboard" element={
-          token
-            ? <Dashboard
-                user={user}
-                logout={handleLogout}
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
-                setLoadingScreen={setLoadingScreen}  // pass setter
-              />
-            : <Navigate to="/" />
-        }/>
-        <Route path="/oauth-callback" element={<OAuthCallback setToken={setToken} setUser={setUser} />} />
+        <Route path="/oauth-callback" element={<OAuthCallback setToken={setToken} />} />
         <Route path="/invest" element={<InvestPage user={user} />} />
         <Route path="/invest-payment" element={<InvestPayment user={user} />} />
         <Route path="/thank-you" element={<ThankYou />} />
