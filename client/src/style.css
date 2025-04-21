@@ -1231,12 +1231,12 @@ body.dark .summary-box {
 }
 
 .loading-logo {
-  width: 120px;
+  width: 350px;
   height: auto;
 }
 
 .loading-text {
-  margin-top: 300px; /* Increased from 24px */
+  margin-top: 600px; /* Increased from 24px */
   font-size: 14px;
   color: #888;
 }
