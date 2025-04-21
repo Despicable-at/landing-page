@@ -44,7 +44,17 @@ const App = () => {
       });
     }
   }, [token, navigate]);
+  
+  // Automatically hide loading screen after 6 seconds
+  useEffect(() => {
+    let timer;
+    if (loadingScreen) {
+      timer = setTimeout(() => setLoadingScreen(false), 6000);
+    }
+    return () => clearTimeout(timer);
+  }, [loadingScreen]);
 
+  
   const fetchUserData = async (token) => {
     try {
       const res = await axios.get('https://landing-page-gere.onrender.com/user', {
