@@ -101,7 +101,8 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.redirect(`${process.env.FRONTEND_URL}/#/oauth-callback?token=${token}`);
+    const cleanFrontendUrl = process.env.FRONTEND_URL.replace(/\/$/, '');
+    res.redirect(`${cleanFrontendUrl}/#/dashboard?token=${token}`);
   }
 );
 
