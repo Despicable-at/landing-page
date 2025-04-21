@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const OAuthCallback = ({ setToken, setUser }) => {
+const OAuthCallback = ({ setToken }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = new URLSearchParams(window.location.search).get('token');
+    // Extract token from URL hash
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const token = params.get('token');
+
     if (token) {
-      localStorage.setItem('token', token); // ✅ Immediate storage like Version A
+      // Store token and update state
+      localStorage.setItem('token', token);
       setToken(token);
-      navigate('/dashboard'); // ✅ Force immediate redirect
+      // Redirect to dashboard
+      navigate('/dashboard', { replace: true });
+    } else {
+      // Handle error case
+      navigate('/', { replace: true });
     }
   }, [navigate, setToken]);
 
-  return <LoadingScreen />;
+  return null; // No rendering needed
 };
 
 export default OAuthCallback;
