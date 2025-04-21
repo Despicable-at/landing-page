@@ -5,25 +5,27 @@ const OAuthCallback = ({ setToken }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Extract token from URL hash
-    const hash = window.location.hash.substring(1); // Remove the #
-    const params = new URLSearchParams(hash);
-    const token = params.get('token');
+    // Example hash: "#/oauth-callback?token=XYZ"
+    const hash = window.location.hash;                    // "#/oauth-callback?token=XYZ"
+    const [, queryString] = hash.split('?');             // ["#/oauth-callback", "token=XYZ"]
+    const token = queryString
+      ? new URLSearchParams(queryString).get('token')
+      : null;
 
     if (token) {
-      // Store token and update state
+      // Store token and update app state
       localStorage.setItem('token', token);
       setToken(token);
-      
-      // Clear the hash and redirect to dashboard
-      window.location.hash = '';
+
+      // Navigate into dashboard and replace history entry
       navigate('/dashboard', { replace: true });
     } else {
+      // No token? Send them back to login
       navigate('/', { replace: true });
     }
   }, [navigate, setToken]);
 
-  return null; // No rendering needed
+  return null;
 };
 
 export default OAuthCallback;
