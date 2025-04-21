@@ -1237,7 +1237,7 @@ body.dark .summary-box {
 }
 
 .loading-text {
-  margin-top: 300px; /* Increased from 24px */
+  margin-top: 50px; /* Increased from 24px */
   font-size: 14px;
   color: #888;
 }
