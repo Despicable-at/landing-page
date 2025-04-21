@@ -34,14 +34,6 @@ const App = () => {
   }, [token, darkMode]);
 
   
-// Modify your loading screen timeout effect
-// Add this new effect
-useEffect(() => {
-  if (user && token) {
-    navigate('/dashboard', { replace: true });
-    setLoadingScreen(false);
-  }
-}, [user, token, navigate, setLoadingScreen]);
 
   useEffect(() => {
     console.log("App Loaded ✅");
@@ -123,18 +115,19 @@ useEffect(() => {
         </div>
       )}
 
-      <Routes>
-        <Route path="/" element={
-          token
-            ? <Navigate to="/dashboard" />
-            : <AuthForm
-                isLogin={true}
-                setToken={setToken}
-                setUser={setUser}
-                darkMode={darkMode}
-                setLoadingScreen={setLoadingScreen}    // pass setter
-              />
-        }/>
+        <Route 
+          path="/dashboard" 
+          element={
+            localStorage.getItem('token') // ✅ Use localStorage directly like Version A
+              ? <Dashboard
+                  user={user}
+                  logout={handleLogout}
+                  darkMode={darkMode}
+                  toggleDarkMode={toggleDarkMode}
+                /> 
+              : <Navigate to="/" />
+          } 
+        />
         <Route path="/signup" element={
           <AuthForm
             isLogin={false}
