@@ -113,7 +113,7 @@ const InvestPayment = ({ user }) => {
   };
 
   return (
-    <div className="auth-container" role="main">
+    <div className="dashboard-container" role="main">
       <h2>Confirm Your Investment</h2>
       <div className="investment-summary">
         <p>Amount: <strong>GHS {initialAmount.toLocaleString()}</strong></p>
