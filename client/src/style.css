@@ -986,14 +986,21 @@ input[type="file"] {
   }
 }
 
-/* payment confirmation */
+/* payment buttons */
+.payment-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* space between buttons */
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
 .payment-actions button {
   margin: 15px 0;
   padding: 12px 25px;
   border: none;
   border-radius: 8px;
-  width: 100%;
-  
+  width: auto; /* reduced width */
+  min-width: 120px; /* optional: sets a minimum width */
 }
 
 .thank-you-container {
