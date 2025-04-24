@@ -5,7 +5,8 @@ import axios from 'axios';
 import { useNotification } from './NotificationContext';
 
 const InvestPage = ({ user }) => {
-  const [amountInput, setAmountInput] = useState('500'); // Change to string type
+  const [amountInput, setAmountInput] = useState('500');
+  const [amount, setAmount] = useState(500); // Add this line
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
@@ -155,7 +156,11 @@ const calculateEquity = (amt) => {
         <div className="amount-selector" role="group" aria-label="Investment amount controls">
           <button 
             className="amount-button"
-            onClick={() => setAmount(prev => Math.max(500, prev - 100))}
+            onClick={() => {
+              const newValue = Math.max(500, Number(amountInput) - 100);
+              setAmountInput(newValue.toString());
+              setAmount(newValue);
+            }}
             aria-label="Decrease investment amount"
           >
             -
@@ -187,13 +192,17 @@ const calculateEquity = (amt) => {
                 aria-label="Investment amount input"
               />
           </div>
-          <button 
-            className="amount-button"
-            onClick={() => setAmount(prev => Math.min(10000, prev + 100))}
-            aria-label="Increase investment amount"
-          >
-            +
-          </button>
+            <button 
+              className="amount-button"
+              onClick={() => {
+                const newValue = Math.min(10000, Number(amountInput) + 100);
+                setAmountInput(newValue.toString());
+                setAmount(newValue);
+              }}
+              aria-label="Increase investment amount"
+            >
+              +
+            </button>
         </div>
 
         <div className="equity-display">
