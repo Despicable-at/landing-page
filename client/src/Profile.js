@@ -86,24 +86,27 @@ const Profile = ({ user, setUser }) => {
   };
 
   return (
-    <div className="profile-container">
+ <div className="profile-container">
       <h1 className="profile-title">Edit Profile</h1>
 
-          <div className="profile-section">
-            <h3>Account Information</h3>
-            <div className="form-group">
-              <label>Display Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Enter your full name"
-              />
-            </div>
+      {/* Account Information Section */}
+      <div className="profile-section">
+        <h3>Account Information</h3>
+        <div className="form-group">
+          <label>Display Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder="Enter your full name"
+          />
+        </div>
+      </div> {/* <-- Closed .profile-section */}
 
       <div className="profile-divider"></div>
 
+      {/* Detailed Profile Fields */}
       <div className="profile-details">
         <div className="detail-group">
           <label>Full name</label>
@@ -119,17 +122,19 @@ const Profile = ({ user, setUser }) => {
         <div className="detail-row">
           <div className="detail-group">
             <label>Gender</label>
-            <select 
-              name="gender" 
+            <select
+              name="gender"
               value={formData.gender}
               onChange={handleInputChange}
               className="detail-input"
             >
+              <option value="">Select gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
           </div>
+
           <div className="detail-group">
             <label>Birthday</label>
             <input
@@ -166,6 +171,7 @@ const Profile = ({ user, setUser }) => {
 
         <div className="profile-divider"></div>
 
+        {/* Password Change Section */}
         <div className="password-section">
           <h3>Change Password</h3>
           <div className="detail-group">
@@ -201,7 +207,8 @@ const Profile = ({ user, setUser }) => {
         </div>
       </div>
 
-      <button 
+      {/* Save Button */}
+      <button
         className="profile-save-button"
         onClick={handleSave}
         disabled={loading}
