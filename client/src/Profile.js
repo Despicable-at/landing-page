@@ -6,9 +6,9 @@ import { useNotification } from './NotificationContext';
 const Profile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    gender: 'Male',
-    birthday: '2001-01-05',
-    phone: '+8801759263000',
+    gender: '',
+    birthday: '',
+    phone: '',
     newEmail: '',
     emailPassword: '',
     currentPassword: '',
@@ -89,10 +89,18 @@ const Profile = ({ user, setUser }) => {
     <div className="profile-container">
       <h1 className="profile-title">Edit Profile</h1>
 
-      <div className="profile-header">
-        <h2 className="profile-name">{formData.name}</h2>
-        <p className="profile-username">@{user?.username || 'username'}</p>
-      </div>
+          <div className="profile-section">
+            <h3>Account Information</h3>
+            <div className="form-group">
+              <label>Display Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+              />
+            </div>
 
       <div className="profile-divider"></div>
 
