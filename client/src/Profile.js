@@ -6,42 +6,17 @@ import { useNotification } from './NotificationContext';
 const Profile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
+    gender: 'Male',
+    birthday: '2001-01-05',
+    phone: '+8801759263000',
     newEmail: '',
     emailPassword: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
-  const [profilePic, setProfilePic] = useState(user?.profilePic || '');
-  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const showNotification = useNotification();
-
-  const handleImageUpload = async () => {
-    if (!imageFile) return profilePic;
-    
-    try {
-      if (imageFile.size > 2 * 1024 * 1024) {
-        showNotification('error', 'Image size must be less than 2MB');
-        return profilePic;
-      }
-
-      const formData = new FormData();
-      formData.append('file', imageFile);
-      formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-      
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        formData
-      );
-      
-      return res.data.secure_url;
-    } catch (err) {
-      showNotification('error', 'Failed to upload image');
-      return profilePic;
-    }
-  };
 
   const validateForm = () => {
     if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
@@ -74,11 +49,8 @@ const Profile = ({ user, setUser }) => {
         return;
       }
 
-      const newProfilePic = await handleImageUpload();
-      
       const payload = {
         ...formData,
-        profilePic: newProfilePic,
         currentPassword: formData.currentPassword || undefined,
         newPassword: formData.newPassword || undefined
       };
@@ -98,7 +70,6 @@ const Profile = ({ user, setUser }) => {
 
       setUser(res.data.user);
       showNotification('success', 'Profile updated successfully');
-      setShowConfirmation(false);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Update failed';
       showNotification('error', errorMsg);
@@ -116,122 +87,119 @@ const Profile = ({ user, setUser }) => {
 
   return (
     <div className="profile-container">
-      <h2>Profile Settings</h2>
+      <h1 className="profile-title">Edit Profile</h1>
 
-      <div className="profile-section">
-        <h3>Profile Picture</h3>
-        <div className="avatar-upload">
-          <div className="avatar-preview">
-            <img 
-              src={profilePic || '/default-avatar.png'} 
-              alt="Profile" 
-              onError={(e) => e.target.src = '/default-avatar.png'}
-            />
-          </div>
-          <label className="upload-button">
-            Choose Image
-            <input 
-              type="file" 
-              accept="image/png, image/jpeg"
-              onChange={(e) => setImageFile(e.target.files[0])}
-              hidden
-            />
-          </label>
-          {imageFile && <span className="file-name">{imageFile.name}</span>}
-        </div>
+      <div className="profile-header">
+        <h2 className="profile-name">{formData.name}</h2>
+        <p className="profile-username">@{user?.username || 'username'}</p>
       </div>
 
-      <div className="profile-section">
-        <h3>Account Information</h3>
-        <div className="form-group">
-          <label>Display Name</label>
+      <div className="profile-divider"></div>
+
+      <div className="profile-details">
+        <div className="detail-group">
+          <label>Full name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            placeholder="Enter your full name"
+            className="detail-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>New Email</label>
+        <div className="detail-row">
+          <div className="detail-group">
+            <label>Gender</label>
+            <select 
+              name="gender" 
+              value={formData.gender}
+              onChange={handleInputChange}
+              className="detail-input"
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div className="detail-group">
+            <label>Birthday</label>
+            <input
+              type="date"
+              name="birthday"
+              value={formData.birthday}
+              onChange={handleInputChange}
+              className="detail-input"
+            />
+          </div>
+        </div>
+
+        <div className="detail-group">
+          <label>Phone number</label>
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            className="detail-input"
+          />
+        </div>
+
+        <div className="detail-group">
+          <label>Email</label>
           <input
             type="email"
             name="newEmail"
             value={formData.newEmail}
             onChange={handleInputChange}
-            placeholder="Enter new email address"
+            className="detail-input"
           />
-          {formData.newEmail && (
+        </div>
+
+        <div className="profile-divider"></div>
+
+        <div className="password-section">
+          <h3>Change Password</h3>
+          <div className="detail-group">
             <input
               type="password"
-              name="emailPassword"
-              value={formData.emailPassword}
+              name="currentPassword"
+              value={formData.currentPassword}
               onChange={handleInputChange}
-              placeholder="Confirm with password"
+              placeholder="Current Password"
+              className="detail-input"
             />
-          )}
+          </div>
+          <div className="detail-group">
+            <input
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
+              onChange={handleInputChange}
+              placeholder="New Password"
+              className="detail-input"
+            />
+          </div>
+          <div className="detail-group">
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="Confirm Password"
+              className="detail-input"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="profile-section">
-        <h3>Change Password</h3>
-        <div className="form-group">
-          <label>Current Password</label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleInputChange}
-            placeholder="Enter current password"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>New Password</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-            placeholder="Enter new password"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Confirm New Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            placeholder="Confirm new password"
-          />
-        </div>
-      </div>
-
-      <div className="form-actions">
-        <button 
-          className="cancel-button"
-          onClick={() => setShowConfirmation(false)}
-        >
-          Cancel
-        </button>
-        <button 
-          className="save-button" 
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? 'Saving...' : 'Save Changes'}
-        </button>
-      </div>
-
-      {showConfirmation && (
-        <div className="confirmation-modal">
-          {/* Modal content */}
-        </div>
-      )}
+      <button 
+        className="profile-save-button"
+        onClick={handleSave}
+        disabled={loading}
+      >
+        {loading ? 'Saving...' : 'Save Changes'}
+      </button>
     </div>
   );
 };
