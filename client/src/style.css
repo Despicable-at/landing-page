@@ -971,23 +971,7 @@ input[type="file"] {
     padding: 1rem 0.5rem;
   }
 
-  .amount-button {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-    z-index: 1; /* Keep above input */
-  }
-
-  .amount-display {
-    order: 2; /* Put input between buttons */
-    flex-grow: 1;
-    padding: 0.5rem;
-  }
-
-  .amount-input {
-    font-size: 1.2rem;
-    width: 100%;
-  }
+ 
 }
 
 /* payment buttons */
