@@ -994,7 +994,7 @@ input[type="file"] {
 .payment-actions {
   display: flex;
   justify-content: center;
-  gap: 200px; /* space between buttons */
+  gap: 20px; /* space between buttons */
   flex-wrap: wrap; /* allows wrapping on small screens */
 }
 
