@@ -853,12 +853,11 @@ input[type="file"] {
 }
 
 .modal-close-button::before {
-  content: '←';
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.2rem;
+  font-size: 1rem; /* Smaller arrow */
 }
 .download-pdf {
   background: none;
@@ -1003,6 +1002,19 @@ input[type="file"] {
     font-size: 1.6rem; /* Larger text in input */
     padding: 0.5rem;
   }
+
+    .modal-close-button {
+    left: 10px;
+    top: 10px;
+    padding: 5px 10px 5px 25px; /* Mobile-specific padding */
+    font-size: 0.85rem; /* Even smaller text for mobile */
+  }
+  
+  .modal-close-button::before {
+    left: 6px; /* Tighter arrow positioning */
+    font-size: 0.9rem;
+  }
+}
  
 }
 
