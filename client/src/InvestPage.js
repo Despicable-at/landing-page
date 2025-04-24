@@ -106,7 +106,7 @@ const calculateEquity = (amt) => {
             onClick={() => setShowTermsModal(false)}
             aria-label="Close terms modal"
           >
-            &larr; Back
+            Back
           </button>
           <h2 id="terms-modal-title">PFCA CapiGrid Investment Terms</h2>
         </div>
