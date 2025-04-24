@@ -1014,9 +1014,9 @@ input[type="file"] {
     left: 6px; /* Tighter arrow positioning */
     font-size: 0.9rem;
   }
+  
 }
  
-}
 
 /* payment buttons */
 .payment-actions {
