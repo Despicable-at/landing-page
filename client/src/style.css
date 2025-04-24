@@ -898,6 +898,12 @@ input[type="file"] {
   font-size: 1.5rem;
   cursor: pointer;
   transition: transform 0.2s;
+  /* Add these properties for perfect centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  aspect-ratio: 1; /* Ensures perfect circle */
 }
 
 .amount-button:hover {
@@ -982,8 +988,8 @@ input[type="file"] {
     /* New amount control adjustments */
   .amount-button {
     width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
+    height: 35px; /* Maintain square ratio */
+    font-size: 1.3rem; /* Slightly smaller symbols */
   }
 
   .amount-display {
