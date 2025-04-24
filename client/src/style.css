@@ -990,7 +990,7 @@ input[type="file"] {
 .payment-actions {
   display: flex;
   justify-content: center;
-  gap: 10px; /* space between buttons */
+  gap: 40px; /* space between buttons */
   flex-wrap: wrap; /* allows wrapping on small screens */
 }
 
