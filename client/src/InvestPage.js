@@ -5,18 +5,18 @@ import axios from 'axios';
 import { useNotification } from './NotificationContext';
 
 const InvestPage = ({ user }) => {
-  const [amount, setAmount] = useState(500);
+  const [amountInput, setAmountInput] = useState('500'); // Change to string type
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
   const showNotification = useNotification();
 
-  const calculateEquity = (amt) => {
-    const numericAmount = Number(amt);
-    let base = (numericAmount / 500) * 0.05;
-    if (numericAmount >= 5000) base *= 1.1;
-    return base.toFixed(2);
-  };
+const calculateEquity = (amt) => {
+  const numericAmount = Number(amt) || 500; // Fallback to 500 if empty/invalid
+  let base = (numericAmount / 500) * 0.05;
+  if (numericAmount >= 5000) base *= 1.1;
+  return base.toFixed(2);
+};
 
   const handleProceed = () => {
     if (!user) {
@@ -162,19 +162,30 @@ const InvestPage = ({ user }) => {
           </button>
           <div className="amount-display">
             <span className="currency">GHS</span>
-            <input
-              type="number"
-              value={amount}
-              min="500"
-              max="10000"
-              step="100"
-              onChange={(e) => {
-                const value = Math.max(500, Math.min(10000, Number(e.target.value)));
-                setAmount(value);
-              }}
-              className="amount-input"
-              aria-label="Investment amount input"
-            />
+              <input
+                type="number"
+                value={amountInput}
+                min="500"
+                max="10000"
+                step="100"
+                onChange={(e) => {
+                  let value = e.target.value;
+                  
+                  // Allow empty value or numeric input
+                  if (value === '' || /^[1-9]\d*$/.test(value)) {
+                    setAmountInput(value);
+                  }
+                }}
+                onBlur={(e) => {
+                  // Validate when user leaves the field
+                  const numericValue = Number(amountInput);
+                  const validatedValue = Math.max(500, Math.min(10000, numericValue || 500));
+                  setAmountInput(validatedValue.toString());
+                  setAmount(validatedValue); // Update the actual numeric value
+                }}
+                className="amount-input"
+                aria-label="Investment amount input"
+              />
           </div>
           <button 
             className="amount-button"
