@@ -971,6 +971,22 @@ input[type="file"] {
     padding: 1rem 0.5rem;
   }
 
+    /* New amount control adjustments */
+  .amount-button {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+
+  .amount-display {
+    min-width: 180px; /* Increased from 150px */
+    margin: 0 0.5rem;
+  }
+
+  .amount-input {
+    font-size: 1.6rem; /* Larger text in input */
+    padding: 0.5rem;
+  }
  
 }
 
