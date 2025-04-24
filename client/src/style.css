@@ -169,6 +169,7 @@ body.dark .footer {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: background-color 0.5s ease, color 0.5s ease;
+  text-align: center;
 }
 
 /* Wrapper for the entire auth section */
