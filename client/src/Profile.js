@@ -1,220 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style.css';
-import { useNotification } from './NotificationContext';
 
 const Profile = ({ user, setUser }) => {
-  const [formData, setFormData] = useState({
-    name: user?.name || '',
-    gender: '',
-    birthday: '',
-    phone: '',
-    newEmail: '',
-    emailPassword: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const showNotification = useNotification();
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [profilePic, setProfilePic] = useState(user?.profilePic || '');
+  const [imageFile, setImageFile] = useState(null);
 
-  const validateForm = () => {
-    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      showNotification('error', 'New passwords do not match');
-      return false;
-    }
-    
-    if (formData.newEmail && !formData.emailPassword) {
-      showNotification('error', 'Please enter password to change email');
-      return false;
-    }
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-    if (formData.newPassword && !formData.currentPassword) {
-      showNotification('error', 'Please enter current password to change password');
-      return false;
+  useEffect(() => {
+    if (user?.googleSignIn && !user?.hasPassword) {
+      alert('Since you signed in with Google, please create a password for future logins.');
     }
+  }, [user]);
 
-    return true;
+  const handleImageUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('upload_preset', 'your_preset'); // ✅ Replace with your Cloudinary preset
+    const res = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData); // ✅ Replace cloud name
+    return res.data.secure_url;
   };
 
   const handleSave = async () => {
-    if (!validateForm()) return;
+    if (newPassword && newPassword !== confirmPassword) {
+      alert('New password and confirm password do not match');
+      return;
+    }
+
+    let newProfilePic = profilePic;
+    if (imageFile) newProfilePic = await handleImageUpload();
 
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        showNotification('error', 'Session expired - please login again');
-        window.location.href = '/login';
-        return;
-      }
+      const res = await axios.put('https://landing-page-gere.onrender.com/update-profile', {
+        name,
+        email,
+        currentPassword,
+        newPassword,
+        profilePic: newProfilePic,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
 
-      const payload = {
-        ...formData,
-        currentPassword: formData.currentPassword || undefined,
-        newPassword: formData.newPassword || undefined
-      };
-
-      const res = await axios.put(
-        'https://landing-page-gere.onrender.com/update-profile',
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (formData.newEmail) {
-        showNotification('warning', 'Verification email sent to new address');
-        sessionStorage.setItem('pendingEmail', formData.newEmail);
-        window.location.href = '/verify';
-        return;
-      }
-
-      setUser(res.data.user);
-      showNotification('success', 'Profile updated successfully');
+      alert('Profile updated successfully');
+      setUser(res.data);  // ✅ Update the parent state with latest user data
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Update failed';
-      showNotification('error', errorMsg);
-    } finally {
-      setLoading(false);
+      console.error(err);
+      alert(err.response?.data?.message || 'Failed to update profile');
     }
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   return (
- <div className="profile-container">
-      <h1 className="profile-title">Edit Profile</h1>
+    <div className="dashboard-container">
+      <h2>Profile Settings</h2>
 
-      {/* Account Information Section */}
       <div className="profile-section">
-        <h3>Account Information</h3>
-        <div className="form-group">
-          <label>Display Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter your full name"
-          />
-        </div>
-      </div> {/* <-- Closed .profile-section */}
-
-      <div className="profile-divider"></div>
-
-      {/* Detailed Profile Fields */}
-      <div className="profile-details">
-        <div className="detail-group">
-          <label>Full name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="detail-input"
-          />
-        </div>
-
-        <div className="detail-row">
-          <div className="detail-group">
-            <label>Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleInputChange}
-              className="detail-input"
-            >
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div className="detail-group">
-            <label>Birthday</label>
-            <input
-              type="date"
-              name="birthday"
-              value={formData.birthday}
-              onChange={handleInputChange}
-              className="detail-input"
-            />
-          </div>
-        </div>
-
-        <div className="detail-group">
-          <label>Phone number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className="detail-input"
-          />
-        </div>
-
-        <div className="detail-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="newEmail"
-            value={formData.newEmail}
-            onChange={handleInputChange}
-            className="detail-input"
-          />
-        </div>
-
-        <div className="profile-divider"></div>
-
-        {/* Password Change Section */}
-        <div className="password-section">
-          <h3>Change Password</h3>
-          <div className="detail-group">
-            <input
-              type="password"
-              name="currentPassword"
-              value={formData.currentPassword}
-              onChange={handleInputChange}
-              placeholder="Current Password"
-              className="detail-input"
-            />
-          </div>
-          <div className="detail-group">
-            <input
-              type="password"
-              name="newPassword"
-              value={formData.newPassword}
-              onChange={handleInputChange}
-              placeholder="New Password"
-              className="detail-input"
-            />
-          </div>
-          <div className="detail-group">
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              placeholder="Confirm Password"
-              className="detail-input"
-            />
-          </div>
-        </div>
+        <img src={profilePic || 'https://via.placeholder.com/150'} alt="Profile" />
+        <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
       </div>
 
-      {/* Save Button */}
-      <button
-        className="profile-save-button"
-        onClick={handleSave}
-        disabled={loading}
-      >
-        {loading ? 'Saving...' : 'Save Changes'}
-      </button>
+      <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+
+      {/* ✅ Password Change Section */}
+      <h3>Change Password</h3>
+      <input
+        type="password"
+        placeholder="Current Password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="New Password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Confirm New Password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+
+      <button onClick={handleSave}>Save Changes</button>
     </div>
   );
 };
