@@ -128,7 +128,7 @@ const Profile = ({ user, setUser }) => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Enter your full name"
+              placeholder=" "
             />
           </div>
         </div>
