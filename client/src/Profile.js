@@ -118,7 +118,7 @@ const Profile = ({ user, setUser }) => {
     <div className="profile-container">
       <h2>Profile Settings</h2>
 
-      <div className="profile-section">
+      <div className="auth-fields">
         <h3>Account Information</h3>
         <div className="form-group">
           <div className="input-wrapper">
@@ -134,7 +134,7 @@ const Profile = ({ user, setUser }) => {
         </div>
       </div>
 
-      <div className="profile-section">
+      <div className="auth-fields">
         <h3>Change Email</h3>
           <div className="form-group">
             <div className="input-wrapper">
@@ -162,7 +162,7 @@ const Profile = ({ user, setUser }) => {
           </div>
         </div>
 
-      <div className="profile-section">
+      <div className="auth-fields">
         <h3>Change Password</h3>
         <div className="form-group">
           <div className="input-wrapper">
@@ -175,8 +175,10 @@ const Profile = ({ user, setUser }) => {
               placeholder=" "
             />
           </div>
+          </div>
         </div>
 
+      <div className="auth-fields">
         <div className="form-group">
           <div className="input-wrapper">
             <label>New Password</label>
@@ -189,7 +191,9 @@ const Profile = ({ user, setUser }) => {
             />
           </div>
         </div>
+      </div>
 
+      <div className="auth-fields">
         <div className="form-group">
           <div className="input-wrapper">
             <label>Confirm New Password</label>
