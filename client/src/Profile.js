@@ -132,29 +132,33 @@ const Profile = ({ user, setUser }) => {
             />
           </div>
         </div>
+      </div>
 
-        <div className="form-group">
-          <div className="input-wrapper">
-            <label>New Email</label>
-            <input
-              type="email"
-              name="newEmail"
-              value={formData.newEmail}
-              onChange={handleInputChange}
-              placeholder="Enter new email address"
-            />
-            {formData.newEmail && (
+      <div className="profile-section">
+        <h3>Change Email</h3>
+          <div className="form-group">
+            <div className="input-wrapper">
+              <label>New Email</label>
               <input
-                type="password"
-                name="emailPassword"
-                value={formData.emailPassword}
+                type="email"
+                name="newEmail"
+                value={formData.newEmail}
                 onChange={handleInputChange}
-                placeholder="Confirm with password"
+                placeholder=" "
               />
-            )}
+              {formData.newEmail && (
+                  <label>Enter Password</label>
+                <input
+                  type="password"
+                  name="emailPassword"
+                  value={formData.emailPassword}
+                  onChange={handleInputChange}
+                  placeholder=" "
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="profile-section">
         <h3>Change Password</h3>
