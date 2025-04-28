@@ -119,29 +119,6 @@ const Profile = ({ user, setUser }) => {
       <h2>Profile Settings</h2>
 
       <div className="profile-section">
-        <h3>Profile Picture</h3>
-        <div className="avatar-upload">
-          <div className="avatar-preview">
-            <img 
-              src={profilePic || '/default-avatar.png'} 
-              alt="Profile" 
-              onError={(e) => e.target.src = '/default-avatar.png'}
-            />
-          </div>
-          <label className="upload-button">
-            Choose Image
-            <input 
-              type="file" 
-              accept="image/png, image/jpeg"
-              onChange={(e) => setImageFile(e.target.files[0])}
-              hidden
-            />
-          </label>
-          {imageFile && <span className="file-name">{imageFile.name}</span>}
-        </div>
-      </div>
-
-      <div className="profile-section">
         <h3>Account Information</h3>
         <div className="form-group">
           <label>Display Name</label>
