@@ -121,70 +121,80 @@ const Profile = ({ user, setUser }) => {
       <div className="profile-section">
         <h3>Account Information</h3>
         <div className="form-group">
-          <label>Display Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter your full name"
-          />
+          <div className="input-wrapper">
+            <label>Display Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter your full name"
+            />
+          </div>
         </div>
 
         <div className="form-group">
-          <label>New Email</label>
-          <input
-            type="email"
-            name="newEmail"
-            value={formData.newEmail}
-            onChange={handleInputChange}
-            placeholder="Enter new email address"
-          />
-          {formData.newEmail && (
+          <div className="input-wrapper">
+            <label>New Email</label>
             <input
-              type="password"
-              name="emailPassword"
-              value={formData.emailPassword}
+              type="email"
+              name="newEmail"
+              value={formData.newEmail}
               onChange={handleInputChange}
-              placeholder="Confirm with password"
+              placeholder="Enter new email address"
             />
-          )}
+            {formData.newEmail && (
+              <input
+                type="password"
+                name="emailPassword"
+                value={formData.emailPassword}
+                onChange={handleInputChange}
+                placeholder="Confirm with password"
+              />
+            )}
+          </div>
         </div>
       </div>
 
       <div className="profile-section">
         <h3>Change Password</h3>
         <div className="form-group">
-          <label>Current Password</label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleInputChange}
-            placeholder="Enter current password"
-          />
+          <div className="input-wrapper">
+            <label>Current Password</label>
+            <input
+              type="password"
+              name="currentPassword"
+              value={formData.currentPassword}
+              onChange={handleInputChange}
+              placeholder="Enter current password"
+            />
+          </div>
         </div>
 
         <div className="form-group">
-          <label>New Password</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-            placeholder="Enter new password"
-          />
+          <div className="input-wrapper">
+            <label>New Password</label>
+            <input
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
+              onChange={handleInputChange}
+              placeholder="Enter new password"
+            />
+          </div>
         </div>
 
         <div className="form-group">
-          <label>Confirm New Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            placeholder="Confirm new password"
-          />
+          <div className="input-wrapper">
+            <label>Confirm New Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="Confirm new password"
+            />
+          </div>
         </div>
       </div>
 
