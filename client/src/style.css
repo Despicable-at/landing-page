@@ -717,6 +717,11 @@ input[type="file"] {
   padding: 2rem;
 }
 
+.profile-container h2{
+  align-items: center;
+  
+}
+
 .profile-title {
   font-size: 24px;
   font-weight: 600;
