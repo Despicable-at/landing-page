@@ -172,7 +172,7 @@ const Profile = ({ user, setUser }) => {
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleInputChange}
-              placeholder="Enter current password"
+              placeholder=" "
             />
           </div>
         </div>
@@ -185,7 +185,7 @@ const Profile = ({ user, setUser }) => {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleInputChange}
-              placeholder="Enter new password"
+              placeholder=" "
             />
           </div>
         </div>
@@ -198,7 +198,7 @@ const Profile = ({ user, setUser }) => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleInputChange}
-              placeholder="Confirm new password"
+              placeholder=" "
             />
           </div>
         </div>
