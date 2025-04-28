@@ -147,7 +147,8 @@ const Profile = ({ user, setUser }) => {
                 placeholder=" "
               />
               {formData.newEmail && (
-                  <label>Enter Password</label>
+                  <>
+                <label>Enter Password</label>
                 <input
                   type="password"
                   name="emailPassword"
@@ -155,6 +156,7 @@ const Profile = ({ user, setUser }) => {
                   onChange={handleInputChange}
                   placeholder=" "
                 />
+                  </>
               )}
             </div>
           </div>
