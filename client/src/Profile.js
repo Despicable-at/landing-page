@@ -136,7 +136,6 @@ const Profile = ({ user, setUser }) => {
 
       <div className="auth-fields">
         <h3>Change Email</h3>
-          <div className="form-group">
             <div className="input-wrapper">
               <label>New Email</label>
               <input
@@ -159,7 +158,6 @@ const Profile = ({ user, setUser }) => {
                   </>
               )}
             </div>
-          </div>
         </div>
 
       <div className="auth-fields">
