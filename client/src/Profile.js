@@ -133,46 +133,45 @@ const Profile = ({ user, setUser }) => {
           </div>
       </div>
 
-      <div className="auth-fields">
-        <h3>Change Email</h3>
-            <div className="input-wrapper">
-              <label htmlFor="email">Old Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                  onChange={e => setFormData({...formData, name: e.target.value})}
-                placeholder=" "
-              />
-
-
-              {formData.newEmail && (
-                  <>
-              <label htmlFor="email">New Email</label>
-                <input
-                  type="email"
-                  name="newEmail"
-                  value={formData.newEmail}
-                  onChange={handleInputChange}
-                  placeholder=" "
-                />
-                  </>
-              )}
-
-              {formData.newEmail && (
-                  <>
-              <label htmlFor="password">Enter Password</label>
-                <input
-                  type="password"
-                  name="emailPassword"
-                  value={formData.emailPassword}
-                  onChange={handleInputChange}
-                  placeholder=" "
-                />
-                  </>
-              )}
-            </div>
-        </div>
+    <div className="auth-fields">
+      <h3>Change Email</h3>
+      <div className="input-wrapper">
+        <label htmlFor="email">Old Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          placeholder=" "
+        />
+    
+        {formData.newEmail && (
+          <>
+            <label htmlFor="newEmail">New Email</label>
+            <input
+              type="email"
+              name="newEmail"
+              value={formData.newEmail}
+              onChange={handleInputChange}
+              placeholder=" "
+            />
+          </>
+        )}
+    
+        {formData.newEmail && (
+          <>
+            <label htmlFor="emailPassword">Enter Password</label>
+            <input
+              type="password"
+              name="emailPassword"
+              value={formData.emailPassword}
+              onChange={handleInputChange}
+              placeholder=" "
+            />
+          </>
+        )}
+      </div>
+    </div>
 
       <div className="auth-fields">
         <h3>Change Password</h3>
