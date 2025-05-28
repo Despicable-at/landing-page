@@ -137,14 +137,29 @@ const Profile = ({ user, setUser }) => {
       <div className="auth-fields">
         <h3>Change Email</h3>
             <div className="input-wrapper">
-              <label>New Email</label>
+              <label>Old Email</label>
               <input
                 type="email"
-                name="newEmail"
-                value={formData.newEmail}
+                name="oldEmail"
+                value={formData.oldEmail}
                 onChange={handleInputChange}
                 placeholder=" "
               />
+
+
+              {formData.newEmail && (
+                  <>
+                <label>New Email</label>
+                <input
+                  type="email"
+                  name="newEmail"
+                  value={formData.newEmail}
+                  onChange={handleInputChange}
+                  placeholder=" "
+                />
+                  </>
+              )}
+
               {formData.newEmail && (
                   <>
                 <label>Enter Password</label>
