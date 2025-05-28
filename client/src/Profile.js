@@ -121,7 +121,6 @@ const Profile = ({ user, setUser }) => {
 
       <div className="auth-fields">
         <h3>Account Information</h3>
-        <div className="form-group">
           <div className="input-wrapper">
             <label>Display Name</label>
             <input
@@ -132,7 +131,6 @@ const Profile = ({ user, setUser }) => {
               placeholder=" "
             />
           </div>
-        </div>
       </div>
 
       <div className="auth-fields">
