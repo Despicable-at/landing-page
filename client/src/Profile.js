@@ -7,6 +7,7 @@ const Profile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
     name: user?.name || '',
     newEmail: '',
+    email: '',
     emailPassword: '',
     currentPassword: '',
     newPassword: '',
@@ -137,19 +138,19 @@ const Profile = ({ user, setUser }) => {
       <div className="auth-fields">
         <h3>Change Email</h3>
             <div className="input-wrapper">
-              <label>Old Email</label>
+              <label htmlFor="email">Old Email</label>
               <input
                 type="email"
-                name="oldEmail"
-                value={formData.oldEmail}
-                onChange={handleInputChange}
+                name="email"
+                value={formData.email}
+                  onChange={e => setFormData({...formData, name: e.target.value})}
                 placeholder=" "
               />
 
 
               {formData.newEmail && (
                   <>
-                <label>New Email</label>
+              <label htmlFor="email">New Email</label>
                 <input
                   type="email"
                   name="newEmail"
@@ -162,7 +163,7 @@ const Profile = ({ user, setUser }) => {
 
               {formData.newEmail && (
                   <>
-                <label>Enter Password</label>
+              <label htmlFor="password">Enter Password</label>
                 <input
                   type="password"
                   name="emailPassword"
