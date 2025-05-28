@@ -162,7 +162,6 @@ const Profile = ({ user, setUser }) => {
 
       <div className="auth-fields">
         <h3>Change Password</h3>
-        <div className="form-group">
           <div className="input-wrapper">
             <label>Current Password</label>
             <input
@@ -173,11 +172,9 @@ const Profile = ({ user, setUser }) => {
               placeholder=" "
             />
           </div>
-          </div>
         </div>
 
       <div className="auth-fields">
-        <div className="form-group">
           <div className="input-wrapper">
             <label>New Password</label>
             <input
@@ -188,11 +185,9 @@ const Profile = ({ user, setUser }) => {
               placeholder=" "
             />
           </div>
-        </div>
       </div>
 
       <div className="auth-fields">
-        <div className="form-group">
           <div className="input-wrapper">
             <label>Confirm New Password</label>
             <input
@@ -203,7 +198,6 @@ const Profile = ({ user, setUser }) => {
               placeholder=" "
             />
           </div>
-        </div>
       </div>
 
       <div className="form-actions">
